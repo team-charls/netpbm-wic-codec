@@ -1,0 +1,17 @@
+# Copyright (c) Team CharLS.
+# SPDX-License-Identifier: MIT
+
+root = true
+
+[*.{h,cpp}]
+end_of_line = crlf
+charset = utf-8-bom
+trim_trailing_whitespace = true
+insert_final_newline = true
+indent_style = space
+indent_size = 4
+
+[*.props]
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2

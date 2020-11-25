@@ -1,0 +1,17 @@
+# Copyright (c) Team CharLS.
+# SPDX-License-Identifier: MIT
+
+obj/
+bin/
+Win32/
+x64/
+.vscode/
+.vs/
+build/
+[Dd]ebug/
+[Rr]elease/
+TestResults/
+packages/
+
+*.user
+*.aps
