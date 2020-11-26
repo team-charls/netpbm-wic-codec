@@ -10,6 +10,8 @@ module;
 
 export module netpbm_bitmap_frame_decode_;
 
+import errors;
+
 
 #ifdef NDEBUG
 
@@ -28,11 +30,6 @@ void trace(char const* const message, Args... args) noexcept
 #define TRACE trace
 
 #endif
-
-
-inline constexpr winrt::hresult error_ok{S_OK};
-inline constexpr winrt::hresult error_fail{E_FAIL};
-
 
 
 export struct netpbm_bitmap_frame_decode final : winrt::implements<netpbm_bitmap_frame_decode, IWICBitmapFrameDecode, IWICBitmapSource>

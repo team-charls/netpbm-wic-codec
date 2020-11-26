@@ -1,20 +1,18 @@
-﻿// Copyright (c) Victor Derks.
+// Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
-#pragma once
+module;
+
+#include "pch.h"
 
 #include <winerror.h>
 #include <winrt/base.h>
 
+export module class_factory;
 
-inline constexpr winrt::hresult error_ok{S_OK};
-inline constexpr winrt::hresult error_fail{E_FAIL};
-inline constexpr winrt::hresult error_pointer{E_POINTER};
-inline constexpr winrt::hresult error_no_aggregation{static_cast<winrt::hresult>(CLASS_E_NOAGGREGATION)};
-inline constexpr winrt::hresult error_class_not_available{static_cast<winrt::hresult>(CLASS_E_CLASSNOTAVAILABLE)};
-inline constexpr winrt::hresult error_invalid_argument{static_cast<winrt::hresult>(E_INVALIDARG)};
+import errors;
 
-template<typename Class>
+export template<typename Class>
 struct class_factory : winrt::implements<class_factory<Class>, IClassFactory>
 {
     HRESULT __stdcall CreateInstance(

@@ -8,9 +8,10 @@ module;
 #include <winerror.h>
 #include <winrt/base.h>
 
-#include "class_factory.h"
-
 export module netpbm_bitmap_decoder;
+
+import class_factory;
+import errors;
 
 #ifdef NDEBUG
 
