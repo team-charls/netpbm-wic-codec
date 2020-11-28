@@ -54,8 +54,9 @@
         C5027 = 'type': move assignment operator was implicitly defined as deleted  [Just informational]
         C5039 = 'function': pointer or reference to potentially throwing function passed to extern C function under -EHc. [Just informational]
         C5045 = Compiler will insert Spectre mitigation for memory load if /Qspectre switch specified [Just informational]
+        C5105 = macro expansion producing 'defined' has undefined behavior [Windows SDK not compatible with C++20]
       -->
-      <DisableSpecificWarnings>4061;4365;4464;4514;4571;4623;4625;4626;4668;4710;4711;4738;4774;4820;5026;5027;5039;5045</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4061;4365;4464;4514;4571;4623;4625;4626;4668;4710;4711;4738;4774;4820;5026;5027;5039;5045;5105</DisableSpecificWarnings>
 
       <!--
         __cplusplus = Tell MSVC to use the correct value for the __cplusplus macro

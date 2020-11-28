@@ -4,32 +4,15 @@
 module;
 
 #include "pch.h"
-
 #include <winerror.h>
 #include <winrt/base.h>
+
+#include "trace.h"
 
 export module netpbm_bitmap_decoder;
 
 import class_factory;
 import errors;
-
-#ifdef NDEBUG
-
-#define TRACE __noop
-
-#else
-
-template<typename... Args>
-void trace(char const* const message, Args... args) noexcept
-{
-    char buffer[1024];
-    static_cast<void>(snprintf(buffer, sizeof buffer, message, args...)); // NOLINT(cppcoreguidelines-pro-type-vararg)
-    OutputDebugStringA(buffer);
-}
-
-#define TRACE trace
-
-#endif
 
 
 using winrt::check_hresult;

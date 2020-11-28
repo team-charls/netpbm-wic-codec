@@ -8,28 +8,11 @@ module;
 #include <winerror.h>
 #include <winrt/base.h>
 
+#include "trace.h"
+
 export module netpbm_bitmap_frame_decode_;
 
 import errors;
-
-
-#ifdef NDEBUG
-
-#define TRACE __noop
-
-#else
-
-template<typename... Args>
-void trace(char const* const message, Args... args) noexcept
-{
-    char buffer[1024];
-    static_cast<void>(snprintf(buffer, sizeof buffer, message, args...)); // NOLINT(cppcoreguidelines-pro-type-vararg)
-    OutputDebugStringA(buffer);
-}
-
-#define TRACE trace
-
-#endif
 
 
 export struct netpbm_bitmap_frame_decode final : winrt::implements<netpbm_bitmap_frame_decode, IWICBitmapFrameDecode, IWICBitmapSource>

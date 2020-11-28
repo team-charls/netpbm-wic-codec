@@ -3,6 +3,8 @@
 
 module;
 
+#include "pch.h"
+
 #include <winerror.h>
 #include <winrt/base.h>
 
