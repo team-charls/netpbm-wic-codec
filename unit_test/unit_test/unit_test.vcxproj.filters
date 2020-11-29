@@ -15,37 +15,31 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="trace.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="dllmain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="netpbm_bitmap_frame_decode .ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="netpbm_bitmap_decoder.ixx">
+    <ClCompile Include="netpbm_bitmap_decoder_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="errors.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="class_factory.ixx">
+    <ClCompile Include="dllmain_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="factory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="packages.config" />
-    <None Include="netpbm-wic-codec.def">
-      <Filter>Source Files</Filter>
-    </None>
   </ItemGroup>
 </Project>

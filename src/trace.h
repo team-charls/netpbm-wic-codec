@@ -11,7 +11,7 @@
 
 #else
 
-export template<typename... Args>
+template<typename... Args>
 void trace(char const* const message, Args... args) noexcept
 {
     char buffer[1024];

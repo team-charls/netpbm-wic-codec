@@ -21,6 +21,9 @@ using winrt::implements;
 using winrt::make;
 using winrt::to_hresult;
 
+// {70ab66f5-cd48-43a1-aa29-10131b7f4ff1}
+constexpr GUID GUID_ContainerFormatNetPbm{0x70ab66f5, 0xcd48, 0x43a1, {0xaa, 0x29, 0x10, 0x13, 0x1b, 0x7f, 0x4f, 0xf1}};
+
 
 struct netpbm_bitmap_decoder final : implements<netpbm_bitmap_decoder, IWICBitmapDecoder>
 {
@@ -39,8 +42,12 @@ struct netpbm_bitmap_decoder final : implements<netpbm_bitmap_decoder, IWICBitma
 
     HRESULT __stdcall GetContainerFormat(_Out_ GUID* container_format) noexcept override
     {
-        TRACE("%p jpegls_bitmap_decoder::GetContainerFormat, container_format=%p\n", this, container_format);
-        return error_fail;
+        TRACE("%p netpbm_bitmap_decoder::GetContainerFormat, container_format=%p\n", this, container_format);
+        if (!container_format)
+            return error_pointer;
+
+        *container_format = GUID_ContainerFormatNetPbm;
+        return error_ok;
     }
 
     HRESULT __stdcall GetDecoderInfo(_Outptr_ IWICBitmapDecoderInfo** decoder_info) noexcept override

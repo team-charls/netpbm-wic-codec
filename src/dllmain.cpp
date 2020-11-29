@@ -3,7 +3,10 @@
 
 #include "pch.h"
 
+#include "trace.h"
+
 import netpbm_bitmap_decoder;
+import errors;
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
@@ -32,4 +35,23 @@ HRESULT __stdcall DllGetClassObject(_In_ GUID const& class_id, _In_ GUID const& 
         return create_netpbm_bitmap_decoder_factory(interface_id, result);
 
     return CLASS_E_CLASSNOTAVAILABLE;
+}
+
+// Purpose: Used to determine whether the COM sub-system can unload the DLL from memory.
+__control_entrypoint(DllExport)
+    HRESULT __stdcall DllCanUnloadNow()
+{
+    const auto result = winrt::get_module_lock() ? S_FALSE : S_OK;
+    TRACE("netpbm-wic-codec::DllCanUnloadNow hr = %d (0 = S_OK -> unload OK)\n", result);
+    return result;
+}
+
+HRESULT __stdcall DllRegisterServer()
+{
+    return SELFREG_E_CLASS;
+}
+
+HRESULT __stdcall DllUnregisterServer()
+{
+    return error_ok;
 }
