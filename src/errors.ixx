@@ -35,5 +35,6 @@ constexpr winrt::hresult error_codec_too_many_scan_lines{static_cast<winrt::hres
 constexpr winrt::hresult error_component_not_found{static_cast<winrt::hresult>(WINCODEC_ERR_COMPONENTNOTFOUND)};
 constexpr winrt::hresult error_bad_header{static_cast<winrt::hresult>(WINCODEC_ERR_BADHEADER)};
 constexpr winrt::hresult error_bad_image{static_cast<winrt::hresult>(WINCODEC_ERR_BADIMAGE)};
+constexpr winrt::hresult error_stream_not_available{static_cast<winrt::hresult>(WINCODEC_ERR_STREAMNOTAVAILABLE)};
 
 } // namespace wincodec

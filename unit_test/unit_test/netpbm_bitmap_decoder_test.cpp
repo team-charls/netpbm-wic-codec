@@ -7,6 +7,7 @@
 #include "util.h"
 
 #include <CppUnitTest.h>
+#include <shlwapi.h>
 
 import errors;
 
@@ -27,6 +28,17 @@ public:
 
         Assert::AreEqual(error_ok, result);
         Assert::IsTrue(GUID_ContainerFormatNetPbm == container_format);
+    }
+
+    TEST_METHOD(QueryCapability_can_decode_8bit_monochrome) // NOLINT
+    {
+        com_ptr<IStream> stream;
+        check_hresult(SHCreateStreamOnFileEx(L"lena8b.pgm", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+        DWORD capability;
+        const hresult result = factory_.create_decoder()->QueryCapability(stream.get(), &capability);
+
+        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(static_cast<DWORD>(WICBitmapDecoderCapabilityCanDecodeAllImages), capability);
     }
 
 private:
