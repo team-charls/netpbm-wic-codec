@@ -7,19 +7,19 @@ module;
 
 export module buffered_stream_reader;
 
+import errors;
+
 export class buffered_stream_reader final
 {
 public:
     buffered_stream_reader(IStream* stream)
     {
-        stream_.attach(stream);
+        stream_.copy_from(stream);
 
         buffer = new BYTE[MAX_BUFFER_SIZE];
 
-        ULONG read;
-        HRESULT hr = stream->Read(buffer, MAX_BUFFER_SIZE, &read);
-        if (FAILED(hr))
-            throw WINCODEC_ERR_STREAMREAD;
+        unsigned long read;
+        check_hresult(stream->Read(buffer, MAX_BUFFER_SIZE, &read), wincodec::error_stream_not_available);
 
         bufferSize = read;
     }

@@ -15,6 +15,7 @@ import class_factory;
 import errors;
 import buffered_stream_reader;
 import pnm_header;
+import guids;
 
 using winrt::check_hresult;
 using winrt::com_ptr;
@@ -86,43 +87,64 @@ struct netpbm_bitmap_decoder final : implements<netpbm_bitmap_decoder, IWICBitma
     HRESULT __stdcall GetDecoderInfo(_Outptr_ IWICBitmapDecoderInfo** decoder_info) noexcept override
     {
         TRACE("%p netpbm_bitmap_decoder::GetContainerFormat, decoder_info=%p\n", this, decoder_info);
-        return error_fail;
+
+        try
+        {
+            com_ptr<IWICComponentInfo> component_info;
+            check_hresult(imaging_factory()->CreateComponentInfo(CLSID_NetPbmDecoder, component_info.put()));
+            check_hresult(component_info->QueryInterface(IID_PPV_ARGS(decoder_info)));
+
+            return error_ok;
+        }
+        catch (...)
+        {
+            return to_hresult();
+        }
     }
 
     HRESULT __stdcall CopyPalette([[maybe_unused]] _In_ IWICPalette* palette) noexcept override
     {
         TRACE("%p netpbm_bitmap_decoder::CopyPalette, palette=%p\n", this, palette);
-        return error_fail;
+
+        // NetPbm images don;t have palettes.
+        return wincodec::error_palette_unavailable;
     }
 
     HRESULT __stdcall GetMetadataQueryReader([[maybe_unused]] _Outptr_ IWICMetadataQueryReader** metadata_query_reader) noexcept override
     {
         TRACE("%p netpbm_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader=%p\n", this, metadata_query_reader);
-        return error_fail;
+
+        // Keep the initial design simple: no support for container-level metadata.
+        // Note: Conceptual, comments from the NetPbm file could converted into metadata.
+        return wincodec::error_unsupported_operation;
     }
 
     HRESULT __stdcall GetPreview([[maybe_unused]] _Outptr_ IWICBitmapSource** bitmap_source) noexcept override
     {
         TRACE("%p netpbm_bitmap_decoder::GetPreview, bitmap_source=%p\n", this, bitmap_source);
-        return error_fail;
+        return wincodec::error_unsupported_operation;
     }
 
     HRESULT __stdcall GetColorContexts([[maybe_unused]] const uint32_t count, [[maybe_unused]] IWICColorContext** color_contexts, [[maybe_unused]] uint32_t* actual_count) noexcept override
     {
         TRACE("%p netpbm_bitmap_decoder::GetColorContexts, count=%u, color_contexts=%p, actual_count=%p\n", this, count, color_contexts, actual_count);
-        return error_fail;
+        return wincodec::error_unsupported_operation;
     }
 
     HRESULT __stdcall GetThumbnail([[maybe_unused]] _Outptr_ IWICBitmapSource** thumbnail) noexcept override
     {
         TRACE("%p netpbm_bitmap_decoder::GetThumbnail, thumbnail=%p\n", this, thumbnail);
-        return error_fail;
+        return wincodec::error_codec_no_thumbnail;
     }
 
     HRESULT __stdcall GetFrameCount(_Out_ uint32_t* count) noexcept override
     {
         TRACE("%p netpbm_bitmap_decoder::GetFrameCount, count=%p\n", this, count);
-        return error_fail;
+        if (!count)
+            return error_pointer;
+
+        *count = 1; // Only 1 frame is supported by this implementation (no real world sampe are known that have more)
+        return error_ok;
     }
 
     HRESULT __stdcall GetFrame(const uint32_t index, _Outptr_ IWICBitmapFrameDecode** bitmap_frame_decode) noexcept override

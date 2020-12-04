@@ -8,8 +8,15 @@ module;
 #include <winerror.h>
 #include <winrt/base.h>
 
-
 export module errors;
+
+export void check_hresult(winrt::hresult const result, winrt::hresult const result_to_throw)
+{
+    if (result < 0)
+    {
+        throw_hresult(result_to_throw);
+    }
+}
 
 export {
 
@@ -36,5 +43,6 @@ constexpr winrt::hresult error_component_not_found{static_cast<winrt::hresult>(W
 constexpr winrt::hresult error_bad_header{static_cast<winrt::hresult>(WINCODEC_ERR_BADHEADER)};
 constexpr winrt::hresult error_bad_image{static_cast<winrt::hresult>(WINCODEC_ERR_BADIMAGE)};
 constexpr winrt::hresult error_stream_not_available{static_cast<winrt::hresult>(WINCODEC_ERR_STREAMNOTAVAILABLE)};
+constexpr winrt::hresult error_stream_read{static_cast<winrt::hresult>(WINCODEC_ERR_STREAMREAD)};
 
 } // namespace wincodec
