@@ -19,23 +19,16 @@ struct class_factory : winrt::implements<class_factory<Class>, IClassFactory>
         IUnknown* outer,
         GUID const& interface_id,
         void** result) noexcept override
+    try
     {
-        if (!result)
-            return error_pointer;
+        *check_out_pointer(result) = nullptr;
+        check_condition(!outer, error_no_aggregation);
 
-        *result = nullptr;
-
-        if (outer)
-            return error_no_aggregation;
-
-        try
-        {
-            return winrt::make<Class>()->QueryInterface(interface_id, result);
-        }
-        catch (...)
-        {
-            return winrt::to_hresult();
-        }
+        return winrt::make<Class>()->QueryInterface(interface_id, result);
+    }
+    catch (...)
+    {
+        return winrt::to_hresult();
     }
 
     HRESULT __stdcall LockServer(BOOL) noexcept override

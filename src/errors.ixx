@@ -10,13 +10,6 @@ module;
 
 export module errors;
 
-export void check_hresult(winrt::hresult const result, winrt::hresult const result_to_throw)
-{
-    if (result < 0)
-    {
-        throw_hresult(result_to_throw);
-    }
-}
 
 export {
 
@@ -28,6 +21,7 @@ constexpr winrt::hresult error_class_not_available{static_cast<winrt::hresult>(C
 constexpr winrt::hresult error_invalid_argument{static_cast<winrt::hresult>(E_INVALIDARG)};
 
 }
+
 
 export namespace wincodec {
 
@@ -46,3 +40,38 @@ constexpr winrt::hresult error_stream_not_available{static_cast<winrt::hresult>(
 constexpr winrt::hresult error_stream_read{static_cast<winrt::hresult>(WINCODEC_ERR_STREAMREAD)};
 
 } // namespace wincodec
+
+export void check_hresult(const winrt::hresult result, const winrt::hresult result_to_throw)
+{
+    if (result < 0)
+        throw_hresult(result_to_throw);
+}
+
+export constexpr bool failed(const winrt::hresult result) noexcept
+{
+    return result < 0;
+}
+
+export template<typename T>
+inline T* check_in_pointer(_In_ T* pointer)
+{
+    if (!pointer)
+        throw_hresult(error_invalid_argument);
+
+    return pointer;
+}
+
+export template<typename T>
+inline T* check_out_pointer(_Out_ T* pointer)
+{
+    if (!pointer)
+        throw_hresult(error_pointer);
+
+    return pointer;
+}
+
+export void check_condition(const bool condition, const winrt::hresult result_to_throw)
+{
+    if (!condition)
+        throw_hresult(result_to_throw);
+}

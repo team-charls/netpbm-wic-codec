@@ -12,21 +12,21 @@ import errors;
 export class buffered_stream_reader final
 {
 public:
-    buffered_stream_reader(IStream* stream)
+    buffered_stream_reader(_In_ IStream* stream)
     {
         stream_.copy_from(stream);
 
-        buffer = new BYTE[MAX_BUFFER_SIZE];
+        buffer_ = new BYTE[MAX_BUFFER_SIZE];
 
         unsigned long read;
-        check_hresult(stream->Read(buffer, MAX_BUFFER_SIZE, &read), wincodec::error_stream_not_available);
+        check_hresult(stream->Read(buffer_, MAX_BUFFER_SIZE, &read), wincodec::error_stream_read);
 
         bufferSize = read;
     }
 
     ~buffered_stream_reader()
     {
-        delete[] buffer;
+        delete[] buffer_;
     }
 
     HRESULT ReadChar(char* c)
@@ -34,10 +34,7 @@ public:
         if (position + sizeof(char) > bufferSize)
             if (bufferSize == MAX_BUFFER_SIZE)
             {
-                HRESULT hr = RefillBuffer();
-
-                if (FAILED(hr))
-                    return hr;
+                RefillBuffer();
 
                 if (bufferSize < sizeof(char))
                     return S_FALSE;
@@ -45,7 +42,7 @@ public:
             else
                 return S_FALSE;
 
-        *c = buffer[position];
+        *c = buffer_[position];
 
         position += sizeof(char);
 
@@ -168,21 +165,18 @@ public:
         {
             if (bufferSize - position >= remaining)
             {
-                memcpy(b, buffer + position, remaining);
+                memcpy(b, buffer_ + position, remaining);
                 position += remaining;
                 *bytesRead = count;
                 return S_OK;
             }
 
-            memcpy(b, buffer + position, bufferSize - position);
+            memcpy(b, buffer_ + position, bufferSize - position);
             b += bufferSize - position;
             remaining -= bufferSize - position;
             position = bufferSize;
 
-            HRESULT hr = RefillBuffer();
-
-            if (FAILED(hr))
-                return hr;
+            RefillBuffer();
 
             if (bufferSize == 0)
             {
@@ -196,28 +190,22 @@ public:
     //HRESULT Seek(LARGE_INTEGER move, DWORD origin);
 
 private:
-    HRESULT RefillBuffer()
+    void RefillBuffer()
     {
-        memcpy(buffer, buffer + position, bufferSize - position);
+        memcpy(buffer_, buffer_ + position, bufferSize - position);
 
         position = bufferSize - position;
 
-        ULONG read;
-
-        HRESULT hr = stream_->Read(buffer + position, bufferSize - position, &read);
-
-        if (FAILED(hr))
-            return WINCODEC_ERR_STREAMREAD;
+        unsigned long read;
+        check_hresult(stream_->Read(buffer_ + position, bufferSize - position, &read), wincodec::error_stream_read);
 
         bufferSize = position + read;
         position = 0;
-
-        return hr;
     }
 
 
     winrt::com_ptr<IStream> stream_;
-    BYTE* buffer{};
+    BYTE* buffer_{};
     UINT bufferSize{};
     UINT position{};
 

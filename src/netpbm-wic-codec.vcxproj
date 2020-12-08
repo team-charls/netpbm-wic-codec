@@ -163,6 +163,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="trace.h">
     </ClInclude>
+    <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffered_stream_reader.ixx">

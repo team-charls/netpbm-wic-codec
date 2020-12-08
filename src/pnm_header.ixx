@@ -11,6 +11,7 @@ import errors;
 import buffered_stream_reader;
 
 using winrt::throw_hresult;
+using winrt::check_hresult;
 
 enum class PnmType
 {
@@ -19,23 +20,30 @@ enum class PnmType
     Pixmap
 };
 
-export bool is_pnm_file(buffered_stream_reader& stream_reader)
+export bool is_pnm_file(IStream* stream)
 {
     char magic[2];
 
-    if (!stream_reader.try_read_bytes(magic, 2))
-        return false;
+    unsigned long read;
+    check_hresult(stream->Read(magic, sizeof magic, &read), wincodec::error_stream_read);
 
-    return magic[0] == 'P' && magic[1] == '5';
+    return read == sizeof magic && magic[0] == 'P' && magic[1] == '5';
 }
 
 export struct pnm_header
 {
     PnmType PnmType;
     bool AsciiFormat;
-    UINT ImageWidth;
-    UINT ImageHeight;
+    uint32_t ImageWidth;
+    uint32_t ImageHeight;
     USHORT MaxColorValue;
+
+    pnm_header() = default;
+
+    pnm_header(buffered_stream_reader& streamReader)
+    {
+        check_hresult(Parse(streamReader));
+    }
 
     HRESULT Parse(buffered_stream_reader& streamReader)
     {

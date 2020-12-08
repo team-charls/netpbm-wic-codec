@@ -10,14 +10,18 @@ module;
 
 #include "trace.h"
 
-export module netpbm_bitmap_frame_decode_;
+export module netpbm_bitmap_frame_decode;
 
 import errors;
+import buffered_stream_reader;
+import pnm_header;
 
 
 export struct netpbm_bitmap_frame_decode final : winrt::implements<netpbm_bitmap_frame_decode, IWICBitmapFrameDecode, IWICBitmapSource>
 {
-    netpbm_bitmap_frame_decode(IStream* stream, IWICImagingFactory* factory)
+    netpbm_bitmap_frame_decode(buffered_stream_reader& stream_reader /*, IWICImagingFactory* factory*/) :
+        stream_reader_{stream_reader},
+        header_{stream_reader_}
     {
     }
 
@@ -71,6 +75,7 @@ export struct netpbm_bitmap_frame_decode final : winrt::implements<netpbm_bitmap
     }
 
 private:
-
+    buffered_stream_reader& stream_reader_;
+    pnm_header header_;
     winrt::com_ptr<IWICBitmapSource> bitmap_source_;
 };
