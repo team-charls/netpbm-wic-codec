@@ -179,7 +179,7 @@ struct netpbm_bitmap_decoder final : winrt::implements<netpbm_bitmap_decoder, IW
 
         if (!bitmap_frame_decode_)
         {
-            bitmap_frame_decode_ = winrt::make<netpbm_bitmap_frame_decode>(*stream_reader_);
+            bitmap_frame_decode_ = winrt::make<netpbm_bitmap_frame_decode>(*stream_reader_, imaging_factory());
         }
 
         bitmap_frame_decode_.copy_to(check_out_pointer(bitmap_frame_decode));

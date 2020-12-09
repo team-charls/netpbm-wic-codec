@@ -34,8 +34,8 @@ export struct pnm_header
 {
     PnmType PnmType;
     bool AsciiFormat;
-    uint32_t ImageWidth;
-    uint32_t ImageHeight;
+    uint32_t width;
+    uint32_t height;
     USHORT MaxColorValue;
 
     pnm_header() = default;
@@ -81,28 +81,27 @@ export struct pnm_header
             break;
         }
 
-        int width;
-        int height;
-
-        hr = streamReader.ReadIntSlow(&width);
+        int32_t s_width;
+        hr = streamReader.ReadIntSlow(&s_width);
 
         if (FAILED(hr))
             return hr;
         if (hr == S_FALSE)
             return WINCODEC_ERR_BADHEADER;
 
-        hr = streamReader.ReadIntSlow(&height);
+        int32_t s_height;
+        hr = streamReader.ReadIntSlow(&s_height);
 
         if (FAILED(hr))
             return hr;
         if (hr == S_FALSE)
             return WINCODEC_ERR_BADHEADER;
 
-        if (width < 1 || height < 1)
+        if (s_width < 1 || s_height < 1)
             return WINCODEC_ERR_BADHEADER;
 
-        ImageWidth = width;
-        ImageHeight = height;
+        width = s_width;
+        height = s_height;
 
         int maxColorValue;
 
