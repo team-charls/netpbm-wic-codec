@@ -9,10 +9,13 @@
 #include <CppUnitTest.h>
 #include <shlwapi.h>
 
+#include <vector>
+
 import errors;
 
 using namespace winrt;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+using std::vector;
 
 // {70ab66f5-cd48-43a1-aa29-10131b7f4ff1}
 constexpr GUID GUID_ContainerFormatNetPbm{0x70ab66f5, 0xcd48, 0x43a1, {0xaa, 0x29, 0x10, 0x13, 0x1b, 0x7f, 0x4f, 0xf1}};

@@ -156,6 +156,25 @@ public:
         return true;
     }
 
+    void read_bytes(void* buffer, size_t size)
+    {
+        size_t remaining_in_buffer = bufferSize - position;
+
+        if (remaining_in_buffer >= size)
+        {
+            memcpy(buffer, buffer_ + position, size);
+            position += static_cast<UINT>(size);
+            return;
+        }
+
+        memcpy(buffer, buffer_ + position, remaining_in_buffer);
+        position += static_cast<UINT>(remaining_in_buffer);
+        size -= remaining_in_buffer;
+
+        unsigned long read;
+        check_hresult(stream_->Read(static_cast<std::byte*>(buffer) + remaining_in_buffer, static_cast<ULONG>(size), &read), wincodec::error_stream_read);
+    }
+
     HRESULT ReadBytes(void* buf, ULONG count, ULONG* bytesRead)
     {
         BYTE* b{static_cast<BYTE*>(buf)};

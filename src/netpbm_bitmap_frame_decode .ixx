@@ -21,6 +21,43 @@ using winrt::to_hresult;
 using winrt::check_hresult;
 using winrt::com_ptr;
 
+
+struct IWICBitmapNoExcept : public IWICBitmap
+{
+public:
+    HRESULT STDMETHODCALLTYPE GetSize(
+        /* [out] */ __RPC__out UINT* puiWidth,
+        /* [out] */ __RPC__out UINT* puiHeight) noexcept override = 0;
+
+    HRESULT STDMETHODCALLTYPE GetPixelFormat(
+        /* [out] */ __RPC__out WICPixelFormatGUID* pPixelFormat) noexcept override = 0;
+
+    HRESULT STDMETHODCALLTYPE GetResolution(
+        /* [out] */ __RPC__out double* pDpiX,
+        /* [out] */ __RPC__out double* pDpiY) noexcept override = 0;
+
+    HRESULT STDMETHODCALLTYPE CopyPalette(
+        /* [in] */ __RPC__in_opt IWICPalette* pIPalette) noexcept override = 0;
+
+    HRESULT STDMETHODCALLTYPE CopyPixels(
+        /* [unique][in] */ __RPC__in_opt const WICRect* prc,
+        /* [in] */ UINT cbStride,
+        /* [in] */ UINT cbBufferSize,
+        /* [size_is][out] */ __RPC__out_ecount_full(cbBufferSize) BYTE* pbBuffer) noexcept override = 0;
+
+    HRESULT STDMETHODCALLTYPE Lock(
+        /* [unique][in] */ __RPC__in_opt const WICRect* prcLock,
+        /* [in] */ DWORD flags,
+        /* [out] */ __RPC__deref_out_opt IWICBitmapLock** ppILock) noexcept override = 0;
+
+    HRESULT STDMETHODCALLTYPE SetPalette(
+        /* [in] */ __RPC__in_opt IWICPalette* pIPalette) noexcept override = 0;
+
+    HRESULT STDMETHODCALLTYPE SetResolution(
+        /* [in] */ double dpiX,
+        /* [in] */ double dpiY) noexcept override = 0;
+};
+
 export struct netpbm_bitmap_frame_decode final : winrt::implements<netpbm_bitmap_frame_decode, IWICBitmapFrameDecode, IWICBitmapSource>
 {
     netpbm_bitmap_frame_decode(buffered_stream_reader& stream_reader, IWICImagingFactory* factory) :
@@ -33,8 +70,9 @@ export struct netpbm_bitmap_frame_decode final : winrt::implements<netpbm_bitmap
             throw_hresult(wincodec::error_unsupported_pixel_format);
 
         const auto& [pixel_format, sample_shift] = pixel_format_info.value();
-        com_ptr<IWICBitmap> bitmap;
-        check_hresult(factory->CreateBitmap(header_.width, header_.height, pixel_format, WICBitmapCacheOnLoad, bitmap.put()));
+        com_ptr<IWICBitmapNoExcept> bitmap;
+        check_hresult(factory->CreateBitmap(header_.width, header_.height, pixel_format, WICBitmapCacheOnLoad,
+                                            reinterpret_cast<IWICBitmap**>(bitmap.put())));
         check_hresult(bitmap->SetResolution(96, 96));
 
         {
@@ -50,7 +88,7 @@ export struct netpbm_bitmap_frame_decode final : winrt::implements<netpbm_bitmap
             winrt::check_hresult(bitmap_lock->GetDataPointer(&data_buffer_size, &data_buffer));
             __assume(data_buffer != nullptr);
 
-            ////decoder.decode(data_buffer, data_buffer_size, stride);
+            stream_reader_.read_bytes(data_buffer, data_buffer_size);
 
             if (sample_shift != 0)
             {

@@ -5,6 +5,7 @@
 
 #include "factory.h"
 #include "util.h"
+#include "portable_anymap_file.h"
 
 #include <CppUnitTest.h>
 
@@ -143,8 +144,25 @@ public:
         Assert::IsTrue(bitmap_source.get() != nullptr);
     }
 
+    TEST_METHOD(decode_8bit_monochrome) // NOLINT
+    {
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.pgm");
+
+        uint32_t width;
+        uint32_t height;
+
+        check_hresult(bitmap_frame_decoder->GetSize(&width, &height));
+        std::vector<BYTE> buffer(static_cast<size_t>(width) * height);
+
+        hresult result = bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()), buffer.data());
+        Assert::AreEqual(error_ok, result);
+
+        compare("lena8b.pgm", buffer);
+    }
+
+
 private:
-    [[nodiscard]] com_ptr<IWICBitmapFrameDecode> create_frame_decoder(_Null_terminated_ const wchar_t * filename) const
+    [[nodiscard]] com_ptr<IWICBitmapFrameDecode> create_frame_decoder(_Null_terminated_ const wchar_t* filename) const
     {
         com_ptr<IStream> stream;
         check_hresult(SHCreateStreamOnFileEx(filename, STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
@@ -165,6 +183,20 @@ private:
                                        nullptr, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, imaging_factory.put_void()));
 
         return imaging_factory;
+    }
+
+    static void compare(const char* filename, std::vector<BYTE>& pixels)
+    {
+        portable_anymap_file anymap_file{filename};
+
+        for (size_t i = 0; i < pixels.size(); ++i)
+        {
+            if (anymap_file.image_data()[i] != static_cast<std::byte>(pixels[i]))
+            {
+                Assert::IsTrue(false);
+                break;
+            }
+        }
     }
 
     factory factory_;
