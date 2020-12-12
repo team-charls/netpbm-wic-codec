@@ -9,7 +9,7 @@ module;
 #include <winrt/base.h>
 
 #include "trace.h"
-#include "util.h"
+#include "macros.h"
 
 export module netpbm_bitmap_frame_decode;
 

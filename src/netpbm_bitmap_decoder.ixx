@@ -6,7 +6,7 @@ module;
 #include "pch.h"
 
 #include "trace.h"
-#include "util.h"
+#include "macros.h"
 
 #include <winrt/base.h>
 
@@ -25,9 +25,6 @@ using winrt::check_hresult;
 using winrt::com_ptr;
 using winrt::to_hresult;
 using std::scoped_lock;
-
-// {70ab66f5-cd48-43a1-aa29-10131b7f4ff1}
-constexpr GUID GUID_ContainerFormatNetPbm{0x70ab66f5, 0xcd48, 0x43a1, {0xaa, 0x29, 0x10, 0x13, 0x1b, 0x7f, 0x4f, 0xf1}};
 
 
 struct netpbm_bitmap_decoder final : winrt::implements<netpbm_bitmap_decoder, IWICBitmapDecoder>
