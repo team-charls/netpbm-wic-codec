@@ -1,14 +1,14 @@
-# Copyright (c) Team CharLS.
-# SPDX-License-Identifier: BSD-3-Clause
+// Copyright (c) Victor Derks.
+// SPDX-License-Identifier: MIT
 
-# The approach for using clang tidy is to enable all warnings unless it adds no practical value to the CharLS projects
+# The approach for using clang tidy is to enable all warnings unless it adds no practical value to the Netpbm WIC Codec project
 # Having all warnings enables helps to find problems when new code is added to the project. Some warnings are however
 # to noisy and adding NO_LINT suppressions make the code less readable.
 #
-# -fuchsia-* => Rationale: Rules only apply to Fuchsia projects and are out of scope for CharLS
-# -google-* => Rationale: Rules only apply to Google projects and are out of scope for CharLS
-# -android-* => Rationale: Rules only apply to Android projects and are out of scope for CharLS
-# -llvmlibc-* => Rationale: Rules only apply to LLVM Libc and are out of scope for CharLS
+# -fuchsia-* => Rationale: Rules only apply to Fuchsia projects and are out of scope for Netpbm WIC Codec
+# -google-* => Rationale: Rules only apply to Google projects and are out of scope for Netpbm WIC Codec
+# -android-* => Rationale: Rules only apply to Android projects and are out of scope for Netpbm WIC Codec
+# -llvmlibc-* => Rationale: Rules only apply to LLVM Libc and are out of scope for Netpbm WIC Codec
 # -llvm-header-guard => Rationale: #pragma once is used
 # -hicpp-no-array-decay => Rationale: alias for cppcoreguidelines-pro-bounds-constant-array-index
 # -hicpp-signed-bitwise => Rationale: Bad test, types are checked, not values.
@@ -30,7 +30,7 @@
 # -clang-analyzer-core.NullDereference => Rationale: false warnings, already checked by other checkers that work better.
 # -misc-non-private-member-variables-in-classes => Rationale: design can be ok, manual review is better
 # -misc-unused-using-decls => Rationale: false warning when using array with CTAD
-# -modernize-use-trailing-return-type => Rationale: A style recommendation, this style is selected for CharLS
+# -modernize-use-trailing-return-type => Rationale: A style recommendation, this style is selected for Netpbm WIC Codec
 # -modernize-avoid-c-arrays => Rationale: Alias for cppcoreguidelines-avoid-c-arrays
 # -readability-magic-numbers => Rationale: To critical rule, used numbers are logical
 # -readability-named-parameter => Rationale: to many non problematic warnings
