@@ -56,6 +56,9 @@ public:
     HRESULT STDMETHODCALLTYPE SetResolution(
         /* [in] */ double dpiX,
         /* [in] */ double dpiY) noexcept override = 0;
+
+protected:
+    ~IWICBitmapNoExcept() = default;
 };
 
 export struct netpbm_bitmap_frame_decode final : winrt::implements<netpbm_bitmap_frame_decode, IWICBitmapFrameDecode, IWICBitmapSource>

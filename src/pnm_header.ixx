@@ -120,7 +120,7 @@ export struct pnm_header
         if (maxColorValue < 1 || maxColorValue > 65535)
             return WINCODEC_ERR_BADHEADER;
 
-        MaxColorValue = maxColorValue;
+        MaxColorValue = static_cast<USHORT>(maxColorValue);
 
         return error_ok;
     }
