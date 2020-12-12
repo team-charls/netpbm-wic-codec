@@ -49,9 +49,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <CopyFileToFolders Include="data-files\lena8b.pgm" />
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="data-files\lena8b.pgm" />
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
