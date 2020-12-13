@@ -6,12 +6,15 @@
 #include "factory.h"
 #include "util.h"
 
+#include <winrt/base.h>
+
 #include <CppUnitTest.h>
 #include <shlwapi.h>
 
 #include <vector>
 
 import errors;
+import test_stream;
 
 using namespace winrt;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -166,6 +169,135 @@ public:
 
         Assert::AreEqual(error_ok, result);
         Assert::AreEqual(static_cast<DWORD>(WICBitmapDecoderCapabilityCanDecodeAllImages), capability);
+    }
+
+    TEST_METHOD(QueryCapability_read_error_on_stream) // NOLINT
+    {
+        com_ptr<IStream> stream = winrt::make<test_stream>(true, 2);
+
+        DWORD capability;
+        const hresult result = factory_.create_decoder()->QueryCapability(stream.get(), &capability);
+
+        Assert::IsTrue(failed(result));
+    }
+
+    TEST_METHOD(QueryCapability_seek_error_on_stream) // NOLINT
+    {
+        com_ptr<IStream> stream = winrt::make<test_stream>(false, 1);
+
+        DWORD capability;
+        const hresult result = factory_.create_decoder()->QueryCapability(stream.get(), &capability);
+
+        Assert::IsTrue(failed(result));
+    }
+
+    TEST_METHOD(QueryCapability_seek_error_on_stream_reset) // NOLINT
+    {
+        com_ptr<IStream> stream = winrt::make<test_stream>(false, 2);
+
+        DWORD capability;
+        const hresult result = factory_.create_decoder()->QueryCapability(stream.get(), &capability);
+
+        Assert::IsTrue(failed(result));
+    }
+
+    TEST_METHOD(Initialize_cache_on_demand) // NOLINT
+    {
+        com_ptr<IStream> stream;
+        stream.attach(SHCreateMemStream(nullptr, 0));
+
+        const hresult result{factory_.create_decoder()->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand)};
+        Assert::AreEqual(error_ok, result);
+    }
+
+    TEST_METHOD(Initialize_cache_on_load) // NOLINT
+    {
+        com_ptr<IStream> stream;
+        stream.attach(SHCreateMemStream(nullptr, 0));
+
+        const hresult result{factory_.create_decoder()->Initialize(stream.get(), WICDecodeMetadataCacheOnLoad)};
+        Assert::AreEqual(error_ok, result);
+    }
+
+    TEST_METHOD(Initialize_twice) // NOLINT
+    {
+        com_ptr<IStream> stream;
+        stream.attach(SHCreateMemStream(nullptr, 0));
+
+        com_ptr<IWICBitmapDecoder> decoder = factory_.create_decoder();
+        hresult result{decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand)};
+        Assert::AreEqual(error_ok, result);
+
+        result = decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnLoad);
+        Assert::AreEqual(error_ok, result);
+    }
+
+    TEST_METHOD(Initialize_bad_cache_option) // NOLINT
+    {
+        com_ptr<IStream> stream;
+        stream.attach(SHCreateMemStream(nullptr, 0));
+
+        const hresult result{factory_.create_decoder()->Initialize(stream.get(), static_cast<WICDecodeOptions>(4))};
+
+        // Cache options is not used by decoder and by design not validated.
+        Assert::AreEqual(error_ok, result);
+    }
+
+    TEST_METHOD(Initialize_null_stream) // NOLINT
+    {
+        const hresult result{factory_.create_decoder()->Initialize(nullptr, WICDecodeMetadataCacheOnDemand)};
+        Assert::AreEqual(error_invalid_argument, result);
+    }
+
+    TEST_METHOD(GetFrame) // NOLINT
+    {
+        com_ptr<IStream> stream;
+        check_hresult(SHCreateStreamOnFileEx(L"lena8b.pgm", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+
+        com_ptr<IWICBitmapDecoder> decoder = factory_.create_decoder();
+        hresult result{decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand)};
+        Assert::AreEqual(error_ok, result);
+
+        uint32_t frame_count;
+        result = decoder->GetFrameCount(&frame_count);
+        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(1U, frame_count);
+
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode;
+        result = decoder->GetFrame(0, bitmap_frame_decode.put());
+        Assert::AreEqual(error_ok, result);
+        Assert::IsTrue(bitmap_frame_decode.get() != nullptr);
+    }
+
+    TEST_METHOD(GetFrame_with_frame_argument_null) // NOLINT
+    {
+        com_ptr<IStream> stream;
+        check_hresult(SHCreateStreamOnFileEx(L"lena8b.pgm", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+
+        com_ptr<IWICBitmapDecoder> decoder = factory_.create_decoder();
+        hresult result{decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand)};
+        Assert::AreEqual(error_ok, result);
+
+        WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
+        result = decoder->GetFrame(0, nullptr);
+
+        Assert::AreEqual(error_pointer, result);
+    }
+
+    TEST_METHOD(GetFrame_with_bad_index) // NOLINT
+    {
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode;
+        const hresult result{factory_.create_decoder()->GetFrame(1, bitmap_frame_decode.put())};
+
+        Assert::AreEqual(wincodec::error_frame_missing, result);
+    }
+
+    TEST_METHOD(GetFrame_not_initialized) // NOLINT
+    {
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode;
+        const hresult result{factory_.create_decoder()->GetFrame(0, bitmap_frame_decode.put())};
+
+        Assert::AreEqual(wincodec::error_not_initialized, result);
     }
 
 private:

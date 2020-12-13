@@ -33,6 +33,9 @@
     <ClCompile Include="netpbm_bitmap_frame_decode_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="test_stream.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">

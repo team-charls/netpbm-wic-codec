@@ -10,12 +10,6 @@
 #define WARNING_SUPPRESS_NEXT_LINE(x) __pragma(warning(suppress \
                                                        : x)) // NOLINT(misc-macro-parentheses, bugprone-macro-parentheses, cppcoreguidelines-macro-usage)
 
-
-constexpr bool failed(winrt::hresult const result) noexcept
-{
-    return result < 0;
-}
-
 constexpr bool succeeded(winrt::hresult const result) noexcept
 {
     return result >= 0;

@@ -36,3 +36,8 @@ constexpr winrt::hresult error_bad_header{static_cast<winrt::hresult>(WINCODEC_E
 constexpr winrt::hresult error_bad_image{static_cast<winrt::hresult>(WINCODEC_ERR_BADIMAGE)};
 
 } // namespace wincodec
+
+export constexpr bool failed(const winrt::hresult result) noexcept
+{
+    return result < 0;
+}
