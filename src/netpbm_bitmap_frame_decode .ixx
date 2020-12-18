@@ -8,8 +8,11 @@ module;
 #include <winerror.h>
 #include <winrt/base.h>
 
-#include "trace.h"
 #include "macros.h"
+#include "trace.h"
+
+#include <bit>
+#include <span>
 
 export module netpbm_bitmap_frame_decode;
 
@@ -17,49 +20,49 @@ import errors;
 import buffered_stream_reader;
 import pnm_header;
 
-using winrt::to_hresult;
+
+using std::byte;
+using std::make_pair;
+using std::transform;
+using std::span;
 using winrt::check_hresult;
 using winrt::com_ptr;
+using winrt::to_hresult;
 
 
-struct IWICBitmapNoExcept : public IWICBitmap
+namespace {
+
+std::pair<GUID, uint32_t> get_pixel_format_and_shift(const uint32_t bits_per_sample)
 {
-public:
-    HRESULT STDMETHODCALLTYPE GetSize(
-        /* [out] */ __RPC__out UINT* puiWidth,
-        /* [out] */ __RPC__out UINT* puiHeight) noexcept override = 0;
+    switch (bits_per_sample)
+    {
+    case 8:
+        return make_pair(GUID_WICPixelFormat8bppGray, 0);
 
-    HRESULT STDMETHODCALLTYPE GetPixelFormat(
-        /* [out] */ __RPC__out WICPixelFormatGUID* pPixelFormat) noexcept override = 0;
+    case 12:
+        return make_pair(GUID_WICPixelFormat16bppGray, 16 - bits_per_sample);
 
-    HRESULT STDMETHODCALLTYPE GetResolution(
-        /* [out] */ __RPC__out double* pDpiX,
-        /* [out] */ __RPC__out double* pDpiY) noexcept override = 0;
+    default:
+        break;
+    }
 
-    HRESULT STDMETHODCALLTYPE CopyPalette(
-        /* [in] */ __RPC__in_opt IWICPalette* pIPalette) noexcept override = 0;
+    throw_hresult(wincodec::error_unsupported_pixel_format);
+}
 
-    HRESULT STDMETHODCALLTYPE CopyPixels(
-        /* [unique][in] */ __RPC__in_opt const WICRect* prc,
-        /* [in] */ UINT cbStride,
-        /* [in] */ UINT cbBufferSize,
-        /* [size_is][out] */ __RPC__out_ecount_full(cbBufferSize) BYTE* pbBuffer) noexcept override = 0;
+void convert_to_little_endian(span<uint16_t> samples) noexcept
+{
+    transform(samples.begin(), samples.end(), samples.begin(),
+              [](const uint16_t sample) -> uint16_t { return _byteswap_ushort(sample); });
+}
 
-    HRESULT STDMETHODCALLTYPE Lock(
-        /* [unique][in] */ __RPC__in_opt const WICRect* prcLock,
-        /* [in] */ DWORD flags,
-        /* [out] */ __RPC__deref_out_opt IWICBitmapLock** ppILock) noexcept override = 0;
+void convert_to_little_endian_and_shift(span<uint16_t> samples, const uint32_t sample_shift) noexcept
+{
+    transform(samples.begin(), samples.end(), samples.begin(),
+              [sample_shift](const uint16_t sample) -> uint16_t { return _byteswap_ushort(sample) << sample_shift; });
+}
 
-    HRESULT STDMETHODCALLTYPE SetPalette(
-        /* [in] */ __RPC__in_opt IWICPalette* pIPalette) noexcept override = 0;
+} // namespace
 
-    HRESULT STDMETHODCALLTYPE SetResolution(
-        /* [in] */ double dpiX,
-        /* [in] */ double dpiY) noexcept override = 0;
-
-protected:
-    ~IWICBitmapNoExcept() = default;
-};
 
 export struct netpbm_bitmap_frame_decode final : winrt::implements<netpbm_bitmap_frame_decode, IWICBitmapFrameDecode, IWICBitmapSource>
 {
@@ -67,71 +70,67 @@ export struct netpbm_bitmap_frame_decode final : winrt::implements<netpbm_bitmap
         stream_reader_{stream_reader},
         header_{stream_reader_}
     {
-
-        auto pixel_format_info = get_pixel_format(8);
-        if (!pixel_format_info)
-            throw_hresult(wincodec::error_unsupported_pixel_format);
-
-        const auto& [pixel_format, sample_shift] = pixel_format_info.value();
-        com_ptr<IWICBitmapNoExcept> bitmap;
-        check_hresult(factory->CreateBitmap(header_.width, header_.height, pixel_format, WICBitmapCacheOnLoad,
-                                            reinterpret_cast<IWICBitmap**>(bitmap.put())));
+        const uint32_t bits_per_sample{std::bit_width(header_.MaxColorValue)};
+        const auto& [pixel_format, sample_shift] = get_pixel_format_and_shift(bits_per_sample);
+        com_ptr<IWICBitmap> bitmap;
+        check_hresult(factory->CreateBitmap(header_.width, header_.height, pixel_format, WICBitmapCacheOnLoad, bitmap.put()));
         check_hresult(bitmap->SetResolution(96, 96));
 
         {
-            WICRect complete_image{0, 0, static_cast<int32_t>(header_.width), static_cast<int32_t>(header_.height)};
+            const WICRect complete_image{0, 0, static_cast<int32_t>(header_.width), static_cast<int32_t>(header_.height)};
             com_ptr<IWICBitmapLock> bitmap_lock;
             check_hresult(bitmap->Lock(&complete_image, WICBitmapLockWrite, bitmap_lock.put()));
 
             uint32_t stride;
             winrt::check_hresult(bitmap_lock->GetStride(&stride));
 
-            BYTE* data_buffer;
+            byte* data_buffer;
             uint32_t data_buffer_size;
-            winrt::check_hresult(bitmap_lock->GetDataPointer(&data_buffer_size, &data_buffer));
+            winrt::check_hresult(bitmap_lock->GetDataPointer(&data_buffer_size, reinterpret_cast<BYTE**>(&data_buffer)));
             __assume(data_buffer != nullptr);
 
             stream_reader_.read_bytes(data_buffer, data_buffer_size);
 
-            if (sample_shift != 0)
+            if (bits_per_sample > 8)
             {
-                ////shift_samples(data_buffer, data_buffer_size / 2, sample_shift);
+                const span<uint16_t> samples_16bit{reinterpret_cast<uint16_t*>(data_buffer), data_buffer_size / sizeof uint16_t};
+
+                if (sample_shift == 0)
+                {
+                    convert_to_little_endian(samples_16bit);
+                }
+                else
+                {
+                    convert_to_little_endian_and_shift(samples_16bit, sample_shift);
+                }
             }
         }
 
-        check_hresult(bitmap->QueryInterface(bitmap_source_.put()));
+        bitmap_source_ = std::move(bitmap);
     }
 
     // IWICBitmapSource
     HRESULT __stdcall GetSize(uint32_t* width, uint32_t* height) noexcept override
     {
         TRACE("%p netpbm_bitmap_frame_decode::GetSize, width=%p, height=%p\n", this, width, height);
-
-        WARNING_SUPPRESS_NEXT_LINE(26447) // noexcept: COM methods are not defined as noexcept
         return bitmap_source_->GetSize(width, height);
     }
 
     HRESULT __stdcall GetPixelFormat(GUID* pixel_format) noexcept override
     {
         TRACE("%p netpbm_bitmap_frame_decode::GetPixelFormat.1, pixel_format=%p\n", this, pixel_format);
-
-        WARNING_SUPPRESS_NEXT_LINE(26447) // noexcept: COM methods are not defined as noexcept
         return bitmap_source_->GetPixelFormat(pixel_format);
     }
 
     HRESULT __stdcall GetResolution(double* dpi_x, double* dpi_y) noexcept override
     {
         TRACE("%p netpbm_bitmap_frame_decode::GetResolution, dpi_x=%p, dpi_y=%p\n", this, dpi_x, dpi_y);
-
-        WARNING_SUPPRESS_NEXT_LINE(26447) // noexcept: COM methods are not defined as noexcept
         return bitmap_source_->GetResolution(dpi_x, dpi_y);
     }
 
     HRESULT __stdcall CopyPixels(const WICRect* rectangle, const uint32_t stride, const uint32_t buffer_size, BYTE* buffer) noexcept override
     {
-        TRACE("%p netpbm_bitmap_frame_decode::CopyPixels, rectangle=%p, buffer_size=%d, buffer=%p\n", this, rectangle, buffer_size, buffer);
-
-        WARNING_SUPPRESS_NEXT_LINE(26447) // noexcept: COM methods are not defined as noexcept
+        TRACE("%p netpbm_bitmap_frame_decode::CopyPixels, rectangle=%p, stride=%d, buffer_size=%d, buffer=%p\n", this, rectangle, stride, buffer_size, buffer);
         return bitmap_source_->CopyPixels(rectangle, stride, buffer_size, buffer);
     }
 
@@ -162,26 +161,7 @@ export struct netpbm_bitmap_frame_decode final : winrt::implements<netpbm_bitmap
     }
 
 private:
-    static std::optional<std::pair<GUID, uint32_t>> get_pixel_format(const int32_t bits_per_sample) noexcept
-    {
-        switch (bits_per_sample)
-        {
-        case 8:
-            return std::make_pair(GUID_WICPixelFormat8bppGray, 0);
-
-        case 10:
-        case 12:
-        case 16:
-            return std::make_pair(GUID_WICPixelFormat16bppGray, 16 - bits_per_sample);
-
-        default:
-            break;
-        }
-
-        return {};
-    }
-
     buffered_stream_reader& stream_reader_;
     pnm_header header_;
-    winrt::com_ptr<IWICBitmapSource> bitmap_source_;
+    com_ptr<IWICBitmapSource> bitmap_source_;
 };

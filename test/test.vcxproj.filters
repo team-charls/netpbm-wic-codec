@@ -52,9 +52,14 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="data-files\lena8b.pgm" />
+    <None Include="packages.config" />
+    <None Include="data-files\medical-m612-12bit.pgm">
+      <Filter>Data Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <CopyFileToFolders Include="data-files\lena8b.pgm">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>

@@ -172,6 +172,9 @@
     <CopyFileToFolders Include="data-files\lena8b.pgm">
       <FileType>Document</FileType>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\medical-m612-12bit.pgm">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\netpbm-wic-codec.vcxproj">

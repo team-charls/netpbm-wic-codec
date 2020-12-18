@@ -13,8 +13,13 @@ import errors;
 
 #include <array>
 #include <vector>
+#include <span>
 
 using std::array;
+using std::byte;
+using std::vector;
+using std::span;
+
 using namespace winrt;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -55,7 +60,7 @@ public:
         Assert::AreEqual(wincodec::error_codec_no_thumbnail, result);
     }
 
-    TEST_METHOD(GetPixelFormat) // NOLINT
+    TEST_METHOD(GetPixelFormat_8bit_image) // NOLINT
     {
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.pgm");
 
@@ -63,6 +68,16 @@ public:
         const hresult result = bitmap_frame_decoder->GetPixelFormat(&pixel_format);
         Assert::AreEqual(error_ok, result);
         Assert::IsTrue(GUID_WICPixelFormat8bppGray == pixel_format);
+    }
+
+    TEST_METHOD(GetPixelFormat_12bit_image) // NOLINT
+    {
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"medical-m612-12bit.pgm");
+
+        GUID pixel_format;
+        const hresult result = bitmap_frame_decoder->GetPixelFormat(&pixel_format);
+        Assert::AreEqual(error_ok, result);
+        Assert::IsTrue(GUID_WICPixelFormat16bppGray == pixel_format);
     }
 
     TEST_METHOD(GetPixelFormat_with_nullptr) // NOLINT
@@ -146,20 +161,35 @@ public:
 
     TEST_METHOD(decode_8bit_monochrome) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.pgm");
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"lena8b.pgm")};
 
         uint32_t width;
         uint32_t height;
 
         check_hresult(bitmap_frame_decoder->GetSize(&width, &height));
-        std::vector<BYTE> buffer(static_cast<size_t>(width) * height);
+        vector<byte> buffer(static_cast<size_t>(width) * height);
 
-        hresult result = bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()), buffer.data());
+        hresult result = copy_pixels(bitmap_frame_decoder.get(), width, buffer.data(), buffer.size());
         Assert::AreEqual(error_ok, result);
 
         compare("lena8b.pgm", buffer);
     }
 
+    TEST_METHOD(decode_12bit_monochrome) // NOLINT
+    {
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"medical-m612-12bit.pgm")};
+
+        uint32_t width;
+        uint32_t height;
+
+        check_hresult(bitmap_frame_decoder->GetSize(&width, &height));
+        vector<uint16_t> buffer(static_cast<size_t>(width) * height);
+
+        hresult result = copy_pixels(bitmap_frame_decoder.get(), width * 2, buffer.data(), buffer.size() * 2);
+        Assert::AreEqual(error_ok, result);
+
+        compare("medical-m612-12bit.pgm", buffer);
+    }
 
 private:
     [[nodiscard]] com_ptr<IWICBitmapFrameDecode> create_frame_decoder(_Null_terminated_ const wchar_t* filename) const
@@ -185,13 +215,43 @@ private:
         return imaging_factory;
     }
 
-    static void compare(const char* filename, std::vector<BYTE>& pixels)
+    static hresult copy_pixels(IWICBitmapFrameDecode* decoder, uint32_t stride, void* buffer, size_t buffer_size)
+    {
+        return decoder->CopyPixels(nullptr, stride, static_cast<uint32_t>(buffer_size), static_cast<BYTE*>(buffer));
+    }
+
+    static void convert_to_little_endian_and_shift(span<uint16_t> samples, const uint32_t sample_shift)
+    {
+        transform(samples.begin(), samples.end(), samples.begin(),
+                  [sample_shift](const uint16_t sample) -> uint16_t { return _byteswap_ushort(sample) << sample_shift; });
+    }
+
+    static void compare(const char* filename, const vector<byte>& pixels)
     {
         portable_anymap_file anymap_file{filename};
+        auto& expected_pixels{anymap_file.image_data()};
 
         for (size_t i = 0; i < pixels.size(); ++i)
         {
-            if (anymap_file.image_data()[i] != static_cast<std::byte>(pixels[i]))
+            if (expected_pixels[i] != pixels[i])
+            {
+                Assert::IsTrue(false);
+                break;
+            }
+        }
+    }
+
+    static void compare(const char* filename, const vector<uint16_t>& pixels)
+    {
+        portable_anymap_file anymap_file{filename};
+        auto& expected_pixels{anymap_file.image_data()};
+
+        span<uint16_t> expected{reinterpret_cast<uint16_t*>(expected_pixels.data()), expected_pixels.size() / sizeof uint16_t};
+        convert_to_little_endian_and_shift(expected, 16 - anymap_file.bits_per_sample());
+
+        for (size_t i = 0; i < pixels.size(); ++i)
+        {
+            if (expected[i] != pixels[i])
             {
                 Assert::IsTrue(false);
                 break;
