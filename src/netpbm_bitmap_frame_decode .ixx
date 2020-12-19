@@ -39,6 +39,7 @@ std::pair<GUID, uint32_t> get_pixel_format_and_shift(const uint32_t bits_per_sam
         return make_pair(GUID_WICPixelFormat8bppGray, 0);
 
     case 12:
+    case 16:
         return make_pair(GUID_WICPixelFormat16bppGray, 16 - bits_per_sample);
 
     default:

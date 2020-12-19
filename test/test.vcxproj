@@ -175,6 +175,9 @@
     <CopyFileToFolders Include="data-files\medical-m612-12bit.pgm">
       <FileType>Document</FileType>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\640_480_16bit.pgm">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\netpbm-wic-codec.vcxproj">

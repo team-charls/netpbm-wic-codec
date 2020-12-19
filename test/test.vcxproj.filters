@@ -53,12 +53,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="data-files\medical-m612-12bit.pgm">
-      <Filter>Data Files</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="data-files\lena8b.pgm">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\640_480_16bit.pgm">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\medical-m612-12bit.pgm">
       <Filter>Data Files</Filter>
     </CopyFileToFolders>
   </ItemGroup>
