@@ -14,7 +14,7 @@ import errors;
 
 using winrt::check_win32;
 
-WARNING_SUPPRESS_NEXT_LINE(26493)                  // Don't use C-style casts
+SUPPRESS_WARNING_NEXT_LINE(26493)                  // Don't use C-style casts
 const HKEY hkey_local_machine{HKEY_LOCAL_MACHINE}; // NOLINT
 
 export namespace registry {

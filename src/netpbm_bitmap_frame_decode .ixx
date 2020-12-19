@@ -20,7 +20,6 @@ import errors;
 import buffered_stream_reader;
 import pnm_header;
 
-
 using std::byte;
 using std::make_pair;
 using std::transform;
@@ -61,52 +60,60 @@ void convert_to_little_endian_and_shift(span<uint16_t> samples, const uint32_t s
               [sample_shift](const uint16_t sample) -> uint16_t { return _byteswap_ushort(sample) << sample_shift; });
 }
 
+com_ptr<IWICBitmap> create_bitmap(_In_ IStream* source_stream, _In_ IWICImagingFactory* factory)
+{
+    buffered_stream_reader stream_reader{source_stream};
+    pnm_header header{stream_reader};
+
+    const uint32_t bits_per_sample{std::bit_width(header.MaxColorValue)};
+    const auto& [pixel_format, sample_shift] = get_pixel_format_and_shift(bits_per_sample);
+    com_ptr<IWICBitmap> bitmap;
+    check_hresult(factory->CreateBitmap(header.width, header.height, pixel_format, WICBitmapCacheOnLoad, bitmap.put()));
+    check_hresult(bitmap->SetResolution(96, 96));
+
+    {
+        const WICRect complete_image{0, 0, static_cast<int32_t>(header.width), static_cast<int32_t>(header.height)};
+        com_ptr<IWICBitmapLock> bitmap_lock;
+        check_hresult(bitmap->Lock(&complete_image, WICBitmapLockWrite, bitmap_lock.put()));
+
+        uint32_t stride;
+        winrt::check_hresult(bitmap_lock->GetStride(&stride));
+
+        byte* data_buffer;
+        uint32_t data_buffer_size;
+        winrt::check_hresult(bitmap_lock->GetDataPointer(&data_buffer_size, reinterpret_cast<BYTE**>(&data_buffer)));
+        __assume(data_buffer != nullptr);
+
+        stream_reader.read_bytes(data_buffer, data_buffer_size);
+
+        if (bits_per_sample > 8)
+        {
+            // Binary 16 bit Netpbm images are stored in big endian format (de facto standard).
+            const span<uint16_t> samples_16bit{reinterpret_cast<uint16_t*>(data_buffer), data_buffer_size / sizeof uint16_t};
+
+            if (sample_shift == 0)
+            {
+                convert_to_little_endian(samples_16bit);
+            }
+            else
+            {
+                convert_to_little_endian_and_shift(samples_16bit, sample_shift);
+            }
+        }
+    }
+
+    return bitmap;
+}
+
 } // namespace
 
 
-export struct netpbm_bitmap_frame_decode final : winrt::implements<netpbm_bitmap_frame_decode, IWICBitmapFrameDecode, IWICBitmapSource>
+export class netpbm_bitmap_frame_decode final : public winrt::implements<netpbm_bitmap_frame_decode, IWICBitmapFrameDecode, IWICBitmapSource>
 {
-    netpbm_bitmap_frame_decode(buffered_stream_reader& stream_reader, IWICImagingFactory* factory) :
-        stream_reader_{stream_reader},
-        header_{stream_reader_}
+public:
+    netpbm_bitmap_frame_decode(_In_ IStream* source_stream, _In_ IWICImagingFactory* factory) :
+        bitmap_source_{create_bitmap(source_stream, factory)}
     {
-        const uint32_t bits_per_sample{std::bit_width(header_.MaxColorValue)};
-        const auto& [pixel_format, sample_shift] = get_pixel_format_and_shift(bits_per_sample);
-        com_ptr<IWICBitmap> bitmap;
-        check_hresult(factory->CreateBitmap(header_.width, header_.height, pixel_format, WICBitmapCacheOnLoad, bitmap.put()));
-        check_hresult(bitmap->SetResolution(96, 96));
-
-        {
-            const WICRect complete_image{0, 0, static_cast<int32_t>(header_.width), static_cast<int32_t>(header_.height)};
-            com_ptr<IWICBitmapLock> bitmap_lock;
-            check_hresult(bitmap->Lock(&complete_image, WICBitmapLockWrite, bitmap_lock.put()));
-
-            uint32_t stride;
-            winrt::check_hresult(bitmap_lock->GetStride(&stride));
-
-            byte* data_buffer;
-            uint32_t data_buffer_size;
-            winrt::check_hresult(bitmap_lock->GetDataPointer(&data_buffer_size, reinterpret_cast<BYTE**>(&data_buffer)));
-            __assume(data_buffer != nullptr);
-
-            stream_reader_.read_bytes(data_buffer, data_buffer_size);
-
-            if (bits_per_sample > 8)
-            {
-                const span<uint16_t> samples_16bit{reinterpret_cast<uint16_t*>(data_buffer), data_buffer_size / sizeof uint16_t};
-
-                if (sample_shift == 0)
-                {
-                    convert_to_little_endian(samples_16bit);
-                }
-                else
-                {
-                    convert_to_little_endian_and_shift(samples_16bit, sample_shift);
-                }
-            }
-        }
-
-        bitmap_source_ = std::move(bitmap);
     }
 
     // IWICBitmapSource
@@ -161,7 +168,5 @@ export struct netpbm_bitmap_frame_decode final : winrt::implements<netpbm_bitmap
     }
 
 private:
-    buffered_stream_reader& stream_reader_;
-    pnm_header header_;
     com_ptr<IWICBitmapSource> bitmap_source_;
 };

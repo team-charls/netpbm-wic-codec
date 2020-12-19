@@ -16,7 +16,6 @@ export module netpbm_bitmap_decoder;
 
 import class_factory;
 import errors;
-import buffered_stream_reader;
 import pnm_header;
 import guids;
 import netpbm_bitmap_frame_decode;
@@ -59,15 +58,14 @@ struct netpbm_bitmap_decoder final : winrt::implements<netpbm_bitmap_decoder, IW
         return to_hresult();
     }
 
+    SUPPRESS_FALSE_WARNING_C26447_NEXT_LINE
     HRESULT __stdcall Initialize(_In_ IStream* stream, [[maybe_unused]] const WICDecodeOptions cache_options) noexcept override
     try
     {
         TRACE("%p netpbm_bitmap_decoder::Initialize, stream=%p, cache_options=%d\n", this, stream, cache_options);
 
-        WARNING_SUPPRESS_NEXT_LINE(26447) // noexcept: false warning, caused by scoped_lock
         scoped_lock lock{mutex_};
-
-        stream_reader_ = std::make_unique<buffered_stream_reader>(check_in_pointer(stream));
+        source_stream_.copy_from(check_in_pointer(stream));
         bitmap_frame_decode_.attach(nullptr);
 
         return error_ok;
@@ -162,6 +160,7 @@ struct netpbm_bitmap_decoder final : winrt::implements<netpbm_bitmap_decoder, IW
         return to_hresult();
     }
 
+    SUPPRESS_FALSE_WARNING_C26447_NEXT_LINE
     HRESULT __stdcall GetFrame(const uint32_t index, _Outptr_ IWICBitmapFrameDecode** bitmap_frame_decode) noexcept override
     try
     {
@@ -169,14 +168,12 @@ struct netpbm_bitmap_decoder final : winrt::implements<netpbm_bitmap_decoder, IW
 
         check_condition(index == 0, wincodec::error_frame_missing);
 
-        WARNING_SUPPRESS_NEXT_LINE(26447) // noexcept: false warning, caused by scoped_lock
         scoped_lock lock{mutex_};
-
-        check_condition(static_cast<bool>(stream_reader_), wincodec::error_not_initialized);
+        check_condition(static_cast<bool>(source_stream_), wincodec::error_not_initialized);
 
         if (!bitmap_frame_decode_)
         {
-            bitmap_frame_decode_ = winrt::make<netpbm_bitmap_frame_decode>(*stream_reader_, imaging_factory());
+            bitmap_frame_decode_ = winrt::make<netpbm_bitmap_frame_decode>(source_stream_.get(), imaging_factory());
         }
 
         bitmap_frame_decode_.copy_to(check_out_pointer(bitmap_frame_decode));
@@ -201,8 +198,8 @@ private:
 
     std::mutex mutex_;
     com_ptr<IWICImagingFactory> imaging_factory_;
+    com_ptr<IStream> source_stream_;
     com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode_;
-    std::unique_ptr<buffered_stream_reader> stream_reader_;
 };
 
 export HRESULT create_netpbm_bitmap_decoder_factory(_In_ GUID const& interface_id, _Outptr_ void** result)

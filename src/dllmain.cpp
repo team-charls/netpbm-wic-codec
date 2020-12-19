@@ -21,6 +21,9 @@ using namespace std::string_literals;
 
 namespace {
 
+constexpr wchar_t mime_type[]{L"image/x-portable-graymap"};
+constexpr wchar_t file_extension[]{L".pgm"};
+
 void register_general_decoder_settings(const GUID& class_id, const GUID& wic_category_id,
                                        const wchar_t* friendly_name, std::span<const GUID*> formats)
 {
@@ -30,9 +33,9 @@ void register_general_decoder_settings(const GUID& class_id, const GUID& wic_cat
     registry::set_value(sub_key, L"ColorManagementVersion", L"1.0.0.0");
     registry::set_value(sub_key, L"ContainerFormat", guid_to_string(GUID_ContainerFormatNetPbm).c_str());
     registry::set_value(sub_key, L"Description", L"Netpbm Codec");
-    registry::set_value(sub_key, L"FileExtensions", L".pgm");
+    registry::set_value(sub_key, L"FileExtensions", file_extension);
     registry::set_value(sub_key, L"FriendlyName", friendly_name);
-    registry::set_value(sub_key, L"MimeTypes", L"image/pgm");
+    registry::set_value(sub_key, L"MimeTypes", mime_type);
     registry::set_value(sub_key, L"SpecVersion", L"1.0.0.0");
     registry::set_value(sub_key, L"SupportAnimation", 0U);
     registry::set_value(sub_key, L"SupportChromaKey", 0U);
@@ -61,32 +64,37 @@ void register_general_decoder_settings(const GUID& class_id, const GUID& wic_cat
 void register_decoder()
 {
     array formats{&GUID_WICPixelFormat8bppGray};
-
     register_general_decoder_settings(CLSID_NetPbmDecoder, CATID_WICBitmapDecoders, L"Netpbm Decoder", formats);
 
     const wstring sub_key{LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(CLSID_NetPbmDecoder)};
 
+    // Register the byte pattern that allows WICs to identify files as our image type.
     const wstring patterns_sub_key{sub_key + LR"(\Patterns\0)"};
-    registry::set_value(patterns_sub_key, L"Length", 2);
-    registry::set_value(patterns_sub_key, L"Position", 0U);
-
     const array mask{0xFF_byte, 0xFF_byte};
-    registry::set_value(patterns_sub_key, L"Mask", mask);
     const array pattern{0x50_byte, 0x35_byte};
+    registry::set_value(patterns_sub_key, L"Length", static_cast<uint32_t>(pattern.size()));
+    registry::set_value(patterns_sub_key, L"Position", 0U);
+    registry::set_value(patterns_sub_key, L"Mask", mask);
     registry::set_value(patterns_sub_key, L"Pattern", pattern);
 
-    registry::set_value(LR"(SOFTWARE\Classes\.pgm\)", L"", L"pgmfile");
-    registry::set_value(LR"(SOFTWARE\Classes\.pgm\)", L"Content Type", L"image/pgm");
-    registry::set_value(LR"(SOFTWARE\Classes\.pgm\)", L"PerceivedType", L"image"); // Can be used by Windows Vista and newer
+    const wstring extension_sub_key{LR"(SOFTWARE\Classes\"s + file_extension + LR"\)"};
+    constexpr wchar_t file_type_name[]{L"pgmfile"};
+    registry::set_value(extension_sub_key, L"", file_type_name);
+    registry::set_value(extension_sub_key, L"Content Type", mime_type);
+    registry::set_value(extension_sub_key, L"PerceivedType", L"image");
 
-    registry::set_value(LR"(SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\KindMap)", L".pgm", L"picture");
+    registry::set_value(LR"(SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\KindMap)", file_extension, L"picture");
 
     // Register with the Windows Thumbnail Cache
-    registry::set_value(LR"(SOFTWARE\Classes\jlsfile\ShellEx\{e357fccd-a995-4576-b01f-234630154e96})", L"", L"{C7657C4A-9F68-40fa-A4DF-96BC08EB3551}");
-    registry::set_value(LR"(SOFTWARE\Classes\SystemFileAssociations\.pgm\ShellEx\{e357fccd-a995-4576-b01f-234630154e96})", L"", L"{C7657C4A-9F68-40fa-A4DF-96BC08EB3551}");
+    // Use the Microsoft Windows provided PhotoThumbnailProvider module to genertate the thumbnail
+    constexpr wchar_t class_id_thumbnail_provider[]{L"{e357fccd-a995-4576-b01f-234630154e96}"};
+    constexpr wchar_t class_id_photo_thumbnail_provider[]{L"{c7657c4a-9f68-40fa-a4df-96bc08eb3551}"};
 
-    // Register with the legacy Windows Photo Viewer (still installed on Windows 10), just forward to the TIFF registration.
-    registry::set_value(LR"(SOFTWARE\Microsoft\Windows Photo Viewer\Capabilities\FileAssociations)", L".pgm", L"PhotoViewer.FileAssoc.Tiff");
+    registry::set_value(LR"(SOFTWARE\Classes\" + file_type_name + L"\ShellEx\" + class_id_thumbnail_provider + L")", L"", class_id_photo_thumbnail_provider);
+    registry::set_value(LR"(SOFTWARE\Classes\SystemFileAssociations\" + file_extension + L"\ShellEx\" + class_id_thumbnail_provider + L")", L"", class_id_photo_thumbnail_provider);
+
+    // Register with the legacy Windows Photo Viewer (still installed on Windows 10): just forward to the TIFF registration.
+    registry::set_value(LR"(SOFTWARE\Microsoft\Windows Photo Viewer\Capabilities\FileAssociations)", file_extension, L"PhotoViewer.FileAssoc.Tiff");
 }
 
 HRESULT unregister(const GUID& class_id, const GUID& wic_category_id)
