@@ -3,8 +3,8 @@
 
 module;
 
-#include "pch.h"
 #include "macros.h"
+#include "pch.h"
 
 #include <span>
 
@@ -19,13 +19,16 @@ const HKEY hkey_local_machine{HKEY_LOCAL_MACHINE}; // NOLINT
 
 export namespace registry {
 
-inline void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name, _Null_terminated_ const wchar_t* value)
+inline void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name,
+                      _Null_terminated_ const wchar_t* value)
 {
     const auto length = wcslen(value) + 1;
-    check_win32(RegSetKeyValue(hkey_local_machine, sub_key, value_name, REG_SZ, value, static_cast<DWORD>(length * sizeof(wchar_t)))); // NOLINT(bugprone-misplaced-widening-cast)
+    check_win32(RegSetKeyValue(hkey_local_machine, sub_key, value_name, REG_SZ, value,
+                               static_cast<DWORD>(length * sizeof(wchar_t)))); // NOLINT(bugprone-misplaced-widening-cast)
 }
 
-inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name, _Null_terminated_ const wchar_t* value)
+inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name,
+                      _Null_terminated_ const wchar_t* value)
 {
     set_value(sub_key.c_str(), value_name, value);
 }
@@ -43,15 +46,18 @@ inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar
 inline void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name,
                       const void* value, const size_t value_size_in_bytes)
 {
-    check_win32(RegSetKeyValue(hkey_local_machine, sub_key, value_name, REG_BINARY, value, static_cast<DWORD>(value_size_in_bytes)));
+    check_win32(
+        RegSetKeyValue(hkey_local_machine, sub_key, value_name, REG_BINARY, value, static_cast<DWORD>(value_size_in_bytes)));
 }
 
-inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name, std::span<const std::byte> value)
+inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name,
+                      std::span<const std::byte> value)
 {
     set_value(sub_key.c_str(), value_name, value.data(), value.size());
 }
 
-inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name, const void* value, const size_t value_size_in_bytes)
+inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name, const void* value,
+                      const size_t value_size_in_bytes)
 {
     set_value(sub_key.c_str(), value_name, value, value_size_in_bytes);
 }

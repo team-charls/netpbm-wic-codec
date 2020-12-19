@@ -11,15 +11,14 @@ module;
 export module errors;
 
 
-export {
-
-constexpr winrt::hresult error_ok{S_OK};
-constexpr winrt::hresult error_fail{E_FAIL};
-constexpr winrt::hresult error_pointer{E_POINTER};
-constexpr winrt::hresult error_no_aggregation{static_cast<winrt::hresult>(CLASS_E_NOAGGREGATION)};
-constexpr winrt::hresult error_class_not_available{static_cast<winrt::hresult>(CLASS_E_CLASSNOTAVAILABLE)};
-constexpr winrt::hresult error_invalid_argument{static_cast<winrt::hresult>(E_INVALIDARG)};
-
+export
+{
+    constexpr winrt::hresult error_ok{S_OK};
+    constexpr winrt::hresult error_fail{E_FAIL};
+    constexpr winrt::hresult error_pointer{E_POINTER};
+    constexpr winrt::hresult error_no_aggregation{static_cast<winrt::hresult>(CLASS_E_NOAGGREGATION)};
+    constexpr winrt::hresult error_class_not_available{static_cast<winrt::hresult>(CLASS_E_CLASSNOTAVAILABLE)};
+    constexpr winrt::hresult error_invalid_argument{static_cast<winrt::hresult>(E_INVALIDARG)};
 }
 
 
@@ -53,7 +52,7 @@ export constexpr bool failed(const winrt::hresult result) noexcept
 }
 
 export template<typename T>
-inline T* check_in_pointer(_In_ T* pointer)
+T* check_in_pointer(_In_ T* pointer)
 {
     if (!pointer)
         throw_hresult(error_invalid_argument);
@@ -62,7 +61,7 @@ inline T* check_in_pointer(_In_ T* pointer)
 }
 
 export template<typename T>
-inline T* check_out_pointer(_Out_ T* pointer)
+T* check_out_pointer(_Out_ T* pointer)
 {
     if (!pointer)
         throw_hresult(error_pointer);

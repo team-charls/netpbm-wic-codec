@@ -15,10 +15,7 @@ import errors;
 export template<typename Class>
 struct class_factory : winrt::implements<class_factory<Class>, IClassFactory>
 {
-    HRESULT __stdcall CreateInstance(
-        IUnknown* outer,
-        GUID const& interface_id,
-        void** result) noexcept override
+    HRESULT __stdcall CreateInstance(IUnknown* outer, GUID const& interface_id, void** result) noexcept override
     try
     {
         *check_out_pointer(result) = nullptr;

@@ -130,7 +130,7 @@ public:
         }
     }
 
-    //HRESULT ReadInt(int* i);
+    // HRESULT ReadInt(int* i);
 
     HRESULT ReadIntSlow(int* i)
     {
@@ -172,7 +172,8 @@ public:
         size -= remaining_in_buffer;
 
         unsigned long read;
-        check_hresult(stream_->Read(static_cast<std::byte*>(buffer) + remaining_in_buffer, static_cast<ULONG>(size), &read), wincodec::error_stream_read);
+        check_hresult(stream_->Read(static_cast<std::byte*>(buffer) + remaining_in_buffer, static_cast<ULONG>(size), &read),
+                      wincodec::error_stream_read);
     }
 
     HRESULT ReadBytes(void* buf, ULONG count, ULONG* bytesRead)
@@ -205,8 +206,8 @@ public:
         }
     }
 
-    //HRESULT GetPosition(ULARGE_INTEGER* streamPosition) const;
-    //HRESULT Seek(LARGE_INTEGER move, DWORD origin);
+    // HRESULT GetPosition(ULARGE_INTEGER* streamPosition) const;
+    // HRESULT Seek(LARGE_INTEGER move, DWORD origin);
 
 private:
     void RefillBuffer()

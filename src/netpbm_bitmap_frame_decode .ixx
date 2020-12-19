@@ -22,8 +22,8 @@ import pnm_header;
 
 using std::byte;
 using std::make_pair;
-using std::transform;
 using std::span;
+using std::transform;
 using winrt::check_hresult;
 using winrt::com_ptr;
 using winrt::to_hresult;
@@ -109,7 +109,8 @@ com_ptr<IWICBitmap> create_bitmap(_In_ IStream* source_stream, _In_ IWICImagingF
 } // namespace
 
 
-export class netpbm_bitmap_frame_decode final : public winrt::implements<netpbm_bitmap_frame_decode, IWICBitmapFrameDecode, IWICBitmapSource>
+export class netpbm_bitmap_frame_decode final
+    : public winrt::implements<netpbm_bitmap_frame_decode, IWICBitmapFrameDecode, IWICBitmapSource>
 {
 public:
     netpbm_bitmap_frame_decode(_In_ IStream* source_stream, _In_ IWICImagingFactory* factory) :
@@ -136,9 +137,12 @@ public:
         return bitmap_source_->GetResolution(dpi_x, dpi_y);
     }
 
-    HRESULT __stdcall CopyPixels(const WICRect* rectangle, const uint32_t stride, const uint32_t buffer_size, BYTE* buffer) noexcept override
+    HRESULT __stdcall CopyPixels(const WICRect* rectangle, const uint32_t stride, const uint32_t buffer_size,
+                                 BYTE* buffer) noexcept override
     {
-        TRACE("%p netpbm_bitmap_frame_decode::CopyPixels, rectangle address=%p, stride=%d, buffer_size=%d, buffer address=%p\n", this, rectangle, stride, buffer_size, buffer);
+        TRACE("%p netpbm_bitmap_frame_decode::CopyPixels, rectangle address=%p, stride=%d, buffer_size=%d, buffer "
+              "address=%p\n",
+              this, rectangle, stride, buffer_size, buffer);
         return bitmap_source_->CopyPixels(rectangle, stride, buffer_size, buffer);
     }
 
@@ -155,16 +159,21 @@ public:
         return wincodec::error_codec_no_thumbnail;
     }
 
-    HRESULT __stdcall GetColorContexts(const uint32_t count, IWICColorContext** color_contexts, uint32_t* actual_count) noexcept override
+    HRESULT __stdcall GetColorContexts(const uint32_t count, IWICColorContext** color_contexts,
+                                       uint32_t* actual_count) noexcept override
     {
-        TRACE("%p netpbm_bitmap_frame_decode::GetColorContexts (always 0), count=%d, color_contexts address=%p, actual_count address=%p\n", this, count, color_contexts, actual_count);
+        TRACE("%p netpbm_bitmap_frame_decode::GetColorContexts (always 0), count=%d, color_contexts address=%p, "
+              "actual_count address=%p\n",
+              this, count, color_contexts, actual_count);
         *check_out_pointer(actual_count) = 0;
         return error_ok;
     }
 
-    HRESULT __stdcall GetMetadataQueryReader([[maybe_unused]] IWICMetadataQueryReader** metadata_query_reader) noexcept override
+    HRESULT __stdcall GetMetadataQueryReader(
+        [[maybe_unused]] IWICMetadataQueryReader** metadata_query_reader) noexcept override
     {
-        TRACE("%p netpbm_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader address=%p\n", this, metadata_query_reader);
+        TRACE("%p netpbm_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader address=%p\n", this,
+              metadata_query_reader);
         return wincodec::error_unsupported_operation;
     }
 

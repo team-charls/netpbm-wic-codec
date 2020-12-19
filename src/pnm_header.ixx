@@ -10,8 +10,8 @@ export module pnm_header;
 import errors;
 import buffered_stream_reader;
 
-using winrt::throw_hresult;
 using winrt::check_hresult;
+using winrt::throw_hresult;
 
 enum class PnmType
 {
