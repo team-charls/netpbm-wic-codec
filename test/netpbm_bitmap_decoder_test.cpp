@@ -163,7 +163,8 @@ public:
     TEST_METHOD(QueryCapability_can_decode_8bit_monochrome) // NOLINT
     {
         com_ptr<IStream> stream;
-        check_hresult(SHCreateStreamOnFileEx(L"lena8b.pgm", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+        check_hresult(
+            SHCreateStreamOnFileEx(L"lena8b.pgm", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
         DWORD capability;
         const hresult result{factory_.create_decoder()->QueryCapability(stream.get(), &capability)};
 
@@ -252,7 +253,8 @@ public:
     TEST_METHOD(GetFrame) // NOLINT
     {
         com_ptr<IStream> stream;
-        check_hresult(SHCreateStreamOnFileEx(L"lena8b.pgm", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+        check_hresult(
+            SHCreateStreamOnFileEx(L"lena8b.pgm", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
 
         com_ptr<IWICBitmapDecoder> decoder = factory_.create_decoder();
         hresult result{decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand)};
@@ -272,7 +274,8 @@ public:
     TEST_METHOD(GetFrame_with_frame_argument_null) // NOLINT
     {
         com_ptr<IStream> stream;
-        check_hresult(SHCreateStreamOnFileEx(L"lena8b.pgm", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+        check_hresult(
+            SHCreateStreamOnFileEx(L"lena8b.pgm", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
 
         com_ptr<IWICBitmapDecoder> decoder = factory_.create_decoder();
         hresult result{decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand)};

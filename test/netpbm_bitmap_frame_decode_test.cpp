@@ -4,24 +4,24 @@
 #include "pch.h"
 
 #include "factory.h"
-#include "util.h"
 #include "portable_anymap_file.h"
+#include "util.h"
 
 #include <CppUnitTest.h>
 
 import errors;
 
 #include <array>
-#include <vector>
 #include <span>
+#include <vector>
 
 using std::array;
 using std::byte;
-using std::vector;
 using std::span;
+using std::vector;
+using winrt::check_hresult;
 using winrt::com_ptr;
 using winrt::hresult;
-using winrt::check_hresult;
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -122,7 +122,8 @@ public:
         Assert::AreEqual(0U, actual_count);
 
         array<IWICColorContext*, 1> color_contexts{};
-        result = bitmap_frame_decoder->GetColorContexts(static_cast<UINT>(color_contexts.size()), color_contexts.data(), &actual_count);
+        result = bitmap_frame_decoder->GetColorContexts(static_cast<UINT>(color_contexts.size()), color_contexts.data(),
+                                                        &actual_count);
         Assert::AreEqual(error_ok, result);
         Assert::AreEqual(0U, actual_count);
     }
@@ -146,7 +147,8 @@ public:
         check_hresult(bitmap_frame_decoder->GetSize(&width, &height));
         std::vector<BYTE> buffer(static_cast<size_t>(width) * height);
 
-        hresult result{bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()), buffer.data())};
+        hresult result{
+            bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()), buffer.data())};
         Assert::AreEqual(error_ok, result);
 
         result = bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()), buffer.data());
@@ -227,21 +229,22 @@ private:
     [[nodiscard]] static com_ptr<IWICImagingFactory> imaging_factory()
     {
         com_ptr<IWICImagingFactory> imaging_factory;
-        check_hresult(CoCreateInstance(CLSID_WICImagingFactory,
-                                       nullptr, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory, imaging_factory.put_void()));
+        check_hresult(CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_IWICImagingFactory,
+                                       imaging_factory.put_void()));
 
         return imaging_factory;
     }
 
-    static hresult copy_pixels(IWICBitmapFrameDecode* decoder, uint32_t stride, void* buffer, size_t buffer_size)
+    static hresult copy_pixels(IWICBitmapFrameDecode * decoder, uint32_t stride, void* buffer, size_t buffer_size)
     {
         return decoder->CopyPixels(nullptr, stride, static_cast<uint32_t>(buffer_size), static_cast<BYTE*>(buffer));
     }
 
     constexpr static void convert_to_little_endian_and_shift(span<uint16_t> samples, const uint32_t sample_shift) noexcept
     {
-        transform(samples.begin(), samples.end(), samples.begin(),
-                  [sample_shift](const uint16_t sample) noexcept -> uint16_t { return _byteswap_ushort(sample) << sample_shift; });
+        transform(
+            samples.begin(), samples.end(), samples.begin(),
+            [sample_shift](const uint16_t sample) noexcept -> uint16_t { return _byteswap_ushort(sample) << sample_shift; });
     }
 
     static void compare(const char* filename, const vector<byte>& pixels)
@@ -264,7 +267,8 @@ private:
         portable_anymap_file anymap_file{filename};
         auto& expected_pixels{anymap_file.image_data()};
 
-        const span<uint16_t> expected{reinterpret_cast<uint16_t*>(expected_pixels.data()), expected_pixels.size() / sizeof uint16_t};
+        const span<uint16_t> expected{reinterpret_cast<uint16_t*>(expected_pixels.data()),
+                                      expected_pixels.size() / sizeof uint16_t};
         convert_to_little_endian_and_shift(expected, 16 - anymap_file.bits_per_sample());
 
         for (size_t i{}; i < pixels.size(); ++i)

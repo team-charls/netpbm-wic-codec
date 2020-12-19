@@ -4,8 +4,9 @@
 #pragma once
 
 
-#define SUPPRESS_WARNING_NEXT_LINE(x) __pragma(warning(suppress \
-                                                       : x)) // NOLINT(misc-macro-parentheses, bugprone-macro-parentheses, cppcoreguidelines-macro-usage)
+#define SUPPRESS_WARNING_NEXT_LINE(x) \
+    __pragma(warning(suppress \
+                     : x)) // NOLINT(misc-macro-parentheses, bugprone-macro-parentheses, cppcoreguidelines-macro-usage)
 
 // The macro below is used to disable false positives. These warnings are too useful to disable them globally.
 
@@ -22,11 +23,8 @@
 
 #else
 
-#define ASSERT(expression)                 \
-    __pragma(warning(push))                \
-        __pragma(warning(disable : 26493)) \
-            assert(expression)             \
-                __pragma(warning(pop))
+#define ASSERT(expression) \
+    __pragma(warning(push)) __pragma(warning(disable : 26493)) assert(expression) __pragma(warning(pop))
 #define VERIFY(expression) assert(expression)
 
 #endif

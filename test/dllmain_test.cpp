@@ -13,7 +13,7 @@ import errors;
 using namespace winrt;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
- // {358bb60e-2b77-4411-8a76-27164945c93d}
+// {358bb60e-2b77-4411-8a76-27164945c93d}
 constexpr GUID GUID_Random{0x358bb60e, 0x2b77, 0x4411, {0x8a, 0x76, 0x27, 0x16, 0x49, 0x45, 0xc9, 0x3d}};
 
 

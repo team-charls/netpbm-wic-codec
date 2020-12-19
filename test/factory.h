@@ -12,8 +12,7 @@ inline constexpr GUID CLSID_NetPbmDecoder{0x6891bbe, 0xcc02, 0x4bb2, {0x9c, 0xf0
 class factory final
 {
 public:
-    factory() noexcept(false) :
-        library_{LoadLibrary(L"netpbm-wic-codec.dll")}
+    factory() noexcept(false) : library_{LoadLibrary(L"netpbm-wic-codec.dll")}
     {
         if (!library_)
             winrt::throw_last_error();
@@ -51,8 +50,7 @@ public:
     [[nodiscard]] HRESULT get_class_factory(GUID const& class_id, winrt::com_ptr<IClassFactory>& class_factory) const
     {
         const auto get_class_object =
-            static_cast<dll_get_class_object_ptr>(
-                static_cast<void*>(GetProcAddress(library_, "DllGetClassObject")));
+            static_cast<dll_get_class_object_ptr>(static_cast<void*>(GetProcAddress(library_, "DllGetClassObject")));
         if (!get_class_object)
             winrt::throw_last_error();
 

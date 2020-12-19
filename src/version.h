@@ -14,5 +14,6 @@
 // Turn A into a string literal after macro-expanding it.
 #define TO_STRING(A) TO_STRING_NX(A)
 
-#define VERSION TO_STRING(VERSION_MAJOR) \
-L"." TO_STRING(VERSION_MINOR) L"." TO_STRING(VERSION_PATCH) L".0"
+#define VERSION \
+    TO_STRING(VERSION_MAJOR) \
+    L"." TO_STRING(VERSION_MINOR) L"." TO_STRING(VERSION_PATCH) L".0"
