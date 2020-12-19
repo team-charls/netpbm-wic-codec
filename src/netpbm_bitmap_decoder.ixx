@@ -26,8 +26,9 @@ using winrt::com_ptr;
 using winrt::to_hresult;
 
 
-struct netpbm_bitmap_decoder final : winrt::implements<netpbm_bitmap_decoder, IWICBitmapDecoder>
+class netpbm_bitmap_decoder final : public winrt::implements<netpbm_bitmap_decoder, IWICBitmapDecoder>
 {
+public:
     // IWICBitmapDecoder
     HRESULT __stdcall QueryCapability(_In_ IStream* stream, _Out_ DWORD* capability) noexcept override
     try

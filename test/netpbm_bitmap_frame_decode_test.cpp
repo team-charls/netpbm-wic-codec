@@ -179,25 +179,25 @@ public:
         compare("lena8b.pgm", buffer);
     }
 
+    TEST_METHOD(decode_10bit_monochrome) // NOLINT
+    {
+        decode_2_byte_samples_monochrome(L"medical-10bit.pgm", "medical-10bit.pgm");
+    }
+
     TEST_METHOD(decode_12bit_monochrome) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"medical-m612-12bit.pgm")};
-
-        uint32_t width;
-        uint32_t height;
-
-        check_hresult(bitmap_frame_decoder->GetSize(&width, &height));
-        vector<uint16_t> buffer(static_cast<size_t>(width) * height);
-
-        const hresult result{copy_pixels(bitmap_frame_decoder.get(), width * 2, buffer.data(), buffer.size() * 2)};
-        Assert::AreEqual(error_ok, result);
-
-        compare("medical-m612-12bit.pgm", buffer);
+        decode_2_byte_samples_monochrome(L"medical-m612-12bit.pgm", "medical-m612-12bit.pgm");
     }
 
     TEST_METHOD(decode_16bit_monochrome) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"640_480_16bit.pgm")};
+        decode_2_byte_samples_monochrome(L"640_480_16bit.pgm", "640_480_16bit.pgm");
+    }
+
+private:
+    void decode_2_byte_samples_monochrome(const wchar_t* filename_actual, const char* filename_expected)
+    {
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(filename_actual)};
 
         uint32_t width;
         uint32_t height;
@@ -208,10 +208,9 @@ public:
         const hresult result{copy_pixels(bitmap_frame_decoder.get(), width * 2, buffer.data(), buffer.size() * 2)};
         Assert::AreEqual(error_ok, result);
 
-        compare("640_480_16bit.pgm", buffer);
+        compare(filename_expected, buffer);
     }
 
-private:
     [[nodiscard]] com_ptr<IWICBitmapFrameDecode> create_frame_decoder(_Null_terminated_ const wchar_t* filename) const
     {
         com_ptr<IStream> stream;

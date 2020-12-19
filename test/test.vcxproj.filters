@@ -64,5 +64,8 @@
     <CopyFileToFolders Include="data-files\medical-m612-12bit.pgm">
       <Filter>Data Files</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\medical-10bit.pgm">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>
