@@ -86,12 +86,12 @@ public:
     {
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.pgm");
 
-        WARNING_SUPPRESS_NEXT_LINE(6387)
+        SUPPRESS_WARNING_6387_INVALID_ARGUMENT_NEXT_LINE
         const hresult result{bitmap_frame_decoder->GetPixelFormat(nullptr)};
         Assert::AreEqual(error_invalid_argument, result);
     }
 
-    TEST_METHOD(GetResolution_jpegls_no_spiff_header) // NOLINT
+    TEST_METHOD(GetResolution) // NOLINT
     {
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.pgm");
 
@@ -107,7 +107,7 @@ public:
     {
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.pgm");
 
-        WARNING_SUPPRESS_NEXT_LINE(6387)
+        SUPPRESS_WARNING_6387_INVALID_ARGUMENT_NEXT_LINE
         const hresult result{bitmap_frame_decoder->GetResolution(nullptr, nullptr)};
         Assert::AreEqual(error_invalid_argument, result);
     }

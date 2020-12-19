@@ -32,7 +32,7 @@ struct netpbm_bitmap_decoder final : winrt::implements<netpbm_bitmap_decoder, IW
     HRESULT __stdcall QueryCapability(_In_ IStream* stream, _Out_ DWORD* capability) noexcept override
     try
     {
-        TRACE("%p netpbm_bitmap_decoder::QueryCapability.1, stream=%p, capability=%p\n", this, stream, capability);
+        TRACE("%p netpbm_bitmap_decoder::QueryCapability.1, stream address=%p, capability address=%p\n", this, stream, capability);
 
         check_in_pointer(stream);
         *check_out_pointer(capability) = 0;
@@ -50,7 +50,7 @@ struct netpbm_bitmap_decoder final : winrt::implements<netpbm_bitmap_decoder, IW
 
         check_hresult(stream->Seek(*reinterpret_cast<LARGE_INTEGER*>(&original_position), STREAM_SEEK_CUR, nullptr));
 
-        TRACE("%p netpbm_bitmap_decoder::QueryCapability.2, stream=%p, *capability=%d\n", this, stream, *capability);
+        TRACE("%p netpbm_bitmap_decoder::QueryCapability.2, *capability=%d\n", this, *capability);
         return error_ok;
     }
     catch (...)
@@ -62,7 +62,7 @@ struct netpbm_bitmap_decoder final : winrt::implements<netpbm_bitmap_decoder, IW
     HRESULT __stdcall Initialize(_In_ IStream* stream, [[maybe_unused]] const WICDecodeOptions cache_options) noexcept override
     try
     {
-        TRACE("%p netpbm_bitmap_decoder::Initialize, stream=%p, cache_options=%d\n", this, stream, cache_options);
+        TRACE("%p netpbm_bitmap_decoder::Initialize, stream address=%p, cache_options=%d\n", this, stream, cache_options);
 
         scoped_lock lock{mutex_};
         source_stream_.copy_from(check_in_pointer(stream));
@@ -78,7 +78,7 @@ struct netpbm_bitmap_decoder final : winrt::implements<netpbm_bitmap_decoder, IW
     HRESULT __stdcall GetContainerFormat(_Out_ GUID* container_format) noexcept override
     try
     {
-        TRACE("%p netpbm_bitmap_decoder::GetContainerFormat, container_format=%p\n", this, container_format);
+        TRACE("%p netpbm_bitmap_decoder::GetContainerFormat, container_format address=%p\n", this, container_format);
 
         *check_out_pointer(container_format) = GUID_ContainerFormatNetPbm;
         return error_ok;
@@ -91,7 +91,7 @@ struct netpbm_bitmap_decoder final : winrt::implements<netpbm_bitmap_decoder, IW
     HRESULT __stdcall GetDecoderInfo(_Outptr_ IWICBitmapDecoderInfo** decoder_info) noexcept override
     try
     {
-        TRACE("%p netpbm_bitmap_decoder::GetContainerFormat, decoder_info=%p\n", this, decoder_info);
+        TRACE("%p netpbm_bitmap_decoder::GetContainerFormat, decoder_info address=%p\n", this, decoder_info);
 
         com_ptr<IWICComponentInfo> component_info;
         check_hresult(imaging_factory()->CreateComponentInfo(CLSID_NetPbmDecoder, component_info.put()));
@@ -106,7 +106,7 @@ struct netpbm_bitmap_decoder final : winrt::implements<netpbm_bitmap_decoder, IW
 
     HRESULT __stdcall CopyPalette([[maybe_unused]] _In_ IWICPalette* palette) noexcept override
     {
-        TRACE("%p netpbm_bitmap_decoder::CopyPalette, palette=%p\n", this, palette);
+        TRACE("%p netpbm_bitmap_decoder::CopyPalette, palette address=%p\n", this, palette);
 
         // NetPbm images don;t have palettes.
         return wincodec::error_palette_unavailable;
@@ -114,7 +114,7 @@ struct netpbm_bitmap_decoder final : winrt::implements<netpbm_bitmap_decoder, IW
 
     HRESULT __stdcall GetMetadataQueryReader([[maybe_unused]] _Outptr_ IWICMetadataQueryReader** metadata_query_reader) noexcept override
     {
-        TRACE("%p netpbm_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader=%p\n", this, metadata_query_reader);
+        TRACE("%p netpbm_bitmap_decoder::GetMetadataQueryReader (not supported), metadata_query_reader address=%p\n", this, metadata_query_reader);
 
         // Keep the initial design simple: no support for container-level metadata.
         // Note: Conceptual, comments from the NetPbm file could converted into metadata.
@@ -123,14 +123,14 @@ struct netpbm_bitmap_decoder final : winrt::implements<netpbm_bitmap_decoder, IW
 
     HRESULT __stdcall GetPreview([[maybe_unused]] _Outptr_ IWICBitmapSource** bitmap_source) noexcept override
     {
-        TRACE("%p netpbm_bitmap_decoder::GetPreview, bitmap_source=%p\n", this, bitmap_source);
+        TRACE("%p netpbm_bitmap_decoder::GetPreview (not supported), bitmap_source address=%p\n", this, bitmap_source);
         return wincodec::error_unsupported_operation;
     }
 
     HRESULT __stdcall GetColorContexts([[maybe_unused]] const uint32_t count, [[maybe_unused]] IWICColorContext** color_contexts, [[maybe_unused]] uint32_t* actual_count) noexcept override
     try
     {
-        TRACE("%p netpbm_bitmap_decoder::GetColorContexts, count=%u, color_contexts=%p, actual_count=%p\n", this, count, color_contexts, actual_count);
+        TRACE("%p netpbm_bitmap_decoder::GetColorContexts (always 0), count=%u, color_contexts address=%p, actual_count address=%p\n", this, count, color_contexts, actual_count);
 
         *check_out_pointer(actual_count) = 0;
         return error_ok;
@@ -142,14 +142,14 @@ struct netpbm_bitmap_decoder final : winrt::implements<netpbm_bitmap_decoder, IW
 
     HRESULT __stdcall GetThumbnail([[maybe_unused]] _Outptr_ IWICBitmapSource** thumbnail) noexcept override
     {
-        TRACE("%p netpbm_bitmap_decoder::GetThumbnail, thumbnail=%p\n", this, thumbnail);
+        TRACE("%p netpbm_bitmap_decoder::GetThumbnail (not supported), thumbnail address=%p\n", this, thumbnail);
         return wincodec::error_codec_no_thumbnail;
     }
 
     HRESULT __stdcall GetFrameCount(_Out_ uint32_t* count) noexcept override
     try
     {
-        TRACE("%p netpbm_bitmap_decoder::GetFrameCount, count=%p\n", this, count);
+        TRACE("%p netpbm_bitmap_decoder::GetFrameCount (always 1), count address=%p\n", this, count);
 
         // Only 1 frame is supported by this implementation (no real world samples are known that have more)
         *check_out_pointer(count) = 1;
@@ -164,7 +164,7 @@ struct netpbm_bitmap_decoder final : winrt::implements<netpbm_bitmap_decoder, IW
     HRESULT __stdcall GetFrame(const uint32_t index, _Outptr_ IWICBitmapFrameDecode** bitmap_frame_decode) noexcept override
     try
     {
-        TRACE("%p netpbm_bitmap_decoder::GetFrame, index=%d, bitmap_frame_decode=%p\n", this, index, bitmap_frame_decode);
+        TRACE("%p netpbm_bitmap_decoder::GetFrame, index=%d, bitmap_frame_decode address=%p\n", this, index, bitmap_frame_decode);
 
         check_condition(index == 0, wincodec::error_frame_missing);
 

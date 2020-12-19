@@ -120,51 +120,51 @@ public:
     // IWICBitmapSource
     HRESULT __stdcall GetSize(uint32_t* width, uint32_t* height) noexcept override
     {
-        TRACE("%p netpbm_bitmap_frame_decode::GetSize, width=%p, height=%p\n", this, width, height);
+        TRACE("%p netpbm_bitmap_frame_decode::GetSize, width address=%p, height address=%p\n", this, width, height);
         return bitmap_source_->GetSize(width, height);
     }
 
     HRESULT __stdcall GetPixelFormat(GUID* pixel_format) noexcept override
     {
-        TRACE("%p netpbm_bitmap_frame_decode::GetPixelFormat.1, pixel_format=%p\n", this, pixel_format);
+        TRACE("%p netpbm_bitmap_frame_decode::GetPixelFormat.1, pixel_format address=%p\n", this, pixel_format);
         return bitmap_source_->GetPixelFormat(pixel_format);
     }
 
     HRESULT __stdcall GetResolution(double* dpi_x, double* dpi_y) noexcept override
     {
-        TRACE("%p netpbm_bitmap_frame_decode::GetResolution, dpi_x=%p, dpi_y=%p\n", this, dpi_x, dpi_y);
+        TRACE("%p netpbm_bitmap_frame_decode::GetResolution, dpi_x address=%p, dpi_y address=%p\n", this, dpi_x, dpi_y);
         return bitmap_source_->GetResolution(dpi_x, dpi_y);
     }
 
     HRESULT __stdcall CopyPixels(const WICRect* rectangle, const uint32_t stride, const uint32_t buffer_size, BYTE* buffer) noexcept override
     {
-        TRACE("%p netpbm_bitmap_frame_decode::CopyPixels, rectangle=%p, stride=%d, buffer_size=%d, buffer=%p\n", this, rectangle, stride, buffer_size, buffer);
+        TRACE("%p netpbm_bitmap_frame_decode::CopyPixels, rectangle address=%p, stride=%d, buffer_size=%d, buffer address=%p\n", this, rectangle, stride, buffer_size, buffer);
         return bitmap_source_->CopyPixels(rectangle, stride, buffer_size, buffer);
     }
 
     HRESULT __stdcall CopyPalette(IWICPalette*) noexcept override
     {
-        TRACE("%p netpbm_bitmap_frame_decode::CopyPalette\n", this);
+        TRACE("%p netpbm_bitmap_frame_decode::CopyPalette (not supported)\n", this);
         return wincodec::error_palette_unavailable;
     }
 
     // IWICBitmapFrameDecode : IWICBitmapSource
     HRESULT __stdcall GetThumbnail(IWICBitmapSource**) noexcept override
     {
-        TRACE("%p netpbm_bitmap_frame_decode::GetThumbnail\n", this);
+        TRACE("%p netpbm_bitmap_frame_decode::GetThumbnail (not supported)\n", this);
         return wincodec::error_codec_no_thumbnail;
     }
 
     HRESULT __stdcall GetColorContexts(const uint32_t count, IWICColorContext** color_contexts, uint32_t* actual_count) noexcept override
     {
-        TRACE("%p netpbm_bitmap_frame_decode::GetColorContexts, count=%d, color_contexts=%p, actual_count=%p\n", this, count, color_contexts, actual_count);
+        TRACE("%p netpbm_bitmap_frame_decode::GetColorContexts (always 0), count=%d, color_contexts address=%p, actual_count address=%p\n", this, count, color_contexts, actual_count);
         *check_out_pointer(actual_count) = 0;
         return error_ok;
     }
 
     HRESULT __stdcall GetMetadataQueryReader([[maybe_unused]] IWICMetadataQueryReader** metadata_query_reader) noexcept override
     {
-        TRACE("%p jpegls_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader=%p\n", this, metadata_query_reader);
+        TRACE("%p netpbm_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader address=%p\n", this, metadata_query_reader);
         return wincodec::error_unsupported_operation;
     }
 

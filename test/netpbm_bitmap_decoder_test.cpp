@@ -30,7 +30,7 @@ public:
     TEST_METHOD(GetContainerFormat) // NOLINT
     {
         GUID container_format;
-        const hresult result = factory_.create_decoder()->GetContainerFormat(&container_format);
+        const hresult result{factory_.create_decoder()->GetContainerFormat(&container_format)};
 
         Assert::AreEqual(error_ok, result);
         Assert::IsTrue(GUID_ContainerFormatNetPbm == container_format);
@@ -38,8 +38,8 @@ public:
 
     TEST_METHOD(GetContainerFormat_with_nullptr) // NOLINT
     {
-        WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
-        const hresult result = factory_.create_decoder()->GetContainerFormat(nullptr);
+        SUPPRESS_WARNING_6387_INVALID_ARGUMENT_NEXT_LINE
+        const hresult result{factory_.create_decoder()->GetContainerFormat(nullptr)};
 
         Assert::IsTrue(failed(result));
     }
@@ -49,7 +49,7 @@ public:
         com_ptr<IWICBitmapDecoder> decoder = factory_.create_decoder();
 
         com_ptr<IWICBitmapDecoderInfo> decoder_info;
-        const hresult result = decoder->GetDecoderInfo(decoder_info.put());
+        const hresult result{decoder->GetDecoderInfo(decoder_info.put())};
 
         Assert::IsTrue(result == error_ok || result == wincodec::error_component_not_found);
         if (succeeded(result))
@@ -64,7 +64,7 @@ public:
 
     TEST_METHOD(GetDecoderInfo_with_nullptr) // NOLINT
     {
-        WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
+        SUPPRESS_WARNING_6387_INVALID_ARGUMENT_NEXT_LINE
         const hresult result{factory_.create_decoder()->GetDecoderInfo(nullptr)};
 
         Assert::IsTrue(failed(result));
@@ -73,7 +73,7 @@ public:
     TEST_METHOD(CopyPalette) // NOLINT
     {
         const com_ptr<IWICPalette> palette;
-        const hresult result = factory_.create_decoder()->CopyPalette(palette.get());
+        const hresult result{factory_.create_decoder()->CopyPalette(palette.get())};
 
         Assert::AreEqual(wincodec::error_palette_unavailable, result);
     }
@@ -81,7 +81,7 @@ public:
     TEST_METHOD(GetMetadataQueryReader) // NOLINT
     {
         com_ptr<IWICMetadataQueryReader> metadata_query_reader;
-        const hresult result = factory_.create_decoder()->GetMetadataQueryReader(metadata_query_reader.put());
+        const hresult result{factory_.create_decoder()->GetMetadataQueryReader(metadata_query_reader.put())};
 
         Assert::AreEqual(wincodec::error_unsupported_operation, result);
     }
@@ -89,7 +89,7 @@ public:
     TEST_METHOD(GetPreview) // NOLINT
     {
         com_ptr<IWICBitmapSource> bitmap_source;
-        const hresult result = factory_.create_decoder()->GetPreview(bitmap_source.put());
+        const hresult result{factory_.create_decoder()->GetPreview(bitmap_source.put())};
 
         Assert::AreEqual(wincodec::error_unsupported_operation, result);
     }
@@ -98,7 +98,7 @@ public:
     {
         com_ptr<IWICColorContext> color_contexts;
         uint32_t actual_count;
-        const hresult result = factory_.create_decoder()->GetColorContexts(1, color_contexts.put(), &actual_count);
+        const hresult result{factory_.create_decoder()->GetColorContexts(1, color_contexts.put(), &actual_count)};
 
         Assert::AreEqual(error_ok, result);
         Assert::AreEqual(0U, actual_count);
@@ -107,7 +107,7 @@ public:
     TEST_METHOD(GetThumbnail) // NOLINT
     {
         com_ptr<IWICBitmapSource> bitmap_source;
-        const hresult result = factory_.create_decoder()->GetThumbnail(bitmap_source.put());
+        const hresult result{factory_.create_decoder()->GetThumbnail(bitmap_source.put())};
 
         Assert::AreEqual(wincodec::error_codec_no_thumbnail, result);
     }
@@ -115,7 +115,7 @@ public:
     TEST_METHOD(GetFrameCount) // NOLINT
     {
         uint32_t frame_count;
-        const hresult result = factory_.create_decoder()->GetFrameCount(&frame_count);
+        const hresult result{factory_.create_decoder()->GetFrameCount(&frame_count)};
 
         Assert::AreEqual(error_ok, result);
         Assert::AreEqual(1U, frame_count);
@@ -123,7 +123,7 @@ public:
 
     TEST_METHOD(GetFrameCount_count_parameter_is_null) // NOLINT
     {
-        WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
+        SUPPRESS_WARNING_6387_INVALID_ARGUMENT_NEXT_LINE
         const hresult result{factory_.create_decoder()->GetFrameCount(nullptr)};
 
         Assert::AreEqual(error_pointer, result);
@@ -154,7 +154,7 @@ public:
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(nullptr, 0));
 
-        WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
+        SUPPRESS_WARNING_6387_INVALID_ARGUMENT_NEXT_LINE
         const hresult result{factory_.create_decoder()->QueryCapability(stream.get(), nullptr)};
 
         Assert::AreEqual(error_pointer, result);
@@ -165,7 +165,7 @@ public:
         com_ptr<IStream> stream;
         check_hresult(SHCreateStreamOnFileEx(L"lena8b.pgm", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
         DWORD capability;
-        const hresult result = factory_.create_decoder()->QueryCapability(stream.get(), &capability);
+        const hresult result{factory_.create_decoder()->QueryCapability(stream.get(), &capability)};
 
         Assert::AreEqual(error_ok, result);
         Assert::AreEqual(static_cast<DWORD>(WICBitmapDecoderCapabilityCanDecodeAllImages), capability);
@@ -173,7 +173,7 @@ public:
 
     TEST_METHOD(QueryCapability_read_error_on_stream) // NOLINT
     {
-        com_ptr<IStream> stream = winrt::make<test_stream>(true, 2);
+        com_ptr<IStream> stream{winrt::make<test_stream>(true, 2)};
 
         DWORD capability;
         const hresult result = factory_.create_decoder()->QueryCapability(stream.get(), &capability);
@@ -183,7 +183,7 @@ public:
 
     TEST_METHOD(QueryCapability_seek_error_on_stream) // NOLINT
     {
-        com_ptr<IStream> stream = winrt::make<test_stream>(false, 1);
+        com_ptr<IStream> stream{winrt::make<test_stream>(false, 1)};
 
         DWORD capability;
         const hresult result = factory_.create_decoder()->QueryCapability(stream.get(), &capability);
@@ -193,7 +193,7 @@ public:
 
     TEST_METHOD(QueryCapability_seek_error_on_stream_reset) // NOLINT
     {
-        com_ptr<IStream> stream = winrt::make<test_stream>(false, 2);
+        com_ptr<IStream> stream{winrt::make<test_stream>(false, 2)};
 
         DWORD capability;
         const hresult result = factory_.create_decoder()->QueryCapability(stream.get(), &capability);
@@ -278,7 +278,7 @@ public:
         hresult result{decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand)};
         Assert::AreEqual(error_ok, result);
 
-        WARNING_SUPPRESS_NEXT_LINE(6387) // don't pass nullptr
+        SUPPRESS_WARNING_6387_INVALID_ARGUMENT_NEXT_LINE
         result = decoder->GetFrame(0, nullptr);
 
         Assert::AreEqual(error_pointer, result);
