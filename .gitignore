@@ -12,3 +12,4 @@ packages/
 
 *.user
 *.aps
+*.binlog

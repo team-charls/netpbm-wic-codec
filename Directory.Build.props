@@ -14,9 +14,6 @@
 
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)default.ruleset</CodeAnalysisRuleSet>
 
-    <!-- Assist VC package manager which configuration to use (checked is debug+static checking) -->
-    <VcpkgConfiguration Condition="'$(Configuration)' == 'Checked'">Debug</VcpkgConfiguration>
-
     <CppWinRTGenerateWindowsMetadata>false</CppWinRTGenerateWindowsMetadata>
   </PropertyGroup>
 
