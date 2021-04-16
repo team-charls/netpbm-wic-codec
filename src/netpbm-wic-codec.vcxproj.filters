@@ -38,7 +38,7 @@
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="netpbm_bitmap_frame_decode .ixx">
+    <ClCompile Include="netpbm_bitmap_frame_decode.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="netpbm_bitmap_decoder.ixx">
@@ -63,6 +63,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="util.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="netpbm_bitmap_decoder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="netpbm_bitmap_frame_decode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="buffered_stream_reader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

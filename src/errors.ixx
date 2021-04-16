@@ -61,7 +61,7 @@ T* check_in_pointer(_In_ T* pointer)
 }
 
 export template<typename T>
-T* check_out_pointer(_Out_ T* pointer)
+T* check_out_pointer(T* pointer)
 {
     if (!pointer)
         throw_hresult(error_pointer);

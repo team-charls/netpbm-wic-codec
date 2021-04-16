@@ -11,6 +11,9 @@ Most of these rules\warning are based on the C++ Core Guidelines.
 - C26429: Use a not_null to indicate that "null" is not a valid value  
 **Rationale**: Prefast attributes (\_In_, etc.) are better than gsl::not_null.
 
+- C26435: Function '' should specify exactly one of 'virtual', 'override', or 'final' (c.128).
+**Rationale**: False warning in Visual Studio 2019 Version 16.10.0 Preview 2.0.
+
 - C26446: Prefer to use gsl::at() instead of unchecked subscript operator.  
 **Rationale**: gsl:at() cannot be used as gsl project is by design not included. MSVC STL in debug mode already checks access.
 

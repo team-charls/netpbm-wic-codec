@@ -12,7 +12,7 @@ import errors;
 export class test_stream final : public winrt::implements<test_stream, IStream>
 {
 public:
-    test_stream(bool fail_on_read, int fail_on_seek_counter) :
+    test_stream(bool fail_on_read, int fail_on_seek_counter) noexcept :
         fail_on_read_{fail_on_read}, fail_on_seek_counter_{fail_on_seek_counter}
     {
     }
