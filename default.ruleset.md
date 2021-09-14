@@ -48,3 +48,6 @@ as they check if the variable is used before initialized.
 
 - C26821: For '', consider using gsl::span instead of std::span to guarantee runtime bounds safety (gsl.view)
 **Rationale**: preference is to use types from the std namespace.
+
+- C28290: The annotation for function '{ctor}' contains more Externals than the actual number of parameters.
+**Rationale**: false warnings (VS 2019 16.11.3)
