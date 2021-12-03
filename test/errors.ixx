@@ -3,13 +3,11 @@
 
 module;
 
-#include "pch.h"
+#include "winrt.h"
 
-#include <winerror.h>
-#include <winrt/base.h>
+export module test.errors;
 
-
-export module errors;
+import "pch.h";
 
 export
 {

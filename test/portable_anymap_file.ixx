@@ -1,14 +1,14 @@
 ﻿// Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
-#pragma once
+export module portable_anymap_file;
 
+import <fstream>;
+import <ios>;
+import <sstream>;
+import <string>;
+import <vector>;
 
-#include <fstream>
-#include <ios>
-#include <sstream>
-#include <string>
-#include <vector>
 
 constexpr int32_t log_2(int32_t n) noexcept
 {
@@ -17,7 +17,7 @@ constexpr int32_t log_2(int32_t n) noexcept
     {
         ++x;
     }
-    return x;
+    return x; 
 }
 
 
@@ -25,7 +25,7 @@ constexpr int32_t log_2(int32_t n) noexcept
 //          The 2 binary formats P5 and P6 are supported:
 //          Portable GrayMap: P5 = binary, extension = .pgm, 0-2^16 (gray scale)
 //          Portable PixMap: P6 = binary, extension.ppm, range 0-2^16 (RGB)
-class portable_anymap_file final
+export class portable_anymap_file final
 {
 public:
     /// <exception cref="ifstream::failure">Thrown when the input file cannot be read.</exception>

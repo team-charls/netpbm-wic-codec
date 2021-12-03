@@ -1,13 +1,14 @@
-﻿module;
+﻿// Copyright (c) Victor Derks.
+// SPDX-License-Identifier: MIT
 
-#include "pch.h"
+module;
 
 module buffered_stream_reader;
 
 import errors;
-
-
-import errors;
+import "pch.h";
+import <cstddef>;
+import <vector>;
 
 constexpr UINT MAX_BUFFER_SIZE = 65536;
 

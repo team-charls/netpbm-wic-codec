@@ -1,17 +1,22 @@
-﻿module;
+﻿// Copyright (c) Victor Derks.
+// SPDX-License-Identifier: MIT
+
+module;
 
 #include "pch.h"
-
-#include "trace.h"
-
-#include <bit>
-#include <span>
+#include "macros.h"
+#include "winrt.h"
 
 module netpbm_bitmap_frame_decode;
 
 import errors;
 import buffered_stream_reader;
 import pnm_header;
+import trace;
+import <algorithm>;
+import <bit>;
+import <span>;
+
 
 using std::byte;
 using std::make_pair;

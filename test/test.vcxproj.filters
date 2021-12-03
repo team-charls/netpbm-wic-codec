@@ -36,6 +36,9 @@
     <ClCompile Include="test_stream.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="portable_anymap_file.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -47,7 +50,7 @@
     <ClInclude Include="util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="portable_anymap_file.h">
+    <ClInclude Include="winrt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

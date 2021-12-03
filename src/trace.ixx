@@ -1,24 +1,15 @@
 ﻿// Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
-#pragma once
+export module trace;
 
-#include <Windows.h>
+import "pch.h";
+import <cstdio>;
 
-#ifdef NDEBUG
-
-#define TRACE __noop
-
-#else
-
-template<typename... Args>
+export template<typename... Args>
 void trace(char const* const message, Args... args) noexcept
 {
     char buffer[1024];
     static_cast<void>(snprintf(buffer, sizeof buffer, message, args...)); // NOLINT(cppcoreguidelines-pro-type-vararg)
     OutputDebugStringA(buffer);
 }
-
-#define TRACE trace
-
-#endif

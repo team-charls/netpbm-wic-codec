@@ -4,11 +4,12 @@
 module;
 
 #include "pch.h"
-
-#include <winrt/base.h>
+#include "winrt.h"
 
 export module netpbm_bitmap_frame_decode;
 
+//import "pch.h";
+import <cstdint>;
 
 export class netpbm_bitmap_frame_decode final
     : public winrt::implements<netpbm_bitmap_frame_decode, IWICBitmapFrameDecode, IWICBitmapSource>

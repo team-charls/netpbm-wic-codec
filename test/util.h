@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <winrt/base.h>
+#include "winrt.h"
 
 #include <CppUnitTest.h>
 

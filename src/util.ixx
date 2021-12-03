@@ -3,10 +3,14 @@
 
 module;
 
-#include "pch.h"
 #include "macros.h"
 
 export module util;
+
+import "pch.h";
+import <cstddef>;
+import <string>;
+import <cassert>;
 
 [[nodiscard]] HMODULE get_current_module() noexcept
 {

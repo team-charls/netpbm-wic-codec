@@ -1,5 +1,9 @@
-﻿// pch.cpp: source file corresponding to the pre-compiled header
+﻿// Copyright (c) Victor Derks.
+// SPDX-License-Identifier: MIT
 
-#include "pch.h"
+import "pch.h";
 
-// When you are using pre-compiled headers, this source file is necessary for compilation to succeed.
+import <array>;
+import <algorithm>;
+import <bit>;
+import <mutex>;

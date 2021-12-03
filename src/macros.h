@@ -28,3 +28,9 @@
 #define VERIFY(expression) assert(expression)
 
 #endif
+
+#ifdef NDEBUG
+#define TRACE __noop
+#else
+#define TRACE trace
+#endif

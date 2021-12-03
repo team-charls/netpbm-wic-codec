@@ -3,14 +3,12 @@
 
 module;
 
-#include "pch.h"
-
-#include <winerror.h>
-#include <winrt/base.h>
+#include "winrt.h"
 
 export module class_factory;
 
 import errors;
+import "pch.h";
 
 export template<typename Class>
 struct class_factory : winrt::implements<class_factory<Class>, IClassFactory>

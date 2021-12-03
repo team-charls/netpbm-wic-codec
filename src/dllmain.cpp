@@ -1,19 +1,22 @@
 ﻿// Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
-#include "pch.h"
-
 #include "macros.h"
-#include "trace.h"
 #include "version.h"
-
-#include <span>
+#include "winrt.h"
 
 import netpbm_bitmap_decoder;
 import errors;
 import guids;
 import registry;
 import util;
+import trace;
+import "pch.h";
+import <string>;
+import <array>;
+import <cassert>;
+import <span>;
+
 
 using std::array;
 using std::wstring;
@@ -147,7 +150,7 @@ _Check_return_ HRESULT __stdcall DllGetClassObject(_In_ GUID const& class_id, _I
 }
 
 // Purpose: Used to determine whether the COM sub-system can unload the DLL from memory.
-__control_entrypoint(DllExport) HRESULT __stdcall DllCanUnloadNow()
+__control_entrypoint(DllExport) HRESULT __stdcall DllCanUnloadNow() noexcept
 {
     const auto result{winrt::get_module_lock() ? S_FALSE : S_OK};
     TRACE("netpbm-wic-codec::DllCanUnloadNow hr = %d (0 = S_OK -> unload OK)\n", result);

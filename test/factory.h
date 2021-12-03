@@ -5,7 +5,7 @@
 
 #include <Windows.h>
 #include <wincodec.h>
-#include <winrt/base.h>
+#include "winrt.h"
 
 inline constexpr GUID CLSID_NetPbmDecoder{0x6891bbe, 0xcc02, 0x4bb2, {0x9c, 0xf0, 0x30, 0x3f, 0xc4, 0xe6, 0x68, 0xc3}};
 

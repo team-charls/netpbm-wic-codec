@@ -6,15 +6,13 @@
 #include "factory.h"
 #include "util.h"
 
-#include <winrt/base.h>
+#include "winrt.h"
 
-#include <CppUnitTest.h>
-#include <shlwapi.h>
-
-#include <vector>
-
-import errors;
+import test.errors;
 import test_stream;
+
+import <vector>;
+
 
 using namespace winrt;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
