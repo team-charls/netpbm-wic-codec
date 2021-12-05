@@ -161,6 +161,9 @@
       <Project>{c50cd24b-6a16-4a25-98e8-3d958449c411}</Project>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
     </ProjectReference>
+    <ProjectReference Include="..\std-header-units\std-header-units.vcxproj">
+      <Project>{db8d6fc8-6f7b-446f-892a-0ba6c779e5f2}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

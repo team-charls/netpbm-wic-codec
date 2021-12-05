@@ -150,7 +150,7 @@ _Check_return_ HRESULT __stdcall DllGetClassObject(_In_ GUID const& class_id, _I
 }
 
 // Purpose: Used to determine whether the COM sub-system can unload the DLL from memory.
-__control_entrypoint(DllExport) HRESULT __stdcall DllCanUnloadNow() noexcept
+extern "C" __control_entrypoint(DllExport) HRESULT __stdcall DllCanUnloadNow()
 {
     const auto result{winrt::get_module_lock() ? S_FALSE : S_OK};
     TRACE("netpbm-wic-codec::DllCanUnloadNow hr = %d (0 = S_OK -> unload OK)\n", result);
