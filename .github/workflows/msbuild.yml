@@ -9,17 +9,12 @@ env:
   # Path to the solution file relative to the root of the project.
   SOLUTION_FILE_PATH: .
 
-  # Configuration type to build.
-  # You can convert this to a build matrix if you need coverage of multiple configuration types.
-  # https://docs.github.com/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
-  BUILD_CONFIGURATION: Release
-
 jobs:
   build:
     runs-on: windows-2022
     strategy:
       matrix:
-        buildPlatform: [Win32, x64]
+        buildPlatform: [x86, x64]
         buildConfiguration: [Debug, Release]
 
     steps:
@@ -38,3 +33,7 @@ jobs:
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: msbuild /m /p:Configuration=${{matrix.buildConfiguration}} /p:Platform=${{matrix.buildPlatform}} ${{env.SOLUTION_FILE_PATH}}
+
+    - name: VSTest
+      working-directory: $\bin\${{matrix.buildPlatform}}\${{matrix.buildConfiguration}}\
+      run: vstest.console.exe /Platform:${{matrix.buildPlatform}} .\test.dll
