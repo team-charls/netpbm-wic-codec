@@ -34,6 +34,6 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: msbuild /m /p:Configuration=${{matrix.buildConfiguration}} /p:Platform=${{matrix.buildPlatform}} ${{env.SOLUTION_FILE_PATH}}
 
-    - name: VSTest
+    - name: Test
       working-directory: $\bin\${{matrix.buildPlatform}}\${{matrix.buildConfiguration}}\
-      run: vstest.console.exe /Platform:${{matrix.buildPlatform}} .\test.dll
+      run: vstest.console.exe /Platform:${{matrix.buildPlatform}} $\bin\${{matrix.buildPlatform}}\${{matrix.buildConfiguration}}\test.dll
