@@ -19,18 +19,8 @@ jobs:
     runs-on: windows-2022
     strategy:
       matrix:
-        x86-Debug:
-          buildPlatform: 'Win32'
-          buildConfiguration: 'Debug'
-        x86-Release:
-          buildPlatform: 'Win32'
-          buildConfiguration: 'Release'
-        x64-Debug:
-          buildPlatform: 'x64'
-          buildConfiguration: 'Debug'
-        x64-Release:
-          buildPlatform: 'x64'
-          buildConfiguration: 'Release'
+        buildPlatform: [Win32, x64]
+        buildConfiguration: [Debug, Release]
 
     steps:
     - uses: actions/checkout@v2
