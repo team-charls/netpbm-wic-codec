@@ -3,10 +3,11 @@
 
 module;
 
+#include "pch.h"
+
 module buffered_stream_reader;
 
 import errors;
-import "pch.h";
 import <cstddef>;
 import <vector>;
 

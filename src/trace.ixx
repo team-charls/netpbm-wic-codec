@@ -1,9 +1,11 @@
 ﻿// Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
+module;
+
+#include "pch.h"
 
 export module trace;
 
-import "pch.h";
 import <cstdio>;
 
 export template<typename... Args>

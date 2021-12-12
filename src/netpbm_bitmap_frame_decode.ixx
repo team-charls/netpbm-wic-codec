@@ -8,7 +8,6 @@ module;
 
 export module netpbm_bitmap_frame_decode;
 
-//import "pch.h";
 import <cstdint>;
 
 export class netpbm_bitmap_frame_decode final

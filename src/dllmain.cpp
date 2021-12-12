@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
+#include "pch.h"
 #include "macros.h"
 #include "version.h"
 #include "winrt.h"
@@ -11,7 +12,6 @@ import guids;
 import registry;
 import util;
 import trace;
-import "pch.h";
 import <string>;
 import <array>;
 import <cassert>;

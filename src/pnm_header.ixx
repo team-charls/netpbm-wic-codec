@@ -3,13 +3,13 @@
 
 module;
 
+#include "pch.h"
 #include "winrt.h"
 
 export module pnm_header;
 
 import errors;
 import buffered_stream_reader;
-import "pch.h";
 
 using winrt::check_hresult;
 using winrt::throw_hresult;
