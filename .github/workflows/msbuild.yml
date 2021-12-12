@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         buildPlatform: [x64]
-        buildConfiguration: [Debug, Release]
+        buildConfiguration: [Release]
 
     steps:
     - uses: actions/checkout@v2
