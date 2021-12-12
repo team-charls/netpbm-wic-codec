@@ -39,6 +39,13 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ItemDefinitionGroup>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>$(IntDir)../netpbm-wic-codec/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>pnm_header.ixx.obj;errors.ixx.obj;buffered_stream_reader.obj;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="Shared">
@@ -70,7 +77,6 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <Link>
-      <SubSystem>Windows</SubSystem>
       <AdditionalDependencies>Onecore.lib;windowscodecs.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -79,20 +85,17 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
+      <AdditionalModuleDependencies>$(IntDir)../netpbm-wic-codec/pnm_header.ixx.ifc</AdditionalModuleDependencies>
+      <AdditionalBMIDirectories>$(IntDir)../netpbm-wic-codec/</AdditionalBMIDirectories>
     </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
+      <AdditionalModuleDependencies>$(IntDir)../netpbm-wic-codec/pnm_header.ixx.ifc</AdditionalModuleDependencies>
     </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -101,9 +104,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
+      <AdditionalModuleDependencies>$(IntDir)../netpbm-wic-codec/pnm_header.ixx.ifc</AdditionalModuleDependencies>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
@@ -115,9 +118,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
+      <AdditionalModuleDependencies>$(IntDir)../netpbm-wic-codec/pnm_header.ixx.ifc</AdditionalModuleDependencies>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
@@ -133,10 +136,13 @@
       <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ScanSourceForModuleDependencies>
       <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ScanSourceForModuleDependencies>
     </ClCompile>
+    <ClCompile Include="pnm_header_test.cpp" />
     <ClCompile Include="portable_anymap_file.ixx" />
     <ClCompile Include="test_stream.ixx" />
+    <ClCompile Include="test_util.ixx" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cpp_unit_test.h" />
     <ClInclude Include="factory.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="util.h" />

@@ -24,6 +24,7 @@
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{c50cd24b-6a16-4a25-98e8-3d958449c411}</ProjectGuid>
     <RootNamespace>netpbmwiccodec</RootNamespace>
+    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup>

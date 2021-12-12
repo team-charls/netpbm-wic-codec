@@ -11,7 +11,6 @@ export module pnm_header;
 import errors;
 import buffered_stream_reader;
 
-using winrt::check_hresult;
 using winrt::throw_hresult;
 
 enum class PnmType
@@ -21,7 +20,7 @@ enum class PnmType
     Pixmap
 };
 
-export bool is_pnm_file(IStream* stream)
+export bool is_pnm_file(_In_ IStream* stream)
 {
     char magic[2];
 
@@ -43,7 +42,7 @@ export struct pnm_header
 
     pnm_header(buffered_stream_reader& streamReader)
     {
-        check_hresult(Parse(streamReader));
+        winrt::check_hresult(Parse(streamReader));
     }
 
     HRESULT Parse(buffered_stream_reader& streamReader)
