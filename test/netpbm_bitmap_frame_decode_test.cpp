@@ -9,10 +9,10 @@
 import test.errors;
 import portable_anymap_file;
 
-#include <array>
-#include <span>
-#include <vector>
-#include <utility>
+import <array>;
+import <span>;
+import <vector>;
+import <utility>;
 
 using std::array;
 using std::byte;

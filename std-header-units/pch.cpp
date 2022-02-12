@@ -1,4 +1,4 @@
-﻿// Copyright (c) Victor Derks.
+// Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
 import <vector>;
@@ -15,3 +15,4 @@ import <cstdint>;
 import <cstdio>;
 import <cstddef>;
 import <cassert>;
+import <utility>;
