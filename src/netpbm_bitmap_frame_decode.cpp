@@ -1,4 +1,4 @@
-﻿// Copyright (c) Victor Derks.
+// Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
 module;
@@ -19,7 +19,6 @@ import <span>;
 
 
 using std::byte;
-using std::make_pair;
 using std::span;
 using std::transform;
 using winrt::check_hresult;
@@ -34,13 +33,16 @@ std::pair<GUID, uint32_t> get_pixel_format_and_shift(const uint32_t bits_per_sam
 {
     switch (bits_per_sample)
     {
+    case 4:
+        return {GUID_WICPixelFormat4bppGray, 0};
+
     case 8:
-        return make_pair(GUID_WICPixelFormat8bppGray, 0);
+        return {GUID_WICPixelFormat8bppGray, 0};
 
     case 10:
     case 12:
     case 16:
-        return make_pair(GUID_WICPixelFormat16bppGray, 16 - bits_per_sample);
+        return {GUID_WICPixelFormat16bppGray, 16 - bits_per_sample};
 
     default:
         break;
@@ -59,6 +61,22 @@ constexpr void convert_to_little_endian_and_shift(span<uint16_t> samples, const 
 {
     transform(samples.begin(), samples.end(), samples.begin(),
               [sample_shift](const uint16_t sample) noexcept -> uint16_t { return _byteswap_ushort(sample) << sample_shift; });
+}
+
+void pack_to_nibbles(const std::vector<std::byte>& byte_pixels, std::byte* nibble_pixels, const size_t width,
+                            const size_t height, const size_t stride) noexcept
+{
+    for (size_t j{}, row{}; row != height; ++row)
+    {
+        byte* nibble_row{nibble_pixels + (row * stride)};
+        for (size_t i{}; i != width / 2; ++i)
+        {
+            nibble_row[i] = byte_pixels[j] << 4;
+            ++j;
+            nibble_row[i] |= byte_pixels[j];
+            ++j;
+        }
+    }
 }
 
 com_ptr<IWICBitmap> create_bitmap(_In_ IStream* source_stream, _In_ IWICImagingFactory* factory)
@@ -85,7 +103,16 @@ com_ptr<IWICBitmap> create_bitmap(_In_ IStream* source_stream, _In_ IWICImagingF
         winrt::check_hresult(bitmap_lock->GetDataPointer(&data_buffer_size, reinterpret_cast<BYTE**>(&data_buffer)));
         __assume(data_buffer != nullptr);
 
-        stream_reader.read_bytes(data_buffer, data_buffer_size);
+        if (bits_per_sample < 8)
+        {
+            std::vector<byte> byte_pixels(static_cast<size_t>(header.width) * header.height);
+            stream_reader.read_bytes(byte_pixels.data(), byte_pixels.size());
+            pack_to_nibbles(byte_pixels, data_buffer, header.width, header.height, stride);
+        }
+        else
+        {
+            stream_reader.read_bytes(data_buffer, data_buffer_size);
+        }
 
         if (bits_per_sample > 8)
         {

@@ -162,7 +162,7 @@ public:
     {
         com_ptr<IStream> stream;
         check_hresult(
-            SHCreateStreamOnFileEx(L"lena8b.pgm", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+            SHCreateStreamOnFileEx(L"tulips-gray-8bit-512-512.pgm", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
         DWORD capability;
         const hresult result{factory_.create_decoder()->QueryCapability(stream.get(), &capability)};
 
@@ -252,7 +252,7 @@ public:
     {
         com_ptr<IStream> stream;
         check_hresult(
-            SHCreateStreamOnFileEx(L"lena8b.pgm", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+            SHCreateStreamOnFileEx(L"tulips-gray-8bit-512-512.pgm", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
 
         com_ptr<IWICBitmapDecoder> decoder = factory_.create_decoder();
         hresult result{decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand)};
@@ -273,7 +273,7 @@ public:
     {
         com_ptr<IStream> stream;
         check_hresult(
-            SHCreateStreamOnFileEx(L"lena8b.pgm", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+            SHCreateStreamOnFileEx(L"tulips-gray-8bit-512-512.pgm", STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
 
         com_ptr<IWICBitmapDecoder> decoder = factory_.create_decoder();
         hresult result{decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand)};

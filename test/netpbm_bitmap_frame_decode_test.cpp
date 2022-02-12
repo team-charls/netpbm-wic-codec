@@ -1,4 +1,4 @@
-﻿// Copyright (c) Victor Derks.
+// Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
 #include "pch.h"
@@ -12,6 +12,7 @@ import portable_anymap_file;
 #include <array>
 #include <span>
 #include <vector>
+#include <utility>
 
 using std::array;
 using std::byte;
@@ -23,13 +24,47 @@ using winrt::hresult;
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
+namespace {
+
+[[nodiscard]] std::pair<uint32_t, uint32_t> get_size(IWICBitmapFrameDecode& bitmap_frame_decoder)
+{
+    uint32_t width;
+    uint32_t height;
+    check_hresult(bitmap_frame_decoder.GetSize(&width, &height));
+
+    return {width, height};
+}
+
+[[nodiscard]] static std::vector<byte> unpack_nibbles(const std::byte* nibble_pixels, const size_t width,
+                                                      const size_t height, const size_t stride)
+{
+    std::vector<byte> destination(static_cast<size_t>(width) * height);
+
+    for (size_t j{}, row{}; row != height; ++row)
+    {
+        const std::byte* nibble_row{nibble_pixels + (row * stride)};
+        for (size_t i{}; i != width / 2; ++i)
+        {
+            destination[j] = nibble_row[i] >> 4;
+            ++j;
+            constexpr byte mask{0x0F};
+            destination[j] = (nibble_row[i] & mask);
+            ++j;
+        }
+    }
+
+    return destination;
+}
+
+}
+
 
 TEST_CLASS(netpbm_bitmap_frame_decode_test)
 {
 public:
     TEST_METHOD(GetSize) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.pgm");
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
 
         uint32_t width;
         uint32_t height;
@@ -42,7 +77,7 @@ public:
 
     TEST_METHOD(CopyPalette) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.pgm");
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
 
         com_ptr<IWICPalette> palette;
         check_hresult(imaging_factory()->CreatePalette(palette.put()));
@@ -53,7 +88,7 @@ public:
 
     TEST_METHOD(GetThumbnail) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.pgm");
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
 
         com_ptr<IWICBitmapSource> thumbnail;
         const hresult result = bitmap_frame_decoder->GetThumbnail(thumbnail.put());
@@ -62,7 +97,7 @@ public:
 
     TEST_METHOD(GetPixelFormat_8bit_image) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.pgm");
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
 
         GUID pixel_format;
         const hresult result{bitmap_frame_decoder->GetPixelFormat(&pixel_format)};
@@ -72,7 +107,7 @@ public:
 
     TEST_METHOD(GetPixelFormat_12bit_image) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"medical-m612-12bit.pgm");
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"medical-m612-12bit.pgm")};
 
         GUID pixel_format;
         const hresult result{bitmap_frame_decoder->GetPixelFormat(&pixel_format)};
@@ -82,7 +117,7 @@ public:
 
     TEST_METHOD(GetPixelFormat_with_nullptr) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.pgm");
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
 
         SUPPRESS_WARNING_6387_INVALID_ARGUMENT_NEXT_LINE
         const hresult result{bitmap_frame_decoder->GetPixelFormat(nullptr)};
@@ -91,7 +126,7 @@ public:
 
     TEST_METHOD(GetResolution) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.pgm");
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
 
         double dpi_x;
         double dpi_y;
@@ -103,7 +138,7 @@ public:
 
     TEST_METHOD(GetResolution_with_nullptr) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.pgm");
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
 
         SUPPRESS_WARNING_6387_INVALID_ARGUMENT_NEXT_LINE
         const hresult result{bitmap_frame_decoder->GetResolution(nullptr, nullptr)};
@@ -112,7 +147,7 @@ public:
 
     TEST_METHOD(GetColorContexts) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.pgm");
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
 
         uint32_t actual_count;
         hresult result{bitmap_frame_decoder->GetColorContexts(0, nullptr, &actual_count)};
@@ -128,7 +163,7 @@ public:
 
     TEST_METHOD(GetMetadataQueryReader) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.pgm");
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
 
         com_ptr<IWICMetadataQueryReader> metadata_query_reader;
         const hresult result{bitmap_frame_decoder->GetMetadataQueryReader(metadata_query_reader.put())};
@@ -137,7 +172,7 @@ public:
 
     TEST_METHOD(CopyPixels) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.pgm");
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
 
         uint32_t width;
         uint32_t height;
@@ -155,15 +190,30 @@ public:
 
     TEST_METHOD(IsIWICBitmapSource) // NOLINT
     {
-        const com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"lena8b.pgm");
+        const com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder = create_frame_decoder(L"tulips-gray-8bit-512-512.pgm");
 
         const com_ptr<IWICBitmapSource> bitmap_source(bitmap_frame_decoder);
         Assert::IsTrue(bitmap_source.get() != nullptr);
     }
 
+    TEST_METHOD(decode_4bit_monochrome) // NOLINT
+    {
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"4bit-monochrome.pgm")};
+
+        const auto [width, height]{get_size(*bitmap_frame_decoder)};
+        vector<byte> buffer(static_cast<size_t>(width) * height);
+
+        const uint32_t stride{width / 2};
+        const hresult result{copy_pixels(bitmap_frame_decoder.get(), stride, buffer.data(), buffer.size())};
+        Assert::AreEqual(error_ok, result);
+
+        std::vector<byte> decoded_buffer{unpack_nibbles(buffer.data(), width, height, stride)};
+        compare("4bit-monochrome.pgm", decoded_buffer);
+    }
+
     TEST_METHOD(decode_8bit_monochrome) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"lena8b.pgm")};
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
 
         uint32_t width;
         uint32_t height;
@@ -174,7 +224,7 @@ public:
         const hresult result{copy_pixels(bitmap_frame_decoder.get(), width, buffer.data(), buffer.size())};
         Assert::AreEqual(error_ok, result);
 
-        compare("lena8b.pgm", buffer);
+        compare("tulips-gray-8bit-512-512.pgm", buffer);
     }
 
     TEST_METHOD(decode_10bit_monochrome) // NOLINT

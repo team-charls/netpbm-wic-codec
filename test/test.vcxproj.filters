@@ -64,7 +64,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="data-files\lena8b.pgm">
+    <CopyFileToFolders Include="data-files\4bit-monochrome.pgm">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\tulips-gray-8bit-512-512.pgm">
       <Filter>Data Files</Filter>
     </CopyFileToFolders>
     <CopyFileToFolders Include="data-files\640_480_16bit.pgm">
