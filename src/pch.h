@@ -1,11 +1,11 @@
-﻿// Copyright (c) Victor Derks.
+// Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
 #pragma once
 
 #include <sdkddkver.h> // Defines the highest available Windows platform.
 
-#include <OleCtl.h>
+#include <olectl.h>
 #include <ShlObj.h>
 #include <Unknwn.h>
 

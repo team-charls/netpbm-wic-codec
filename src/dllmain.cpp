@@ -1,4 +1,4 @@
-﻿// Copyright (c) Victor Derks.
+// Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
 #include "pch.h"
@@ -28,7 +28,7 @@ constexpr wchar_t mime_type[]{L"image/x-portable-graymap"};
 constexpr wchar_t file_extension[]{L".pgm"};
 
 void register_general_decoder_settings(const GUID& class_id, const GUID& wic_category_id, const wchar_t* friendly_name,
-                                       std::span<const GUID*> formats)
+                                       const std::span<const GUID*> formats)
 {
     const wstring sub_key = LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(class_id);
     registry::set_value(sub_key, L"ArbitrationPriority", 10);
@@ -90,7 +90,7 @@ void register_decoder()
     registry::set_value(LR"(SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\KindMap)", file_extension, L"picture");
 
     // Register with the Windows Thumbnail Cache
-    // Use the Microsoft Windows provided PhotoThumbnailProvider module to genertate the thumbnail
+    // Use the Microsoft Windows provided PhotoThumbnailProvider module to generate the thumbnail
     constexpr wchar_t class_id_thumbnail_provider[]{L"{e357fccd-a995-4576-b01f-234630154e96}"};
     constexpr wchar_t class_id_photo_thumbnail_provider[]{L"{c7657c4a-9f68-40fa-a4df-96bc08eb3551}"};
 

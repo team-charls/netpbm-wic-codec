@@ -13,7 +13,7 @@ import <vector>;
 export class buffered_stream_reader final
 {
 public:
-    buffered_stream_reader(_In_ IStream* stream);
+    explicit buffered_stream_reader(_In_ IStream* stream);
 
     HRESULT ReadChar(char* c);
     HRESULT SkipLine();

@@ -1,0 +1,19 @@
+#pragma once
+
+#include <vector>
+#include <fstream>
+#include <ios>
+#include <sstream>
+#include <string>
+#include <array>
+#include <algorithm>
+#include <bit>
+#include <mutex>
+#include <span>
+#include <cstdint>
+#include <cstdio>
+#include <cstddef>
+#include <cassert>
+#include <utility>
+#include <chrono>
+#include <memory>

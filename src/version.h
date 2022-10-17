@@ -1,11 +1,11 @@
-﻿// Copyright (c) Victor Derks.
+// Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
 #pragma once
 
-#define VERSION_MAJOR 0
-#define VERSION_MINOR 1
-#define VERSION_PATCH 0
+#define VERSION_MAJOR 0  // NOLINT(modernize-macro-to-enum)
+#define VERSION_MINOR 1  // NOLINT(modernize-macro-to-enum)
+#define VERSION_PATCH 0  // NOLINT(modernize-macro-to-enum)
 
 // Turn A into a string literal without expanding macro definitions
 // (however, if invoked from a macro, macro arguments are expanded).

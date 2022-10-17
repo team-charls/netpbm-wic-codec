@@ -1,4 +1,4 @@
-﻿// Copyright (c) Victor Derks.
+// Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
 export module portable_anymap_file;
@@ -10,7 +10,7 @@ import <string>;
 import <vector>;
 
 
-constexpr int32_t log_2(int32_t n) noexcept
+constexpr int32_t log_2(const int32_t n) noexcept
 {
     int32_t x = 0;
     while (n > (1 << x))
@@ -35,7 +35,7 @@ public:
         pnm_file.exceptions(std::ios::eofbit | std::ios::failbit | std::ios::badbit);
         pnm_file.open(filename, std::ios_base::in | std::ios_base::binary);
 
-        std::vector<int> header_info = read_header(pnm_file);
+        const std::vector<int> header_info = read_header(pnm_file);
         if (header_info.size() != 4)
             throw std::ios_base::failure("Incorrect PNM header");
 

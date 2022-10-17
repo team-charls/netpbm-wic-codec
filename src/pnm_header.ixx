@@ -40,7 +40,7 @@ export struct pnm_header
 
     pnm_header() = default;
 
-    pnm_header(buffered_stream_reader& streamReader)
+    explicit pnm_header(buffered_stream_reader& streamReader)
     {
         winrt::check_hresult(Parse(streamReader));
     }

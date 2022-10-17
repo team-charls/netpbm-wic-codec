@@ -3,8 +3,8 @@
 
 module;
 
-#include "pch.h"
 #include "macros.h"
+#include "pch.h"
 #include "winrt.h"
 
 module netpbm_bitmap_frame_decode;
@@ -17,14 +17,11 @@ import <algorithm>;
 import <bit>;
 import <span>;
 
-
-using std::byte;
 using std::span;
-using std::transform;
 using winrt::check_hresult;
 using winrt::com_ptr;
-using winrt::to_hresult;
 using winrt::throw_hresult;
+using winrt::to_hresult;
 
 
 namespace {
@@ -53,22 +50,23 @@ std::pair<GUID, uint32_t> get_pixel_format_and_shift(const uint32_t bits_per_sam
 
 constexpr void convert_to_little_endian(span<uint16_t> samples) noexcept
 {
-    transform(samples.begin(), samples.end(), samples.begin(),
-              [](const uint16_t sample) noexcept -> uint16_t { return _byteswap_ushort(sample); });
+    std::ranges::transform(samples, samples.begin(),
+                           [](const uint16_t sample) noexcept -> uint16_t { return _byteswap_ushort(sample); });
 }
 
 constexpr void convert_to_little_endian_and_shift(span<uint16_t> samples, const uint32_t sample_shift) noexcept
 {
-    transform(samples.begin(), samples.end(), samples.begin(),
-              [sample_shift](const uint16_t sample) noexcept -> uint16_t { return _byteswap_ushort(sample) << sample_shift; });
+    std::ranges::transform(samples, samples.begin(), [sample_shift](const uint16_t sample) noexcept -> uint16_t {
+        return _byteswap_ushort(sample) << sample_shift;
+    });
 }
 
 void pack_to_nibbles(const std::vector<std::byte>& byte_pixels, std::byte* nibble_pixels, const size_t width,
-                            const size_t height, const size_t stride) noexcept
+                     const size_t height, const size_t stride) noexcept
 {
     for (size_t j{}, row{}; row != height; ++row)
     {
-        byte* nibble_row{nibble_pixels + (row * stride)};
+        std::byte* nibble_row{nibble_pixels + (row * stride)};
         for (size_t i{}; i != width / 2; ++i)
         {
             nibble_row[i] = byte_pixels[j] << 4;
@@ -84,7 +82,7 @@ com_ptr<IWICBitmap> create_bitmap(_In_ IStream* source_stream, _In_ IWICImagingF
     buffered_stream_reader stream_reader{source_stream};
     const pnm_header header{stream_reader};
 
-    const uint32_t bits_per_sample{std::bit_width(header.MaxColorValue)};
+    const uint32_t bits_per_sample{static_cast<uint32_t>(std::bit_width(header.MaxColorValue))};
     const auto& [pixel_format, sample_shift] = get_pixel_format_and_shift(bits_per_sample);
     com_ptr<IWICBitmap> bitmap;
     check_hresult(factory->CreateBitmap(header.width, header.height, pixel_format, WICBitmapCacheOnLoad, bitmap.put()));
@@ -98,14 +96,14 @@ com_ptr<IWICBitmap> create_bitmap(_In_ IStream* source_stream, _In_ IWICImagingF
         uint32_t stride;
         winrt::check_hresult(bitmap_lock->GetStride(&stride));
 
-        byte* data_buffer;
+        std::byte* data_buffer;
         uint32_t data_buffer_size;
         winrt::check_hresult(bitmap_lock->GetDataPointer(&data_buffer_size, reinterpret_cast<BYTE**>(&data_buffer)));
         __assume(data_buffer != nullptr);
 
         if (bits_per_sample < 8)
         {
-            std::vector<byte> byte_pixels(static_cast<size_t>(header.width) * header.height);
+            std::vector<std::byte> byte_pixels(static_cast<size_t>(header.width) * header.height);
             stream_reader.read_bytes(byte_pixels.data(), byte_pixels.size());
             pack_to_nibbles(byte_pixels, data_buffer, header.width, header.height, stride);
         }
@@ -116,16 +114,16 @@ com_ptr<IWICBitmap> create_bitmap(_In_ IStream* source_stream, _In_ IWICImagingF
 
         if (bits_per_sample > 8)
         {
-            // Binary 16 bit Netpbm images are stored in big endian format (de facto standard).
-            const span<uint16_t> samples_16bit{reinterpret_cast<uint16_t*>(data_buffer), data_buffer_size / sizeof uint16_t};
+            // Binary 16 bit Netpbm images are stored in big endian format (the defacto standard).
+            const span samples_16_bit{reinterpret_cast<uint16_t*>(data_buffer), data_buffer_size / sizeof uint16_t};
 
             if (sample_shift == 0)
             {
-                convert_to_little_endian(samples_16bit);
+                convert_to_little_endian(samples_16_bit);
             }
             else
             {
-                convert_to_little_endian_and_shift(samples_16bit, sample_shift);
+                convert_to_little_endian_and_shift(samples_16_bit, sample_shift);
             }
         }
     }
@@ -204,6 +202,6 @@ HRESULT __stdcall netpbm_bitmap_frame_decode::GetMetadataQueryReader(
 {
     TRACE("%p netpbm_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader address=%p\n", this,
           metadata_query_reader);
-    const HRESULT hr = wincodec::error_unsupported_operation;
+    constexpr HRESULT hr{wincodec::error_unsupported_operation};
     return hr;
 }

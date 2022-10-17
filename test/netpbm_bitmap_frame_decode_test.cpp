@@ -282,7 +282,7 @@ private:
         return imaging_factory;
     }
 
-    static hresult copy_pixels(IWICBitmapFrameDecode * decoder, uint32_t stride, void* buffer, size_t buffer_size)
+    static hresult copy_pixels(IWICBitmapFrameDecode * decoder, const uint32_t stride, void* buffer, const size_t buffer_size)
     {
         return decoder->CopyPixels(nullptr, stride, static_cast<uint32_t>(buffer_size), static_cast<BYTE*>(buffer));
     }

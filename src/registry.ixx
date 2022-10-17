@@ -33,7 +33,7 @@ inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar
     set_value(sub_key.c_str(), value_name, value);
 }
 
-inline void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name, uint32_t value)
+inline void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated_ const wchar_t* value_name, const uint32_t value)
 {
     check_win32(RegSetKeyValue(hkey_local_machine, sub_key, value_name, REG_DWORD, &value, sizeof value));
 }
@@ -51,7 +51,7 @@ inline void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated
 }
 
 inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name,
-                      std::span<const std::byte> value)
+                      const std::span<const std::byte> value)
 {
     set_value(sub_key.c_str(), value_name, value.data(), value.size());
 }
@@ -64,8 +64,7 @@ inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar
 
 inline HRESULT delete_tree(_Null_terminated_ const wchar_t* sub_key) noexcept
 {
-    const LSTATUS result = RegDeleteTreeW(hkey_local_machine, sub_key);
-    if (result != ERROR_SUCCESS)
+    if (const LSTATUS result = RegDeleteTreeW(hkey_local_machine, sub_key); result != ERROR_SUCCESS)
     {
         return HRESULT_FROM_WIN32(result);
     }
