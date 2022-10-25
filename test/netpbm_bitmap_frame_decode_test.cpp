@@ -15,7 +15,6 @@ import <vector>;
 import <utility>;
 
 using std::array;
-using std::byte;
 using std::span;
 using std::vector;
 using winrt::check_hresult;
@@ -35,10 +34,10 @@ namespace {
     return {width, height};
 }
 
-[[nodiscard]] static std::vector<byte> unpack_nibbles(const std::byte* nibble_pixels, const size_t width,
-                                                      const size_t height, const size_t stride)
+[[nodiscard]] std::vector<std::byte> unpack_nibbles(const std::byte* nibble_pixels, const size_t width, const size_t height,
+                                                    const size_t stride)
 {
-    std::vector<byte> destination(static_cast<size_t>(width) * height);
+    std::vector<std::byte> destination(static_cast<size_t>(width) * height);
 
     for (size_t j{}, row{}; row != height; ++row)
     {
@@ -47,7 +46,7 @@ namespace {
         {
             destination[j] = nibble_row[i] >> 4;
             ++j;
-            constexpr byte mask{0x0F};
+            constexpr std::byte mask{0x0F};
             destination[j] = (nibble_row[i] & mask);
             ++j;
         }
@@ -56,7 +55,7 @@ namespace {
     return destination;
 }
 
-}
+} // namespace
 
 
 TEST_CLASS(netpbm_bitmap_frame_decode_test)
@@ -64,7 +63,7 @@ TEST_CLASS(netpbm_bitmap_frame_decode_test)
 public:
     TEST_METHOD(GetSize) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
 
         uint32_t width;
         uint32_t height;
@@ -77,7 +76,7 @@ public:
 
     TEST_METHOD(CopyPalette) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
 
         com_ptr<IWICPalette> palette;
         check_hresult(imaging_factory()->CreatePalette(palette.put()));
@@ -88,7 +87,7 @@ public:
 
     TEST_METHOD(GetThumbnail) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
 
         com_ptr<IWICBitmapSource> thumbnail;
         const hresult result = bitmap_frame_decoder->GetThumbnail(thumbnail.put());
@@ -97,7 +96,7 @@ public:
 
     TEST_METHOD(GetPixelFormat_8bit_image) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
 
         GUID pixel_format;
         const hresult result{bitmap_frame_decoder->GetPixelFormat(&pixel_format)};
@@ -107,7 +106,7 @@ public:
 
     TEST_METHOD(GetPixelFormat_12bit_image) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"medical-m612-12bit.pgm")};
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"medical-m612-12bit.pgm")};
 
         GUID pixel_format;
         const hresult result{bitmap_frame_decoder->GetPixelFormat(&pixel_format)};
@@ -117,7 +116,7 @@ public:
 
     TEST_METHOD(GetPixelFormat_with_nullptr) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
 
         SUPPRESS_WARNING_6387_INVALID_ARGUMENT_NEXT_LINE
         const hresult result{bitmap_frame_decoder->GetPixelFormat(nullptr)};
@@ -126,7 +125,7 @@ public:
 
     TEST_METHOD(GetResolution) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
 
         double dpi_x;
         double dpi_y;
@@ -138,7 +137,7 @@ public:
 
     TEST_METHOD(GetResolution_with_nullptr) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
 
         SUPPRESS_WARNING_6387_INVALID_ARGUMENT_NEXT_LINE
         const hresult result{bitmap_frame_decoder->GetResolution(nullptr, nullptr)};
@@ -147,7 +146,7 @@ public:
 
     TEST_METHOD(GetColorContexts) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
 
         uint32_t actual_count;
         hresult result{bitmap_frame_decoder->GetColorContexts(0, nullptr, &actual_count)};
@@ -163,7 +162,7 @@ public:
 
     TEST_METHOD(GetMetadataQueryReader) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
 
         com_ptr<IWICMetadataQueryReader> metadata_query_reader;
         const hresult result{bitmap_frame_decoder->GetMetadataQueryReader(metadata_query_reader.put())};
@@ -172,7 +171,7 @@ public:
 
     TEST_METHOD(CopyPixels) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
 
         uint32_t width;
         uint32_t height;
@@ -198,28 +197,28 @@ public:
 
     TEST_METHOD(decode_4bit_monochrome) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"4bit-monochrome.pgm")};
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"4bit-monochrome.pgm")};
 
         const auto [width, height]{get_size(*bitmap_frame_decoder)};
-        vector<byte> buffer(static_cast<size_t>(width) * height);
+        vector<std::byte> buffer(static_cast<size_t>(width) * height);
 
         const uint32_t stride{width / 2};
         const hresult result{copy_pixels(bitmap_frame_decoder.get(), stride, buffer.data(), buffer.size())};
         Assert::AreEqual(error_ok, result);
 
-        std::vector<byte> decoded_buffer{unpack_nibbles(buffer.data(), width, height, stride)};
+        const std::vector decoded_buffer{unpack_nibbles(buffer.data(), width, height, stride)};
         compare("4bit-monochrome.pgm", decoded_buffer);
     }
 
     TEST_METHOD(decode_8bit_monochrome) // NOLINT
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"tulips-gray-8bit-512-512.pgm")};
 
         uint32_t width;
         uint32_t height;
 
         check_hresult(bitmap_frame_decoder->GetSize(&width, &height));
-        vector<byte> buffer(static_cast<size_t>(width) * height);
+        vector<std::byte> buffer(static_cast<size_t>(width) * height);
 
         const hresult result{copy_pixels(bitmap_frame_decoder.get(), width, buffer.data(), buffer.size())};
         Assert::AreEqual(error_ok, result);
@@ -243,9 +242,9 @@ public:
     }
 
 private:
-    void decode_2_byte_samples_monochrome(const wchar_t* filename_actual, const char* filename_expected)
+    void decode_2_byte_samples_monochrome(const wchar_t* filename_actual, const char* filename_expected) const
     {
-        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decoder{create_frame_decoder(filename_actual)};
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(filename_actual)};
 
         uint32_t width;
         uint32_t height;
@@ -264,7 +263,7 @@ private:
         com_ptr<IStream> stream;
         check_hresult(SHCreateStreamOnFileEx(filename, STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
 
-        com_ptr<IWICBitmapDecoder> wic_bitmap_decoder = factory_.create_decoder();
+        const com_ptr wic_bitmap_decoder{factory_.create_decoder()};
         check_hresult(wic_bitmap_decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand));
 
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode;
@@ -282,22 +281,23 @@ private:
         return imaging_factory;
     }
 
-    static hresult copy_pixels(IWICBitmapFrameDecode * decoder, const uint32_t stride, void* buffer, const size_t buffer_size)
+    static hresult copy_pixels(IWICBitmapFrameDecode * decoder, const uint32_t stride, void* buffer,
+                               const size_t buffer_size)
     {
         return decoder->CopyPixels(nullptr, stride, static_cast<uint32_t>(buffer_size), static_cast<BYTE*>(buffer));
     }
 
     constexpr static void convert_to_little_endian_and_shift(span<uint16_t> samples, const uint32_t sample_shift) noexcept
     {
-        transform(
-            samples.begin(), samples.end(), samples.begin(),
-            [sample_shift](const uint16_t sample) noexcept -> uint16_t { return _byteswap_ushort(sample) << sample_shift; });
+        std::ranges::transform(samples, samples.begin(), [sample_shift](const uint16_t sample) noexcept -> uint16_t {
+            return _byteswap_ushort(sample) << sample_shift;
+        });
     }
 
-    static void compare(const char* filename, const vector<byte>& pixels)
+    static void compare(const char* filename, const vector<std::byte>& pixels)
     {
         portable_anymap_file anymap_file{filename};
-        auto& expected_pixels{anymap_file.image_data()};
+        const auto& expected_pixels{anymap_file.image_data()};
 
         for (size_t i{}; i < pixels.size(); ++i)
         {
@@ -314,8 +314,7 @@ private:
         portable_anymap_file anymap_file{filename};
         auto& expected_pixels{anymap_file.image_data()};
 
-        const span<uint16_t> expected{reinterpret_cast<uint16_t*>(expected_pixels.data()),
-                                      expected_pixels.size() / sizeof uint16_t};
+        const span expected{reinterpret_cast<uint16_t*>(expected_pixels.data()), expected_pixels.size() / sizeof uint16_t};
         convert_to_little_endian_and_shift(expected, 16 - anymap_file.bits_per_sample());
 
         for (size_t i{}; i < pixels.size(); ++i)

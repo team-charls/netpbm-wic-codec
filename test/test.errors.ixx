@@ -7,8 +7,6 @@ module;
 
 export module test.errors;
 
-import "pch.h";
-
 export
 {
     constexpr winrt::hresult error_ok{S_OK};

@@ -26,6 +26,6 @@ private:
 
     winrt::com_ptr<IStream> stream_;
     std::vector<BYTE> buffer_;
-    UINT bufferSize{};
-    UINT position{};
+    size_t bufferSize{};
+    size_t position{};
 };

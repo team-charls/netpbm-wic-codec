@@ -19,3 +19,8 @@ import <cstddef>;
 import <cassert>;
 import <utility>;
 import <chrono>;
+
+import <Shlwapi.h>;
+import <Unknwn.h>;
+import <objidl.h>;
+import <winerror.h>;

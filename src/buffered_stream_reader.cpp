@@ -1,4 +1,4 @@
-﻿// Copyright (c) Victor Derks.
+// Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
 module;
@@ -153,7 +153,7 @@ bool buffered_stream_reader::try_read_bytes(void* buffer, size_t size)
 
 void buffered_stream_reader::read_bytes(void* buffer, size_t size)
 {
-    size_t remaining_in_buffer = bufferSize - position;
+    const size_t remaining_in_buffer = bufferSize - position;
 
     if (remaining_in_buffer >= size)
     {
@@ -188,7 +188,7 @@ HRESULT buffered_stream_reader::ReadBytes(void* buf, ULONG count, ULONG* bytesRe
 
         memcpy(b, buffer_.data() + position, bufferSize - position);
         b += bufferSize - position;
-        remaining -= bufferSize - position;
+        remaining -= static_cast<ULONG>(bufferSize - position);
         position = bufferSize;
 
         RefillBuffer();
@@ -208,7 +208,7 @@ void buffered_stream_reader::RefillBuffer()
     position = bufferSize - position;
 
     unsigned long read;
-    check_hresult(stream_->Read(buffer_.data() + position, bufferSize - position, &read), wincodec::error_stream_read);
+    check_hresult(stream_->Read(buffer_.data() + position, static_cast<ULONG>(bufferSize - position), &read), wincodec::error_stream_read);
 
     bufferSize = position + read;
     position = 0;

@@ -1,11 +1,11 @@
-﻿// Copyright (c) Victor Derks.
+// Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
 #pragma once
 
 #include "winrt.h"
 
-#include <CppUnitTest.h>
+#include "cpp_unit_test.h"
 
 #define SUPPRESS_WARNING_NEXT_LINE(x) \
     __pragma(warning(suppress \
@@ -21,12 +21,8 @@ constexpr bool succeeded(winrt::hresult const result) noexcept
     return result >= 0;
 }
 
-namespace Microsoft::VisualStudio::CppUnitTestFramework {
-
 template<>
-inline std::wstring ToString<winrt::hresult>(const winrt::hresult& q)
+inline std::wstring Microsoft::VisualStudio::CppUnitTestFramework::ToString<winrt::hresult>(const winrt::hresult& q)
 {
     RETURN_WIDE_STRING(static_cast<int>(q));
 }
-
-} // namespace Microsoft::VisualStudio::CppUnitTestFramework
