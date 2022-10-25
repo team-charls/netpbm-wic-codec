@@ -5,9 +5,9 @@ module;
 #include "winrt.h"
 #include <shlwapi.h>
 
-export module test_util;
+#include <span>
 
-import <span>;
+export module test_util;
 
 export winrt::com_ptr<IStream> create_memory_stream(const void* data, const size_t size) noexcept
 {

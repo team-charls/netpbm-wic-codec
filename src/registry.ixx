@@ -3,14 +3,15 @@
 
 module;
 
-#include  "pch.h"
+#include "pch.h"
 #include "macros.h"
 #include "winrt.h"
+
+#include <span>
 
 export module registry;
 
 import errors;
-import <span>;
 
 using winrt::check_win32;
 

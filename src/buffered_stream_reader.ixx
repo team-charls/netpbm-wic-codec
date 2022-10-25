@@ -3,12 +3,10 @@
 
 module;
 
-#include  "pch.h"
+#include "pch.h"
 #include "winrt.h"
 
 export module buffered_stream_reader;
-
-import <vector>;
 
 export class buffered_stream_reader final
 {
