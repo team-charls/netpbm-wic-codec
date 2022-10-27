@@ -26,7 +26,7 @@ WIC is implemented using COM technology. Image codecs for many popular formats a
 
 This project is the experimental development phase:
 
-- Visual Studio 2019 16.11 or newer is needed to build the project.
+- Visual Studio 2022 17.4.0 or newer is needed to build the project.
 - No installer with pre-built binaries is available, manually building and registering is required.
 - Only 8 bits per component .pgm (graysscale) images can be decoded.
 - All .pgm files are considered single frame (the Netpbm standard also allows multi-frame)
