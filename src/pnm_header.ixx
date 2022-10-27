@@ -81,38 +81,17 @@ export struct pnm_header
             break;
         }
 
-        int32_t s_width;
-        hr = streamReader.ReadIntSlow(&s_width);
+        width = streamReader.read_int_slow();
+        height = streamReader.read_int_slow();
 
-        if (FAILED(hr))
-            return hr;
-        if (hr == S_FALSE)
+        if (width < 1 || height < 1)
             return WINCODEC_ERR_BADHEADER;
-
-        int32_t s_height;
-        hr = streamReader.ReadIntSlow(&s_height);
-
-        if (FAILED(hr))
-            return hr;
-        if (hr == S_FALSE)
-            return WINCODEC_ERR_BADHEADER;
-
-        if (s_width < 1 || s_height < 1)
-            return WINCODEC_ERR_BADHEADER;
-
-        width = s_width;
-        height = s_height;
 
         int maxColorValue;
 
         if (PnmType != PnmType::Bitmap)
         {
-            hr = streamReader.ReadIntSlow(&maxColorValue);
-
-            if (FAILED(hr))
-                return hr;
-            if (hr == S_FALSE)
-                return WINCODEC_ERR_BADHEADER;
+            maxColorValue = streamReader.read_int_slow();
         }
         else
             maxColorValue = 1;

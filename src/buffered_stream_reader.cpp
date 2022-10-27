@@ -4,6 +4,7 @@
 module;
 
 #include "pch.h"
+#include "winrt.h"
 
 module buffered_stream_reader;
 
@@ -23,25 +24,25 @@ buffered_stream_reader::buffered_stream_reader(_In_ IStream* stream) : buffer_(M
     unsigned long read;
     check_hresult(stream->Read(buffer_.data(), MAX_BUFFER_SIZE, &read), wincodec::error_stream_read);
 
-    bufferSize = read;
+    buffer_size_ = read;
 }
 
 HRESULT buffered_stream_reader::ReadChar(char* c)
 {
-    if (position + sizeof(char) > bufferSize)
-        if (bufferSize == MAX_BUFFER_SIZE)
+    if (position_ + sizeof(char) > buffer_size_)
+        if (buffer_size_ == MAX_BUFFER_SIZE)
         {
             RefillBuffer();
 
-            if (bufferSize < sizeof(char))
+            if (buffer_size_ < sizeof(char))
                 return S_FALSE;
         }
         else
             return S_FALSE;
 
-    *c = buffer_[position];
+    *c = buffer_[position_];
 
-    position += sizeof(char);
+    position_ += sizeof(char);
 
     return S_OK;
 }
@@ -127,18 +128,16 @@ HRESULT buffered_stream_reader::ReadString(char* str, ULONG maxCount)
     }
 }
 
-HRESULT buffered_stream_reader::ReadIntSlow(int* i)
+uint32_t buffered_stream_reader::read_int_slow()
 {
     char str[12];
 
-    const HRESULT hr = ReadString(str, sizeof(str));
+    winrt::check_hresult(ReadString(str, sizeof(str)));
+    uint32_t value;
+    if (const auto [ptr, ec] = std::from_chars(str, std::end(str), value); ec != std::errc())
+        winrt::throw_hresult(WINCODEC_ERR_BADSTREAMDATA);
 
-    if (hr != S_OK)
-        return hr;
-
-    *i = atoi(str);
-
-    return S_OK;
+    return value;
 }
 
 bool buffered_stream_reader::try_read_bytes(void* buffer, size_t size)
@@ -153,17 +152,17 @@ bool buffered_stream_reader::try_read_bytes(void* buffer, size_t size)
 
 void buffered_stream_reader::read_bytes(void* buffer, size_t size)
 {
-    const size_t remaining_in_buffer = bufferSize - position;
+    const size_t remaining_in_buffer = buffer_size_ - position_;
 
     if (remaining_in_buffer >= size)
     {
-        memcpy(buffer, buffer_.data() + position, size);
-        position += static_cast<UINT>(size);
+        memcpy(buffer, buffer_.data() + position_, size);
+        position_ += static_cast<UINT>(size);
         return;
     }
 
-    memcpy(buffer, buffer_.data() + position, remaining_in_buffer);
-    position += static_cast<UINT>(remaining_in_buffer);
+    memcpy(buffer, buffer_.data() + position_, remaining_in_buffer);
+    position_ += static_cast<UINT>(remaining_in_buffer);
     size -= remaining_in_buffer;
 
     unsigned long read;
@@ -178,22 +177,22 @@ HRESULT buffered_stream_reader::ReadBytes(void* buf, ULONG count, ULONG* bytesRe
 
     while (true)
     {
-        if (bufferSize - position >= remaining)
+        if (buffer_size_ - position_ >= remaining)
         {
-            memcpy(b, buffer_.data() + position, remaining);
-            position += remaining;
+            memcpy(b, buffer_.data() + position_, remaining);
+            position_ += remaining;
             *bytesRead = count;
             return S_OK;
         }
 
-        memcpy(b, buffer_.data() + position, bufferSize - position);
-        b += bufferSize - position;
-        remaining -= static_cast<ULONG>(bufferSize - position);
-        position = bufferSize;
+        memcpy(b, buffer_.data() + position_, buffer_size_ - position_);
+        b += buffer_size_ - position_;
+        remaining -= static_cast<ULONG>(buffer_size_ - position_);
+        position_ = buffer_size_;
 
         RefillBuffer();
 
-        if (bufferSize == 0)
+        if (buffer_size_ == 0)
         {
             *bytesRead = count - remaining;
             return S_OK;
@@ -203,13 +202,13 @@ HRESULT buffered_stream_reader::ReadBytes(void* buf, ULONG count, ULONG* bytesRe
 
 void buffered_stream_reader::RefillBuffer()
 {
-    memcpy(buffer_.data(), buffer_.data() + position, bufferSize - position);
+    memcpy(buffer_.data(), buffer_.data() + position_, buffer_size_ - position_);
 
-    position = bufferSize - position;
+    position_ = buffer_size_ - position_;
 
     unsigned long read;
-    check_hresult(stream_->Read(buffer_.data() + position, static_cast<ULONG>(bufferSize - position), &read), wincodec::error_stream_read);
+    check_hresult(stream_->Read(buffer_.data() + position_, static_cast<ULONG>(buffer_size_ - position_), &read), wincodec::error_stream_read);
 
-    bufferSize = position + read;
-    position = 0;
+    buffer_size_ = position_ + read;
+    position_ = 0;
 }

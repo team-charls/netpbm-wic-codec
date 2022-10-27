@@ -64,39 +64,35 @@ constexpr void convert_to_little_endian_and_shift(span<uint16_t> samples, const 
     });
 }
 
-void pack_to_crumbs(const std::vector<std::byte>& byte_pixels, std::byte* crumb_pixels, const size_t width,
+void pack_to_crumbs(const span<const std::byte> byte_pixels, std::byte* crumb_pixels, const size_t width,
                     const size_t height, const size_t stride) noexcept
 {
-    for (size_t j{}, row{}; row != height; ++row)
+    size_t j{};
+    for (size_t row{}; row != height; ++row)
     {
         std::byte* crumb_row{crumb_pixels + (row * stride)};
         size_t i{};
         for (; i != width / 4; ++i)
         {
-            crumb_row[i] = byte_pixels[j] << 6;
-            ++j;
-            crumb_row[i] |= byte_pixels[j] << 4;
-            ++j;
-            crumb_row[i] |= byte_pixels[j] << 2;
-            ++j;
-            crumb_row[i] |= byte_pixels[j];
-            ++j;
+            std::byte value{byte_pixels[j++] << 6};
+            value |= byte_pixels[j++] << 4;
+            value |= byte_pixels[j++] << 2;
+            value |= byte_pixels[j++];
+            crumb_row[i] = value;
         }
+
         switch (width % 4)
         {
         case 3:
-            crumb_row[i] = byte_pixels[j] << 6;
-            ++j;
+            crumb_row[i] = byte_pixels[j++] << 6;
             [[fallthrough]];
 
         case 2:
-            crumb_row[i] |= byte_pixels[j] << 4;
-            ++j;
+            crumb_row[i] |= byte_pixels[j++] << 4;
             [[fallthrough]];
 
         case 1:
-            crumb_row[i] |= byte_pixels[j] << 2;
-            ++j;
+            crumb_row[i] |= byte_pixels[j++] << 2;
             break;
 
         default:
@@ -105,7 +101,7 @@ void pack_to_crumbs(const std::vector<std::byte>& byte_pixels, std::byte* crumb_
     }
 }
 
-void pack_to_nibbles(const std::vector<std::byte>& byte_pixels, std::byte* nibble_pixels, const size_t width,
+void pack_to_nibbles(const span<const std::byte> byte_pixels, std::byte* nibble_pixels, const size_t width,
                      const size_t height, const size_t stride) noexcept
 {
     for (size_t j{}, row{}; row != height; ++row)
@@ -113,10 +109,8 @@ void pack_to_nibbles(const std::vector<std::byte>& byte_pixels, std::byte* nibbl
         std::byte* nibble_row{nibble_pixels + (row * stride)};
         for (size_t i{}; i != width / 2; ++i)
         {
-            nibble_row[i] = byte_pixels[j] << 4;
-            ++j;
-            nibble_row[i] |= byte_pixels[j];
-            ++j;
+            nibble_row[i] = byte_pixels[j++] << 4;
+            nibble_row[i] |= byte_pixels[j++];
         }
     }
 }
@@ -148,19 +142,15 @@ com_ptr<IWICBitmap> create_bitmap(_In_ IStream* source_stream, _In_ IWICImagingF
 
         switch (bits_per_sample)
         {
-        case 2: {
-            std::vector<std::byte> byte_pixels(static_cast<size_t>(header.width) * header.height);
-            stream_reader.read_bytes(byte_pixels.data(), byte_pixels.size());
-            pack_to_crumbs(byte_pixels, data_buffer, header.width, header.height, stride);
-        }
-        break;
+        case 2:
+            pack_to_crumbs(stream_reader.read_bytes(static_cast<size_t>(header.width) * header.height), data_buffer,
+                           header.width, header.height, stride);
+            break;
 
-        case 4: {
-            std::vector<std::byte> byte_pixels(static_cast<size_t>(header.width) * header.height);
-            stream_reader.read_bytes(byte_pixels.data(), byte_pixels.size());
-            pack_to_nibbles(byte_pixels, data_buffer, header.width, header.height, stride);
-        }
-        break;
+        case 4:
+            pack_to_nibbles(stream_reader.read_bytes(static_cast<size_t>(header.width) * header.height), data_buffer,
+                            header.width, header.height, stride);
+            break;
 
         case 8:
             stream_reader.read_bytes(data_buffer, data_buffer_size);

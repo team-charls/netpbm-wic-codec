@@ -16,9 +16,17 @@ public:
     HRESULT ReadChar(char* c);
     HRESULT SkipLine();
     HRESULT ReadString(char* str, ULONG maxCount);
-    HRESULT ReadIntSlow(int* i);
+    [[nodiscard]] uint32_t read_int_slow();
     bool try_read_bytes(void* buffer, size_t size);
     void read_bytes(void* buffer, size_t size);
+
+    [[nodiscard]] std::vector<std::byte> read_bytes(const size_t size)
+    {
+        std::vector<std::byte> bytes(size);
+        read_bytes(bytes.data(), bytes.size());
+        return bytes;
+    }
+
     HRESULT ReadBytes(void* buf, ULONG count, ULONG* bytesRead);
 
 private:
@@ -26,6 +34,6 @@ private:
 
     winrt::com_ptr<IStream> stream_;
     std::vector<BYTE> buffer_;
-    size_t bufferSize{};
-    size_t position{};
+    size_t buffer_size_{};
+    size_t position_{};
 };
