@@ -30,6 +30,9 @@ std::pair<GUID, uint32_t> get_pixel_format_and_shift(const uint32_t bits_per_sam
 {
     switch (bits_per_sample)
     {
+    case 2:
+        return {GUID_WICPixelFormat2bppGray, 0};
+
     case 4:
         return {GUID_WICPixelFormat4bppGray, 0};
 
@@ -61,6 +64,47 @@ constexpr void convert_to_little_endian_and_shift(span<uint16_t> samples, const 
     });
 }
 
+void pack_to_crumbs(const std::vector<std::byte>& byte_pixels, std::byte* crumb_pixels, const size_t width,
+                    const size_t height, const size_t stride) noexcept
+{
+    for (size_t j{}, row{}; row != height; ++row)
+    {
+        std::byte* crumb_row{crumb_pixels + (row * stride)};
+        size_t i{};
+        for (; i != width / 4; ++i)
+        {
+            crumb_row[i] = byte_pixels[j] << 6;
+            ++j;
+            crumb_row[i] |= byte_pixels[j] << 4;
+            ++j;
+            crumb_row[i] |= byte_pixels[j] << 2;
+            ++j;
+            crumb_row[i] |= byte_pixels[j];
+            ++j;
+        }
+        switch (width % 4)
+        {
+        case 3:
+            crumb_row[i] = byte_pixels[j] << 6;
+            ++j;
+            [[fallthrough]];
+
+        case 2:
+            crumb_row[i] |= byte_pixels[j] << 4;
+            ++j;
+            [[fallthrough]];
+
+        case 1:
+            crumb_row[i] |= byte_pixels[j] << 2;
+            ++j;
+            break;
+
+        default:
+            break;
+        }
+    }
+}
+
 void pack_to_nibbles(const std::vector<std::byte>& byte_pixels, std::byte* nibble_pixels, const size_t width,
                      const size_t height, const size_t stride) noexcept
 {
@@ -86,10 +130,11 @@ com_ptr<IWICBitmap> create_bitmap(_In_ IStream* source_stream, _In_ IWICImagingF
     const auto& [pixel_format, sample_shift] = get_pixel_format_and_shift(bits_per_sample);
     com_ptr<IWICBitmap> bitmap;
     check_hresult(factory->CreateBitmap(header.width, header.height, pixel_format, WICBitmapCacheOnLoad, bitmap.put()));
-    check_hresult(bitmap->SetResolution(96, 96));
+    check_hresult(bitmap->SetResolution(96., 96.));
 
     {
-        const WICRect complete_image{0, 0, static_cast<int32_t>(header.width), static_cast<int32_t>(header.height)};
+        const WICRect complete_image{
+            .X{0}, .Y{0}, .Width{static_cast<int32_t>(header.width)}, .Height{static_cast<int32_t>(header.height)}};
         com_ptr<IWICBitmapLock> bitmap_lock;
         check_hresult(bitmap->Lock(&complete_image, WICBitmapLockWrite, bitmap_lock.put()));
 
@@ -101,20 +146,29 @@ com_ptr<IWICBitmap> create_bitmap(_In_ IStream* source_stream, _In_ IWICImagingF
         winrt::check_hresult(bitmap_lock->GetDataPointer(&data_buffer_size, reinterpret_cast<BYTE**>(&data_buffer)));
         __assume(data_buffer != nullptr);
 
-        if (bits_per_sample < 8)
+        switch (bits_per_sample)
         {
+        case 2: {
+            std::vector<std::byte> byte_pixels(static_cast<size_t>(header.width) * header.height);
+            stream_reader.read_bytes(byte_pixels.data(), byte_pixels.size());
+            pack_to_crumbs(byte_pixels, data_buffer, header.width, header.height, stride);
+        }
+        break;
+
+        case 4: {
             std::vector<std::byte> byte_pixels(static_cast<size_t>(header.width) * header.height);
             stream_reader.read_bytes(byte_pixels.data(), byte_pixels.size());
             pack_to_nibbles(byte_pixels, data_buffer, header.width, header.height, stride);
         }
-        else
-        {
-            stream_reader.read_bytes(data_buffer, data_buffer_size);
-        }
+        break;
 
-        if (bits_per_sample > 8)
-        {
+        case 8:
+            stream_reader.read_bytes(data_buffer, data_buffer_size);
+            break;
+
+        default:
             // Binary 16 bit Netpbm images are stored in big endian format (the defacto standard).
+            stream_reader.read_bytes(data_buffer, data_buffer_size);
             const span samples_16_bit{reinterpret_cast<uint16_t*>(data_buffer), data_buffer_size / sizeof uint16_t};
 
             if (sample_shift == 0)
@@ -125,6 +179,7 @@ com_ptr<IWICBitmap> create_bitmap(_In_ IStream* source_stream, _In_ IWICImagingF
             {
                 convert_to_little_endian_and_shift(samples_16_bit, sample_shift);
             }
+            break;
         }
     }
 

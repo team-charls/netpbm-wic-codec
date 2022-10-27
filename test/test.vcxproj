@@ -149,6 +149,21 @@
     <ClInclude Include="winrt.h" />
   </ItemGroup>
   <ItemGroup>
+    <CopyFileToFolders Include="data-files\2bit_4x1.pgm">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\2bit_5x1.pgm">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\2bit_6x1.pgm">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\2bit_7x1.pgm">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\2bit_parrot_150x200.pgm">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
     <CopyFileToFolders Include="data-files\4bit-monochrome.pgm">
       <FileType>Document</FileType>
     </CopyFileToFolders>

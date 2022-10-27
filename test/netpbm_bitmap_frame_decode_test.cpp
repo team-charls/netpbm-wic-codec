@@ -34,6 +34,49 @@ namespace {
     return {width, height};
 }
 
+[[nodiscard]] std::vector<std::byte> unpack_crumbs(const std::byte* crumbs_pixels, const size_t width, const size_t height,
+                                                   const size_t stride)
+{
+    std::vector<std::byte> destination(static_cast<size_t>(width) * height);
+
+    for (size_t j{}, row{}; row != height; ++row)
+    {
+        const std::byte* crumbs_row{crumbs_pixels + (row * stride)};
+        size_t i{};
+        for (; i != width / 4; ++i)
+        {
+            destination[j] = crumbs_row[i] >> 6;
+            ++j;
+            destination[j] = (crumbs_row[i] & std::byte{0x30}) >> 4;
+            ++j;
+            destination[j] = (crumbs_row[i] & std::byte{0x0C}) >> 2;
+            ++j;
+            destination[j] = crumbs_row[i] & std::byte{0x03};
+            ++j;
+        }
+        switch (width % 4)
+        {
+        case 3:
+            destination[j] = crumbs_row[i] >> 6;
+            ++j;
+            [[fallthrough]];
+        case 2:
+            destination[j] = (crumbs_row[i] & std::byte{0x30}) >> 4;
+            ++j;
+            [[fallthrough]];
+        case 1:
+            destination[j] = (crumbs_row[i] & std::byte{0x0C}) >> 2;
+            ++j;
+            break;
+
+        default:
+            break;
+        }
+    }
+
+    return destination;
+}
+
 [[nodiscard]] std::vector<std::byte> unpack_nibbles(const std::byte* nibble_pixels, const size_t width, const size_t height,
                                                     const size_t stride)
 {
@@ -46,8 +89,7 @@ namespace {
         {
             destination[j] = nibble_row[i] >> 4;
             ++j;
-            constexpr std::byte mask{0x0F};
-            destination[j] = (nibble_row[i] & mask);
+            destination[j] = nibble_row[i] & std::byte{0x0F};
             ++j;
         }
     }
@@ -195,6 +237,31 @@ public:
         Assert::IsTrue(bitmap_source.get() != nullptr);
     }
 
+    TEST_METHOD(decode_2_bit_monochrome_4_pixels) // NOLINT
+    {
+        decode_2_bit_monochrome(L"2bit_4x1.pgm", "2bit_4x1.pgm");
+    }
+
+    TEST_METHOD(decode_2_bit_monochrome_5_pixels) // NOLINT
+    {
+        decode_2_bit_monochrome(L"2bit_5x1.pgm", "2bit_5x1.pgm");
+    }
+
+    TEST_METHOD(decode_2_bit_monochrome_6_pixels) // NOLINT
+    {
+        decode_2_bit_monochrome(L"2bit_6x1.pgm", "2bit_6x1.pgm");
+    }
+
+    TEST_METHOD(decode_2_bit_monochrome_7_pixels) // NOLINT
+    {
+        decode_2_bit_monochrome(L"2bit_7x1.pgm", "2bit_7x1.pgm");
+    }
+
+    TEST_METHOD(decode_2_bit_monochrome_parrot) // NOLINT
+    {
+        decode_2_bit_monochrome(L"2bit_parrot_150x200.pgm", "2bit_parrot_150x200.pgm");
+    }
+
     TEST_METHOD(decode_4bit_monochrome) // NOLINT
     {
         const com_ptr bitmap_frame_decoder{create_frame_decoder(L"4bit-monochrome.pgm")};
@@ -242,6 +309,22 @@ public:
     }
 
 private:
+    void decode_2_bit_monochrome(_Null_terminated_ const wchar_t* filename_actual, const char* filename_expected) const
+    {
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(filename_actual)};
+
+        const auto [width, height]{get_size(*bitmap_frame_decoder)};
+        vector<std::byte> buffer(static_cast<size_t>(width) * height);
+
+        const uint32_t stride{(width + 15) / 16 * 4};
+        const hresult result{copy_pixels(bitmap_frame_decoder.get(), stride, buffer.data(), buffer.size())};
+        Assert::AreEqual(error_ok, result);
+
+        const std::vector decoded_buffer{unpack_crumbs(buffer.data(), width, height, stride)};
+        compare(filename_expected, decoded_buffer);
+    }
+
+
     void decode_2_byte_samples_monochrome(const wchar_t* filename_actual, const char* filename_expected) const
     {
         const com_ptr bitmap_frame_decoder{create_frame_decoder(filename_actual)};
