@@ -160,7 +160,7 @@
     </ClCompile>
     <ClCompile Include="class_factory.ixx">
     </ClCompile>
-    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="dll_main.cpp" />
     <ClCompile Include="errors.ixx" />
     <ClCompile Include="guids.ixx">
     </ClCompile>

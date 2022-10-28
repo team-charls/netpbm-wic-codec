@@ -1,8 +1,8 @@
 // Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
-#include "pch.h"
 #include "macros.h"
+#include "pch.h"
 #include "version.h"
 #include "winrt.h"
 
@@ -16,9 +16,10 @@ import <string>;
 import <array>;
 import <cassert>;
 import <span>;
-
+import <format>;
 
 using std::array;
+using std::format;
 using std::wstring;
 using namespace std::string_literals;
 
@@ -94,13 +95,14 @@ void register_decoder()
     constexpr wchar_t class_id_thumbnail_provider[]{L"{e357fccd-a995-4576-b01f-234630154e96}"};
     constexpr wchar_t class_id_photo_thumbnail_provider[]{L"{c7657c4a-9f68-40fa-a4df-96bc08eb3551}"};
 
-    registry::set_value(LR"(SOFTWARE\Classes\" + file_type_name + L"\ShellEx\" + class_id_thumbnail_provider + L")", L"",
+    registry::set_value(format(LR"(SOFTWARE\Classes\{}\ShellEx\{})", file_type_name, class_id_thumbnail_provider), L"",
                         class_id_photo_thumbnail_provider);
     registry::set_value(
-        LR"(SOFTWARE\Classes\SystemFileAssociations\" + file_extension + L"\ShellEx\" + class_id_thumbnail_provider + L")",
+        format(LR"(SOFTWARE\Classes\SystemFileAssociations\{}\ShellEx\{})", file_extension, class_id_thumbnail_provider),
         L"", class_id_photo_thumbnail_provider);
 
-    // Register with the legacy Windows Photo Viewer (still installed on Windows 10): just forward to the TIFF registration.
+    // Register with the legacy Windows Photo Viewer (still installed on Windows 11 and 10): just forward to the TIFF
+    // registration.
     registry::set_value(LR"(SOFTWARE\Microsoft\Windows Photo Viewer\Capabilities\FileAssociations)", file_extension,
                         L"PhotoViewer.FileAssoc.Tiff");
 }
@@ -118,6 +120,9 @@ HRESULT unregister(const GUID& class_id, const GUID& wic_category_id)
 }
 
 } // namespace
+
+// ReSharper disable CppInconsistentNaming
+// ReSharper disable CppParameterNamesMismatch
 
 BOOL APIENTRY DllMain(const HMODULE module, const DWORD reason_for_call, void* /*reserved*/) noexcept
 {
@@ -176,3 +181,6 @@ HRESULT __stdcall DllUnregisterServer()
     // Note: keep the .pgm file registration intact.
     return unregister(CLSID_NetPbmDecoder, CATID_WICBitmapDecoders);
 }
+
+// ReSharper restore CppParameterNamesMismatch
+// ReSharper restore CppInconsistentNaming
