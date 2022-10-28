@@ -27,7 +27,7 @@
     <ClCompile Include="test.errors.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="dllmain_test.cpp">
+    <ClCompile Include="dll_main_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="netpbm_bitmap_frame_decode_test.cpp">

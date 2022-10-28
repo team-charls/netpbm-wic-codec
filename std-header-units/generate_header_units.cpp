@@ -19,6 +19,7 @@ import <cstddef>;
 import <cassert>;
 import <utility>;
 import <chrono>;
+import <format>;
 
 import <Shlwapi.h>;
 import <Unknwn.h>;

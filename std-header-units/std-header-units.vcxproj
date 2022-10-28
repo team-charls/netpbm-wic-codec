@@ -122,7 +122,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="generate_header_units.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="std.h" />
