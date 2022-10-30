@@ -25,3 +25,4 @@ import <Shlwapi.h>;
 import <Unknwn.h>;
 import <objidl.h>;
 import <winerror.h>;
+import <wincodec.h>;

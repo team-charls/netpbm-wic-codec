@@ -1,15 +1,16 @@
-﻿// Copyright (c) Victor Derks.
+// Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
-
-#pragma once
+module;
 
 #include <Windows.h>
 #include <wincodec.h>
 #include "winrt.h"
 
-inline constexpr GUID CLSID_NetPbmDecoder{0x6891bbe, 0xcc02, 0x4bb2, {0x9c, 0xf0, 0x30, 0x3f, 0xc4, 0xe6, 0x68, 0xc3}};
+export module factory;
 
-class factory final
+export inline constexpr GUID CLSID_NetPbmDecoder{0x6891bbe, 0xcc02, 0x4bb2, {0x9c, 0xf0, 0x30, 0x3f, 0xc4, 0xe6, 0x68, 0xc3}};
+
+export class factory final
 {
 public:
     factory() noexcept(false) : library_{LoadLibrary(L"netpbm-wic-codec.dll")}

@@ -130,21 +130,14 @@
     <ClCompile Include="test.errors.ixx" />
     <ClCompile Include="netpbm_bitmap_decoder_test.cpp" />
     <ClCompile Include="netpbm_bitmap_frame_decode_test.cpp" />
-    <ClCompile Include="pch.cpp">
-      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ScanSourceForModuleDependencies>
-      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ScanSourceForModuleDependencies>
-      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ScanSourceForModuleDependencies>
-      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ScanSourceForModuleDependencies>
-    </ClCompile>
     <ClCompile Include="pnm_header_test.cpp" />
     <ClCompile Include="portable_anymap_file.ixx" />
     <ClCompile Include="test_stream.ixx" />
     <ClCompile Include="test_util.ixx" />
+    <ClCompile Include="factory.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cpp_unit_test.h" />
-    <ClInclude Include="factory.h" />
-    <ClInclude Include="pch.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="winrt.h" />
   </ItemGroup>
