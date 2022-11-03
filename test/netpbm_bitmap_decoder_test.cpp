@@ -1,15 +1,16 @@
-﻿// Copyright (c) Victor Derks.
+// Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
-#include "pch.h"
-
-#include "factory.h"
 #include "util.h"
 
 #include "winrt.h"
 
 import test.errors;
 import test_stream;
+import factory;
+
+import <shlwapi.h>;
+import <wincodec.h>;
 
 import <vector>;
 

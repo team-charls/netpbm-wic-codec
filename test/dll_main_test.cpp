@@ -1,12 +1,10 @@
 // Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
-#include "pch.h"
-
-#include "factory.h"
 #include "util.h"
 
 import test.errors;
+import factory;
 
 using namespace winrt;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;

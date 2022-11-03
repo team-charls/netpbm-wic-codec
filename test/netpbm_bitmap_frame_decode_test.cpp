@@ -1,13 +1,16 @@
 // Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
-#include "pch.h"
+#include "winrt.h"
 
-#include "factory.h"
 #include "util.h"
 
 import test.errors;
 import portable_anymap_file;
+import factory;
+
+import <shlwapi.h>;
+import <wincodec.h>;
 
 import <array>;
 import <span>;

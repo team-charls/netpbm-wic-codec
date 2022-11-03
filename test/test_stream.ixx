@@ -3,13 +3,12 @@
 
 module;
 
-#include "pch.h"
 #include "winrt.h"
 
 export module test_stream;
 
 import test.errors;
-//import "pch.h";
+import <shlwapi.h>;
 
 
 export class test_stream final : public winrt::implements<test_stream, IStream>
