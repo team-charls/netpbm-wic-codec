@@ -3,7 +3,6 @@
 
 module;
 
-#include "pch.h"
 #include "macros.h"
 #include "winrt.h"
 

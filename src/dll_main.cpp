@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 #include "macros.h"
-#include "pch.h"
 #include "version.h"
 #include "winrt.h"
 
@@ -17,6 +16,8 @@ import <array>;
 import <cassert>;
 import <span>;
 import <format>;
+import <olectl.h>;
+import <ShlObj.h>;
 
 using std::array;
 using std::format;

@@ -4,8 +4,8 @@
 module;
 
 #include "macros.h"
-#include "pch.h"
 #include "winrt.h"
+#include "wic_bitmap_source.h"
 
 module netpbm_bitmap_frame_decode;
 
@@ -16,6 +16,7 @@ import trace;
 import <algorithm>;
 import <bit>;
 import <span>;
+import <wincodec.h>;
 
 using std::span;
 using winrt::check_hresult;
@@ -220,11 +221,11 @@ HRESULT __stdcall netpbm_bitmap_frame_decode::CopyPalette(IWICPalette*) noexcept
 }
 
 // IWICBitmapFrameDecode : IWICBitmapSource
+SUPPRESS_WARNING_NEXT_LINE(6101)
 HRESULT __stdcall netpbm_bitmap_frame_decode::GetThumbnail(IWICBitmapSource**) noexcept
 {
     TRACE("%p netpbm_bitmap_frame_decode::GetThumbnail (not supported)\n", this);
-    constexpr HRESULT hr{wincodec::error_codec_no_thumbnail};
-    return hr;
+    return wincodec::error_codec_no_thumbnail;
 }
 
 HRESULT __stdcall netpbm_bitmap_frame_decode::GetColorContexts(const uint32_t count, IWICColorContext** color_contexts,
@@ -242,11 +243,11 @@ catch (...)
     return to_hresult();
 }
 
+SUPPRESS_WARNING_NEXT_LINE(6101)
 HRESULT __stdcall netpbm_bitmap_frame_decode::GetMetadataQueryReader(
     [[maybe_unused]] IWICMetadataQueryReader** metadata_query_reader) noexcept
 {
     TRACE("%p netpbm_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader address=%p\n", this,
           metadata_query_reader);
-    constexpr HRESULT hr{wincodec::error_unsupported_operation};
-    return hr;
+    return wincodec::error_unsupported_operation;
 }
