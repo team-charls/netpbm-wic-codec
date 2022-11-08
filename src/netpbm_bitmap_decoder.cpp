@@ -1,13 +1,10 @@
-﻿// Copyright (c) Victor Derks.
+// Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
 module;
 
-#include "pch.h"
-
 #include "macros.h"
 #include "winrt.h"
-
 
 module netpbm_bitmap_decoder;
 
@@ -18,6 +15,7 @@ import guids;
 import netpbm_bitmap_frame_decode;
 import trace;
 import <mutex>;
+import <wincodec.h>;
 
 using std::scoped_lock;
 using winrt::check_hresult;

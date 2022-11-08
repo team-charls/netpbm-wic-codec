@@ -147,7 +147,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h" />
     <ClInclude Include="macros.h" />
     <ClInclude Include="version.h" />
     <ClInclude Include="wic_bitmap_source.h" />
@@ -173,12 +172,6 @@
     <ClCompile Include="netpbm_bitmap_decoder.ixx">
     </ClCompile>
     <ClCompile Include="netpbm_bitmap_frame_decode.ixx">
-    </ClCompile>
-    <ClCompile Include="pch.cpp">
-      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ScanSourceForModuleDependencies>
-      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ScanSourceForModuleDependencies>
-      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ScanSourceForModuleDependencies>
-      <ScanSourceForModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ScanSourceForModuleDependencies>
     </ClCompile>
     <ClCompile Include="registry.ixx">
     </ClCompile>

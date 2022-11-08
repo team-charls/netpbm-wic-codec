@@ -26,3 +26,7 @@ import <Unknwn.h>;
 import <objidl.h>;
 import <winerror.h>;
 import <wincodec.h>;
+import <Windows.h>;
+import <olectl.h>;
+import <ShlObj.h>;
+import <guiddef.h>;

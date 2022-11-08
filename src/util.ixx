@@ -3,11 +3,11 @@
 
 module;
 
-#include "pch.h"
 #include "macros.h"
 
 export module util;
 
+import <wincodec.h>;
 import <cstddef>;
 import <string>;
 import <cassert>;

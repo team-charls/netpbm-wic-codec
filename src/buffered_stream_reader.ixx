@@ -3,7 +3,6 @@
 
 module;
 
-#include "pch.h"
 #include "winrt.h"
 
 export module buffered_stream_reader;

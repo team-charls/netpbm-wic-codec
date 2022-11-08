@@ -1,11 +1,8 @@
-﻿// Copyright (c) Victor Derks.
+// Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
-module;
-
-#include "pch.h"
-
 export module trace;
 
+import <Windows.h>;
 import <cstdio>;
 
 export template<typename... Args>
