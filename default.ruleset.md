@@ -17,6 +17,9 @@ Most of these rules\warning are based on the C++ Core Guidelines.
 - C26446: Prefer to use gsl::at() instead of unchecked subscript operator.  
 **Rationale**: gsl:at() cannot be used as gsl project is by design not included. MSVC STL in debug mode already checks access.
 
+- C26459: You called an STL function 'std::copy_n with pointer. Consider wrapping your range in a gsl::span and pass as a span iterator (stl.1).
+**Rationale**: gsl::span is not available.
+
 - C26466: Don't use static_cast downcasts. A cast from a polymorphic type should use dynamic_cast.  
 **Rationale**: not using RTTI to support dynamic_cast.
 

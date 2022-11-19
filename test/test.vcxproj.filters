@@ -88,6 +88,9 @@
     <CopyFileToFolders Include="data-files\2bit_parrot_150x200.pgm">
       <Filter>Data Files</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\8bit_2x2.pgm">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
