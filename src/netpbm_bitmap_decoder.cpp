@@ -108,7 +108,7 @@ public:
     {
         TRACE("%p netpbm_bitmap_decoder::CopyPalette, palette address=%p\n", this, palette);
 
-        // NetPbm images don;t have palettes.
+        // NetPbm images don't have palettes.
         return wincodec::error_palette_unavailable;
     }
 
@@ -127,6 +127,8 @@ public:
     HRESULT __stdcall GetPreview([[maybe_unused]] _Outptr_ IWICBitmapSource** bitmap_source) noexcept override
     {
         TRACE("%p netpbm_bitmap_decoder::GetPreview (not supported), bitmap_source address=%p\n", this, bitmap_source);
+
+        // The Netpbm format doesn't support storing previews in the file format.
         constexpr HRESULT hr = wincodec::error_unsupported_operation;
         return hr;
     }
@@ -140,6 +142,7 @@ public:
               "address=%p\n",
               this, count, color_contexts, actual_count);
 
+        // The Netpbm format doesn't support storing color contexts (ICC profiles) in the file format.
         *check_out_pointer(actual_count) = 0;
         return error_ok;
     }
@@ -152,6 +155,7 @@ public:
     {
         TRACE("%p netpbm_bitmap_decoder::GetThumbnail (not supported), thumbnail address=%p\n", this, thumbnail);
 
+        // The Netpbm format doesn't support storing thumbnails in the file format.
         constexpr HRESULT hr{wincodec::error_codec_no_thumbnail};
         return hr;
     }
@@ -212,6 +216,7 @@ private:
     com_ptr<IStream> source_stream_;
     com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode_;
 };
+
 
 HRESULT create_netpbm_bitmap_decoder_factory(GUID const& interface_id, void** result)
 {

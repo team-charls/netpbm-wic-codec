@@ -116,6 +116,17 @@ void pack_to_nibbles(const span<const std::byte> byte_pixels, std::byte* nibble_
     }
 }
 
+void pack_to_bytes(const span<const std::byte> source_pixels, std::byte* destination_pixels, const size_t width,
+                     const size_t height, const size_t stride) noexcept
+{
+    for (size_t row{}; row != height; ++row)
+    {
+        const std::byte* source_row{source_pixels.data() + row * width};
+        std::byte* destination_row{destination_pixels + row * stride};
+        std::copy_n(source_row, width, destination_row);
+    }
+}
+
 com_ptr<IWICBitmap> create_bitmap(_In_ IStream* source_stream, _In_ IWICImagingFactory* factory)
 {
     buffered_stream_reader stream_reader{source_stream};
@@ -154,7 +165,15 @@ com_ptr<IWICBitmap> create_bitmap(_In_ IStream* source_stream, _In_ IWICImagingF
             break;
 
         case 8:
-            stream_reader.read_bytes(data_buffer, data_buffer_size);
+            if (header.width % stride == 0)
+            {
+                stream_reader.read_bytes(data_buffer, data_buffer_size);
+            }
+            else
+            {
+                pack_to_bytes(stream_reader.read_bytes(static_cast<size_t>(header.width) * header.height), data_buffer,
+                              header.width, header.height, stride);
+            }
             break;
 
         default:

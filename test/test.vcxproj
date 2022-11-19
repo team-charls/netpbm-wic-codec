@@ -160,6 +160,9 @@
     <CopyFileToFolders Include="data-files\4bit-monochrome.pgm">
       <FileType>Document</FileType>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\8bit_2x2.pgm">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
     <CopyFileToFolders Include="data-files\tulips-gray-8bit-512-512.pgm">
       <FileType>Document</FileType>
     </CopyFileToFolders>
