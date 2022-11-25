@@ -4,12 +4,12 @@
 #include "winrt.h"
 
 #include "util.h"
+#include <shlwapi.h>
 
 import test.errors;
 import portable_anymap_file;
 import factory;
 
-import <shlwapi.h>;
 import <wincodec.h>;
 
 import <array>;

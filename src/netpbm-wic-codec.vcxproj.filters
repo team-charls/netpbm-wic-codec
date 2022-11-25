@@ -21,9 +21,6 @@
     <ClInclude Include="macros.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="wic_bitmap_source.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="winrt.h">
       <Filter>Header Files</Filter>
     </ClInclude>

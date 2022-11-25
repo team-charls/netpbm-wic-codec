@@ -4,12 +4,12 @@
 #include "util.h"
 
 #include "winrt.h"
+#include <shlwapi.h>
 
 import test.errors;
 import test_stream;
 import factory;
 
-import <shlwapi.h>;
 import <wincodec.h>;
 
 import <vector>;
