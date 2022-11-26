@@ -5,7 +5,6 @@ module;
 
 #include "macros.h"
 #include "winrt.h"
-#include "wic_bitmap_source.h"
 
 module netpbm_bitmap_frame_decode;
 
@@ -206,26 +205,26 @@ netpbm_bitmap_frame_decode::netpbm_bitmap_frame_decode(_In_ IStream* source_stre
 
 
 // IWICBitmapSource
-HRESULT __stdcall netpbm_bitmap_frame_decode::GetSize(uint32_t* width, uint32_t* height) noexcept
+HRESULT __stdcall netpbm_bitmap_frame_decode::GetSize(uint32_t* width, uint32_t* height)
 {
     TRACE("%p netpbm_bitmap_frame_decode::GetSize, width address=%p, height address=%p\n", this, width, height);
     return bitmap_source_->GetSize(width, height);
 }
 
-HRESULT __stdcall netpbm_bitmap_frame_decode::GetPixelFormat(GUID* pixel_format) noexcept
+HRESULT __stdcall netpbm_bitmap_frame_decode::GetPixelFormat(GUID* pixel_format)
 {
     TRACE("%p netpbm_bitmap_frame_decode::GetPixelFormat.1, pixel_format address=%p\n", this, pixel_format);
     return bitmap_source_->GetPixelFormat(pixel_format);
 }
 
-HRESULT __stdcall netpbm_bitmap_frame_decode::GetResolution(double* dpi_x, double* dpi_y) noexcept
+HRESULT __stdcall netpbm_bitmap_frame_decode::GetResolution(double* dpi_x, double* dpi_y)
 {
     TRACE("%p netpbm_bitmap_frame_decode::GetResolution, dpi_x address=%p, dpi_y address=%p\n", this, dpi_x, dpi_y);
     return bitmap_source_->GetResolution(dpi_x, dpi_y);
 }
 
 HRESULT __stdcall netpbm_bitmap_frame_decode::CopyPixels(const WICRect* rectangle, const uint32_t stride,
-                                                         const uint32_t buffer_size, BYTE* buffer) noexcept
+                                                         const uint32_t buffer_size, BYTE* buffer)
 {
     TRACE("%p netpbm_bitmap_frame_decode::CopyPixels, rectangle address=%p, stride=%d, buffer_size=%d, buffer "
           "address=%p\n",
@@ -248,7 +247,7 @@ HRESULT __stdcall netpbm_bitmap_frame_decode::GetThumbnail(IWICBitmapSource**) n
 }
 
 HRESULT __stdcall netpbm_bitmap_frame_decode::GetColorContexts(const uint32_t count, IWICColorContext** color_contexts,
-                                                               uint32_t* actual_count) noexcept
+                                                               uint32_t* actual_count)
 try
 {
     TRACE("%p netpbm_bitmap_frame_decode::GetColorContexts (always 0), count=%d, color_contexts address=%p, "

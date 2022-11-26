@@ -18,6 +18,7 @@ import <span>;
 import <format>;
 import <olectl.h>;
 import <ShlObj.h>;
+import <wincodec.h>;
 
 using std::array;
 using std::format;
