@@ -4,12 +4,11 @@ module;
 
 #include "winrt.h"
 
-#include <span> // cannot use import as it causes C1001 in VS 2022 17.4
-#include <shlwapi.h>
+#include <span> // cannot use import as it causes C1001 in VS 2022 17.4.2
 
 export module test_util;
 
-
+import <shlwapi.h>;
 
 export winrt::com_ptr<IStream> create_memory_stream(const void* data, const size_t size) noexcept
 {
