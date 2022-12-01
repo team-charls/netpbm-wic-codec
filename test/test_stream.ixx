@@ -4,11 +4,12 @@
 module;
 
 #include "winrt.h"
-#include <shlwapi.h>
 
 export module test_stream;
 
 import test.errors;
+
+import <shlwapi.h>;
 
 
 export class test_stream final : public winrt::implements<test_stream, IStream>
