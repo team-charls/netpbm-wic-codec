@@ -107,7 +107,7 @@
       <MinimumRequiredVersion>10</MinimumRequiredVersion>
 
       <!-- Indicate DLL is compatible with Hardware supported Shadow stack (requires Zen3+ or Intel 11th Gen CPU)  -->
-      <CETCompat>true</CETCompat>
+      <CETCompat Condition="'$(Platform)'!='ARM64'">true</CETCompat>
     </Link>
 
   </ItemDefinitionGroup>
