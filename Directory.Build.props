@@ -29,7 +29,7 @@
       <!-- Use all cores to speed up the compilation (MS recommended best practice). -->
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
 
-      <!-- Explicit define that all projects are compiled according the C++17 standard -->
+      <!-- Explicit define that all projects are compiled according the C++20 standard -->
       <LanguageStandard>stdcpp20</LanguageStandard>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
 
@@ -69,7 +69,8 @@
         C5262 = implicit fall-through occurs here; are you missing a break statement? [Too many false positives, Visual Studio 2022 17.4.0 Preview 3.0]
         C5264 = '': 'const' variable is not used [Too many false positives, Visual Studio 2022 17.4.0 Preview 3.0]
       -->
-      <DisableSpecificWarnings>4005;4061;4365;4464;4514;4571;4623;4625;4626;4668;4710;4711;4738;4774;4820;5026;5027;5039;5045;5105;5106;5262;5264</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4005;5106</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(NETPBM_WIC_CODEC_ALL_WARNINGS)'!=''">4005;4061;4365;4464;4514;4571;4623;4625;4626;4668;4710;4711;4738;4774;4820;5026;5027;5039;5045;5105;5106;5262;5264</DisableSpecificWarnings>
 
       <!--
         __cplusplus = Tell MSVC to use the correct value for the __cplusplus macro
