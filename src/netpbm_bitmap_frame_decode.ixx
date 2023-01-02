@@ -20,15 +20,15 @@ public:
     HRESULT __stdcall GetSize(uint32_t* width, uint32_t* height) override;
     HRESULT __stdcall GetPixelFormat(GUID* pixel_format) override;
     HRESULT __stdcall GetResolution(double* dpi_x, double* dpi_y) override;
-    HRESULT __stdcall CopyPixels(const WICRect* rectangle, const uint32_t stride, const uint32_t buffer_size,
+    HRESULT __stdcall CopyPixels(const WICRect* rectangle, uint32_t stride, uint32_t buffer_size,
                                  BYTE* buffer) override;
     HRESULT __stdcall CopyPalette(IWICPalette*) noexcept override;
 
     // IWICBitmapFrameDecode : IWICBitmapSource
     HRESULT __stdcall GetThumbnail(IWICBitmapSource**) noexcept override;
-    HRESULT __stdcall GetColorContexts(const uint32_t count, IWICColorContext** color_contexts,
+    HRESULT __stdcall GetColorContexts(uint32_t count, IWICColorContext** color_contexts,
                                        uint32_t* actual_count) override;
-    HRESULT __stdcall GetMetadataQueryReader([[maybe_unused]] IWICMetadataQueryReader** metadata_query_reader)
+    HRESULT __stdcall GetMetadataQueryReader(IWICMetadataQueryReader** metadata_query_reader)
         noexcept override;
 
 private:
