@@ -37,7 +37,7 @@ void register_general_decoder_settings(const GUID& class_id, const GUID& wic_cat
     registry::set_value(sub_key, L"ArbitrationPriority", 10);
     registry::set_value(sub_key, L"Author", L"Victor Derks");
     registry::set_value(sub_key, L"ColorManagementVersion", L"1.0.0.0");
-    registry::set_value(sub_key, L"ContainerFormat", guid_to_string(GUID_ContainerFormatNetPbm).c_str());
+    registry::set_value(sub_key, L"ContainerFormat", guid_to_string(id::container_format_netpbm).c_str());
     registry::set_value(sub_key, L"Description", L"Netpbm Codec");
     registry::set_value(sub_key, L"FileExtensions", file_extension);
     registry::set_value(sub_key, L"FriendlyName", friendly_name);
@@ -47,7 +47,7 @@ void register_general_decoder_settings(const GUID& class_id, const GUID& wic_cat
     registry::set_value(sub_key, L"SupportChromaKey", 0U);
     registry::set_value(sub_key, L"SupportLossless", 1U);
     registry::set_value(sub_key, L"SupportMultiframe", 0U);
-    registry::set_value(sub_key, L"Vendor", guid_to_string(GUID_VendorVictorDerks).c_str());
+    registry::set_value(sub_key, L"Vendor", guid_to_string(id::vendor_victor_derks).c_str());
     registry::set_value(sub_key, L"Version", VERSION);
 
     const wstring formats_sub_key{sub_key + LR"(\Formats\)"};
@@ -63,7 +63,7 @@ void register_general_decoder_settings(const GUID& class_id, const GUID& wic_cat
 
     // WIC category registration.
     const wstring category_id_key{LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(wic_category_id) + LR"(\Instance\)" +
-                                  guid_to_string(CLSID_NetPbmDecoder)};
+                                  guid_to_string(id::netpbm_decoder)};
     registry::set_value(category_id_key, L"FriendlyName", friendly_name);
     registry::set_value(category_id_key, L"CLSID", guid_to_string(class_id).c_str());
 }
@@ -71,9 +71,9 @@ void register_general_decoder_settings(const GUID& class_id, const GUID& wic_cat
 void register_decoder()
 {
     array formats{&GUID_WICPixelFormat8bppGray};
-    register_general_decoder_settings(CLSID_NetPbmDecoder, CATID_WICBitmapDecoders, L"Netpbm Decoder", formats);
+    register_general_decoder_settings(id::netpbm_decoder, CATID_WICBitmapDecoders, L"Netpbm Decoder", formats);
 
-    const wstring sub_key{LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(CLSID_NetPbmDecoder)};
+    const wstring sub_key{LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(id::netpbm_decoder)};
 
     // Register the byte pattern that allows WICs to identify files as our image type.
     const wstring patterns_sub_key{sub_key + LR"(\Patterns\0)"};
@@ -150,7 +150,7 @@ BOOL APIENTRY DllMain(const HMODULE module, const DWORD reason_for_call, void* /
 _Check_return_ HRESULT __stdcall DllGetClassObject(_In_ GUID const& class_id, _In_ GUID const& interface_id,
                                                    _Outptr_ void** result)
 {
-    if (class_id == CLSID_NetPbmDecoder)
+    if (class_id == id::netpbm_decoder)
         return create_netpbm_bitmap_decoder_factory(interface_id, result);
 
     return CLASS_E_CLASSNOTAVAILABLE;
@@ -181,7 +181,7 @@ catch (...)
 HRESULT __stdcall DllUnregisterServer()
 {
     // Note: keep the .pgm file registration intact.
-    return unregister(CLSID_NetPbmDecoder, CATID_WICBitmapDecoders);
+    return unregister(id::netpbm_decoder, CATID_WICBitmapDecoders);
 }
 
 // ReSharper restore CppParameterNamesMismatch
