@@ -70,7 +70,7 @@ void register_general_decoder_settings(const GUID& class_id, const GUID& wic_cat
 
 void register_decoder()
 {
-    array formats{&GUID_WICPixelFormat8bppGray};
+    array formats{&GUID_WICPixelFormat2bppGray, &GUID_WICPixelFormat4bppGray, &GUID_WICPixelFormat8bppGray, &GUID_WICPixelFormat16bppGray};
     register_general_decoder_settings(id::netpbm_decoder, CATID_WICBitmapDecoders, L"Netpbm Decoder", formats);
 
     const wstring sub_key{LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(id::netpbm_decoder)};
