@@ -131,12 +131,16 @@ BOOL APIENTRY DllMain(const HMODULE module, const DWORD reason_for_call, void* /
     switch (reason_for_call)
     {
     case DLL_PROCESS_ATTACH:
+        TRACE("netpbm-wic-codec::DllMain DLL_PROCESS_ATTACH \n");
         VERIFY(DisableThreadLibraryCalls(module));
         break;
 
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
+        break;
+
     case DLL_PROCESS_DETACH:
+        TRACE("netpbm-wic-codec::DllMain DLL_PROCESS_DETACH \n");
         break;
 
     default:

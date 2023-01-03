@@ -13,10 +13,19 @@ Netpbm is the name of an open source package of graphics programs and a programm
 It defines several graphics formats that are not compressed but are easy to exchange between different
 platforms:
 
-1. PPM = Portable PixMap format
-1. PGM = Portable GrayMap format (note: currently the only supported format)
-1. PBM = Portable BitMap format
-1. PAM = Portable Arbitrary Map (extension that combines all 3 binary formats)
+|Type            |Extension|Magic number|Color space|
+|----------------|---------|--------------------------|-----------|
+|Portable BitMap |.pbm     |P1,P4       | 0-1 (white & black)|
+|Portable GrayMap|.pgm     |P2,P5       | 0-255, 0-65535 * 1 channel (gray scale|
+|Portable PixMap |.ppm     |P3,P6       | 0-255, 0-65535 * 3 channels (sRGB)|
+|Portable AnyMap |.pnm     |P1,P2,P3,P4,P5,P6|Several|
+|Portable Arbitrary Map|.pam|P7       |Several|
+
+### Color space
+
+The AnyMap format provides no support to store the actual color space. The typical convention is to assume grayscale for P2\P5 images and sRGB for P3\P6.
+
+### WIC
 
 The Windows Imaging Component (WIC) is a built-in codec framework of Windows that makes it possible
 to create independent native image codecs that can be used by a large set of applications.
@@ -24,12 +33,13 @@ WIC is implemented using COM technology. Image codecs for many popular formats a
 
 ### Status
 
-This project is the experimental development phase:
+This project is the development phase:
 
 - Visual Studio 2022 17.4 or newer is needed to build the project.
 - No installer with pre-built binaries is available, manually building and registering is required.
-- Only 8 bits per component .pgm (graysscale) images can be decoded.
+- Only .pgm P5 gray scale images can be decoded.
 - All .pgm files are considered single frame (the Netpbm standard also allows multi-frame)
+- Only a decoder is available.
 
 ### Supported Operation Systems
 
@@ -71,16 +81,21 @@ The following table provides the codec identification information:
 
 The following table lists the GUIDs used to identify the native Netpbm codec components:
 
-|Component|Friendly Name|GUID
-|---|---|---|
-|Container Format|GUID_ContainerFormatNetPbm|70ab66f5-cd48-43a1-aa29-10131b7f4ff1
-|Decoder|CLSID_NetPbmDecoder|06891bbe-cc02-4bb2-9cf0-303fc4e668c3|
+|Component|GUID
+|---|---|
+|Container Format|70ab66f5-cd48-43a1-aa29-10131b7f4ff1
+|Decoder Class ID |06891bbe-cc02-4bb2-9cf0-303fc4e668c3|
 
-The following table lists the pixel formats that can be decoded:
+The following table lists the encodings that can be decoded:
 
-|GUID|Component Count|Bits per Sample|Remark
-|---|---|---|---|
-|GUID_WICPixelFormat8bppGray|1|8|
+|Magic|Component Count|Bits per Sample|WIC Pixel Format GUID|
+|---|---|---|--|
+|P5|1|2|GUID_WICPixelFormat2bppGray
+|P5|1|4|GUID_WICPixelFormat4bppGray
+|P5|1|8|GUID_WICPixelFormat8bppGray
+|P5|1|10,12,16*|GUID_WICPixelFormat16bppGray
+
+Note *: monochrome images with 10 or 12 bits per sample will be upscaled to 16 bits per sample.
 
 ## Build Instructions
 
