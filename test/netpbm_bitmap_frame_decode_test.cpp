@@ -48,28 +48,21 @@ namespace {
         size_t i{};
         for (; i != width / 4; ++i)
         {
-            destination[j] = crumbs_row[i] >> 6;
-            ++j;
-            destination[j] = (crumbs_row[i] & std::byte{0x30}) >> 4;
-            ++j;
-            destination[j] = (crumbs_row[i] & std::byte{0x0C}) >> 2;
-            ++j;
-            destination[j] = crumbs_row[i] & std::byte{0x03};
-            ++j;
+            destination[j++] = crumbs_row[i] >> 6;
+            destination[j++] = (crumbs_row[i] & std::byte{0x30}) >> 4;
+            destination[j++] = (crumbs_row[i] & std::byte{0x0C}) >> 2;
+            destination[j++] = crumbs_row[i] & std::byte{0x03};
         }
         switch (width % 4)
         {
         case 3:
-            destination[j] = crumbs_row[i] >> 6;
-            ++j;
+            destination[j++] = crumbs_row[i] >> 6;
             [[fallthrough]];
         case 2:
-            destination[j] = (crumbs_row[i] & std::byte{0x30}) >> 4;
-            ++j;
+            destination[j++] = (crumbs_row[i] & std::byte{0x30}) >> 4;
             [[fallthrough]];
         case 1:
-            destination[j] = (crumbs_row[i] & std::byte{0x0C}) >> 2;
-            ++j;
+            destination[j++] = (crumbs_row[i] & std::byte{0x0C}) >> 2;
             break;
 
         default:
@@ -88,12 +81,15 @@ namespace {
     for (size_t j{}, row{}; row != height; ++row)
     {
         const std::byte* nibble_row{nibble_pixels + (row * stride)};
-        for (size_t i{}; i != width / 2; ++i)
+        size_t i{};
+        for (; i != width / 2; ++i)
         {
-            destination[j] = nibble_row[i] >> 4;
-            ++j;
-            destination[j] = nibble_row[i] & std::byte{0x0F};
-            ++j;
+            destination[j++] = nibble_row[i] >> 4;
+            destination[j++] = nibble_row[i] & std::byte{0x0F};
+        }
+        if (width % 2)
+        {
+            destination[j++] = nibble_row[i] >> 4;
         }
     }
 
@@ -265,19 +261,19 @@ public:
         decode_2_bit_monochrome(L"2bit_parrot_150x200.pgm", "2bit_parrot_150x200.pgm");
     }
 
+    TEST_METHOD(decode_4_bit_monochrome_4_pixels) // NOLINT
+    {
+        decode_4_bit_monochrome(L"4bit_4x1.pgm", "4bit_4x1.pgm");
+    }
+
+    TEST_METHOD(decode_4_bit_monochrome_5_pixels) // NOLINT
+    {
+        decode_4_bit_monochrome(L"4bit_5x1.pgm", "4bit_5x1.pgm");
+    }
+
     TEST_METHOD(decode_4bit_monochrome) // NOLINT
     {
-        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"4bit-monochrome.pgm")};
-
-        const auto [width, height]{get_size(*bitmap_frame_decoder)};
-        vector<std::byte> buffer(static_cast<size_t>(width) * height);
-
-        const uint32_t stride{width / 2};
-        const hresult result{copy_pixels(bitmap_frame_decoder.get(), stride, buffer)};
-        Assert::AreEqual(error_ok, result);
-
-        const std::vector decoded_buffer{unpack_nibbles(buffer.data(), width, height, stride)};
-        compare("4bit-monochrome.pgm", decoded_buffer);
+        decode_4_bit_monochrome(L"4bit-monochrome.pgm", "4bit-monochrome.pgm");
     }
 
     TEST_METHOD(decode_8bit_monochrome_stride_mismatch) // NOLINT
@@ -343,6 +339,21 @@ private:
         compare(filename_expected, decoded_buffer);
     }
 
+    void decode_4_bit_monochrome(_Null_terminated_ const wchar_t* filename_actual, const char* filename_expected) const
+    {
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(filename_actual)};
+
+        const auto [width, height] {get_size(*bitmap_frame_decoder)};
+        vector<std::byte> buffer(static_cast<size_t>(width) * height);
+
+        const uint32_t stride{(width + 7) / 8 * 4};
+        const hresult result{copy_pixels(bitmap_frame_decoder.get(), stride, buffer)};
+        Assert::AreEqual(error_ok, result);
+
+        const std::vector decoded_buffer{unpack_nibbles(buffer.data(), width, height, stride)};
+        compare(filename_expected, decoded_buffer);
+    }
+
     void decode_2_byte_samples_monochrome(const wchar_t* filename_actual, const char* filename_expected) const
     {
         const com_ptr bitmap_frame_decoder{create_frame_decoder(filename_actual)};
@@ -382,13 +393,13 @@ private:
         return imaging_factory;
     }
 
-    static hresult copy_pixels(IWICBitmapFrameDecode* decoder, const uint32_t stride, const span<std::byte> buffer)
+    [[nodiscard]] static hresult copy_pixels(IWICBitmapFrameDecode* decoder, const uint32_t stride, const span<std::byte> buffer)
     {
         void* data = buffer.data();
         return decoder->CopyPixels(nullptr, stride, static_cast<uint32_t>(buffer.size()), static_cast<BYTE*>(data));
     }
 
-    static hresult copy_pixels(IWICBitmapFrameDecode* decoder, const uint32_t stride, const span<uint16_t> buffer)
+    [[nodiscard]] static hresult copy_pixels(IWICBitmapFrameDecode* decoder, const uint32_t stride, const span<uint16_t> buffer)
     {
         void* data = buffer.data();
         return decoder->CopyPixels(nullptr, stride, static_cast<uint32_t>(buffer.size()) * sizeof(uint16_t),

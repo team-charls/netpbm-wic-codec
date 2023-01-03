@@ -67,8 +67,7 @@ constexpr void convert_to_little_endian_and_shift(span<uint16_t> samples, const 
 void pack_to_crumbs(const span<const std::byte> byte_pixels, std::byte* crumb_pixels, const size_t width,
                     const size_t height, const size_t stride) noexcept
 {
-    size_t j{};
-    for (size_t row{}; row != height; ++row)
+    for (size_t j{}, row{}; row != height; ++row)
     {
         std::byte* crumb_row{crumb_pixels + (row * stride)};
         size_t i{};
@@ -107,10 +106,15 @@ void pack_to_nibbles(const span<const std::byte> byte_pixels, std::byte* nibble_
     for (size_t j{}, row{}; row != height; ++row)
     {
         std::byte* nibble_row{nibble_pixels + (row * stride)};
-        for (size_t i{}; i != width / 2; ++i)
+        size_t i{};
+        for (; i != width / 2; ++i)
         {
             nibble_row[i] = byte_pixels[j++] << 4;
             nibble_row[i] |= byte_pixels[j++];
+        }
+        if (width % 2)
+        {
+            nibble_row[i] = byte_pixels[j++] << 4;
         }
     }
 }
