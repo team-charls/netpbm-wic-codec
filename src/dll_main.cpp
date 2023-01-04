@@ -5,6 +5,8 @@
 #include "version.h"
 #include "winrt.h"
 
+#include <span>
+
 import netpbm_bitmap_decoder;
 import errors;
 import guids;
@@ -14,7 +16,6 @@ import trace;
 import <string>;
 import <array>;
 import <cassert>;
-import <span>;
 import <format>;
 import <olectl.h>;
 import <ShlObj.h>;
@@ -144,7 +145,7 @@ BOOL APIENTRY DllMain(const HMODULE module, const DWORD reason_for_call, void* /
         break;
 
     default:
-        ASSERT(false);
+        TRACE("netpbm-wic-codec::DllMain bad reason_for call\n");
         return false;
     }
 
@@ -153,11 +154,17 @@ BOOL APIENTRY DllMain(const HMODULE module, const DWORD reason_for_call, void* /
 
 _Check_return_ HRESULT __stdcall DllGetClassObject(_In_ GUID const& class_id, _In_ GUID const& interface_id,
                                                    _Outptr_ void** result)
+try
 {
-    if (class_id == id::netpbm_decoder)
-        return create_netpbm_bitmap_decoder_factory(interface_id, result);
+    if (class_id != id::netpbm_decoder)
+        return error_class_not_available;
 
-    return CLASS_E_CLASSNOTAVAILABLE;
+    create_netpbm_bitmap_decoder_factory(interface_id, result);
+    return error_ok;
+}
+catch (...)
+{
+    return winrt::to_hresult();
 }
 
 // Purpose: Used to determine whether the COM sub-system can unload the DLL from memory.
@@ -179,13 +186,21 @@ try
 }
 catch (...)
 {
-    return SELFREG_E_CLASS;
+    TRACE("netpbm-wic-codec::DllRegisterServer failed hr = %d\n", winrt::to_hresult());
+    return self_registration::error_class;
 }
 
 HRESULT __stdcall DllUnregisterServer()
+try
 {
     // Note: keep the .pgm file registration intact.
     return unregister(id::netpbm_decoder, CATID_WICBitmapDecoders);
+}
+catch (...)
+{
+    const HRESULT hresult{winrt::to_hresult()};
+    TRACE("netpbm-wic-codec::DllUnregisterServer failed hr = %d\n", hresult);
+    return hresult;
 }
 
 // ReSharper restore CppParameterNamesMismatch

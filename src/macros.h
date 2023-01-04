@@ -1,4 +1,4 @@
-﻿// Copyright (c) Victor Derks.
+// Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
 #pragma once
@@ -14,6 +14,11 @@
 // Reported to Microsoft:
 // https://developercommunity.visualstudio.com/content/problem/804372/c26447-false-positive-when-using-stdscoped-lock-ev.html
 #define SUPPRESS_FALSE_WARNING_C26447_NEXT_LINE SUPPRESS_WARNING_NEXT_LINE(26447)
+
+// returning uninitialized memory (false positive)
+// Reported to Microsoft (but was closed due to lower priority):
+// https://developercommunity.visualstudio.com/t/static-analysis-emits-a-false-positive-c6101-error/804429
+#define SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE SUPPRESS_WARNING_NEXT_LINE(6101)
 
 
 #ifdef NDEBUG

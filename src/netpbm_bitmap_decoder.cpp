@@ -120,8 +120,7 @@ public:
 
         // Keep the initial design simple: no support for container-level metadata.
         // Note: Conceptual, comments from the NetPbm file could converted into metadata.
-        constexpr HRESULT hr = wincodec::error_unsupported_operation;
-        return hr;
+        return wincodec::error_unsupported_operation;
     }
 
     HRESULT __stdcall GetPreview([[maybe_unused]] _Outptr_ IWICBitmapSource** bitmap_source) noexcept override
@@ -129,8 +128,7 @@ public:
         TRACE("%p netpbm_bitmap_decoder::GetPreview (not supported), bitmap_source address=%p\n", this, bitmap_source);
 
         // The Netpbm format doesn't support storing previews in the file format.
-        constexpr HRESULT hr = wincodec::error_unsupported_operation;
-        return hr;
+        return wincodec::error_unsupported_operation;
     }
 
     HRESULT __stdcall GetColorContexts([[maybe_unused]] const uint32_t count,
@@ -156,8 +154,7 @@ public:
         TRACE("%p netpbm_bitmap_decoder::GetThumbnail (not supported), thumbnail address=%p\n", this, thumbnail);
 
         // The Netpbm format doesn't support storing thumbnails in the file format.
-        constexpr HRESULT hr{wincodec::error_codec_no_thumbnail};
-        return hr;
+        return wincodec::error_codec_no_thumbnail;
     }
 
     HRESULT __stdcall GetFrameCount(_Out_ uint32_t* count) noexcept override
@@ -218,8 +215,7 @@ private:
 };
 
 
-HRESULT create_netpbm_bitmap_decoder_factory(GUID const& interface_id, void** result)
+void create_netpbm_bitmap_decoder_factory(GUID const& interface_id, void** result)
 {
-    const HRESULT hr{winrt::make<class_factory<netpbm_bitmap_decoder>>()->QueryInterface(interface_id, result)};
-    return hr;
+    check_hresult(winrt::make<class_factory<netpbm_bitmap_decoder>>()->QueryInterface(interface_id, result));
 }
