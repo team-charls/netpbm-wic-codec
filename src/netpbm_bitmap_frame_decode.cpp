@@ -64,6 +64,19 @@ constexpr void convert_to_little_endian_and_shift(span<uint16_t> samples, const 
     });
 }
 
+constexpr void convert_to_little_endian_and_optional_shift(const span<uint16_t> samples,
+                                                           const uint32_t sample_shift) noexcept
+{
+    if (sample_shift == 0)
+    {
+        convert_to_little_endian(samples);
+    }
+    else
+    {
+        convert_to_little_endian_and_shift(samples, sample_shift);
+    }
+}
+
 void pack_to_crumbs(const span<const std::byte> byte_pixels, std::byte* crumb_pixels, const size_t width,
                     const size_t height, const size_t stride) noexcept
 {
@@ -120,12 +133,23 @@ void pack_to_nibbles(const span<const std::byte> byte_pixels, std::byte* nibble_
 }
 
 void pack_to_bytes(const span<const std::byte> source_pixels, std::byte* destination_pixels, const size_t width,
-                     const size_t height, const size_t stride) noexcept
+                   const size_t height, const size_t stride) noexcept
 {
     for (size_t row{}; row != height; ++row)
     {
         const std::byte* source_row{source_pixels.data() + row * width};
         std::byte* destination_row{destination_pixels + row * stride};
+        std::copy_n(source_row, width, destination_row);
+    }
+}
+
+void pack_to_words(const span<const std::uint16_t> source_pixels, std::uint16_t* destination_pixels, const size_t width,
+                   const size_t height, const size_t stride) noexcept
+{
+    for (size_t row{}; row != height; ++row)
+    {
+        const std::uint16_t* source_row{source_pixels.data() + row * width};
+        std::uint16_t* destination_row{destination_pixels + row * (stride / 2)};
         std::copy_n(source_row, width, destination_row);
     }
 }
@@ -180,17 +204,20 @@ void pack_to_bytes(const span<const std::byte> source_pixels, std::byte* destina
             break;
 
         default:
-            // Binary 16 bit Netpbm images are stored in big endian format (the defacto standard).
-            stream_reader.read_bytes(data_buffer, data_buffer_size);
-            const span samples_16_bit{reinterpret_cast<uint16_t*>(data_buffer), data_buffer_size / sizeof uint16_t};
-
-            if (sample_shift == 0)
+            if (const auto header_width_in_bytes{static_cast<size_t>(header.width) * 2};
+                header_width_in_bytes % stride == 0)
             {
-                convert_to_little_endian(samples_16_bit);
+                // Binary 16 bit Netpbm images are stored in big endian format (the defacto standard).
+                stream_reader.read_bytes(data_buffer, data_buffer_size);
+                convert_to_little_endian_and_optional_shift(
+                    {reinterpret_cast<uint16_t*>(data_buffer), data_buffer_size / sizeof uint16_t}, sample_shift);
             }
             else
             {
-                convert_to_little_endian_and_shift(samples_16_bit, sample_shift);
+                auto samples{stream_reader.read_bytes(header_width_in_bytes * header.height)};
+                const span samples_16_bit{reinterpret_cast<uint16_t*>(samples.data()), samples.size() / sizeof uint16_t};
+                convert_to_little_endian_and_optional_shift(samples_16_bit, sample_shift);
+                pack_to_words(samples_16_bit, reinterpret_cast<uint16_t*>(data_buffer), header.width, header.height, stride);
             }
             break;
         }

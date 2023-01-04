@@ -323,6 +323,11 @@ public:
         decode_2_byte_samples_monochrome(L"640_480_16bit.pgm", "640_480_16bit.pgm");
     }
 
+    TEST_METHOD(decode_16bit_monochrome_1x2) // NOLINT
+    {
+        decode_2_byte_samples_monochrome(L"16bit_1x2.pgm", "16bit_1x2.pgm");
+    }
+
 private:
     void decode_2_bit_monochrome(_Null_terminated_ const wchar_t* filename_actual, const char* filename_expected) const
     {
