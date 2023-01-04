@@ -7,33 +7,34 @@ module;
 
 export module test.errors;
 
-export
-{
-    constexpr winrt::hresult error_ok{S_OK};
-    constexpr winrt::hresult error_fail{E_FAIL};
-    constexpr winrt::hresult error_pointer{E_POINTER};
-    constexpr winrt::hresult error_no_aggregation{static_cast<winrt::hresult>(CLASS_E_NOAGGREGATION)};
-    constexpr winrt::hresult error_class_not_available{static_cast<winrt::hresult>(CLASS_E_CLASSNOTAVAILABLE)};
-    constexpr winrt::hresult error_invalid_argument{static_cast<winrt::hresult>(E_INVALIDARG)};
-}
+export {
 
-export namespace wincodec {
+inline constexpr winrt::hresult error_ok{S_OK};
+inline constexpr winrt::hresult error_fail{E_FAIL};
+inline constexpr winrt::hresult error_pointer{E_POINTER};
+inline constexpr winrt::hresult error_no_aggregation{CLASS_E_NOAGGREGATION};
+inline constexpr winrt::hresult error_class_not_available{CLASS_E_CLASSNOTAVAILABLE};
+inline constexpr winrt::hresult error_invalid_argument{E_INVALIDARG};
 
-constexpr winrt::hresult error_palette_unavailable{static_cast<winrt::hresult>(WINCODEC_ERR_PALETTEUNAVAILABLE)};
-constexpr winrt::hresult error_unsupported_operation{static_cast<winrt::hresult>(WINCODEC_ERR_UNSUPPORTEDOPERATION)};
-constexpr winrt::hresult error_codec_no_thumbnail{static_cast<winrt::hresult>(WINCODEC_ERR_CODECNOTHUMBNAIL)};
-constexpr winrt::hresult error_frame_missing{static_cast<winrt::hresult>(WINCODEC_ERR_FRAMEMISSING)};
-constexpr winrt::hresult error_not_initialized{static_cast<winrt::hresult>(WINCODEC_ERR_NOTINITIALIZED)};
-constexpr winrt::hresult error_wrong_state{static_cast<winrt::hresult>(WINCODEC_ERR_WRONGSTATE)};
-constexpr winrt::hresult error_unsupported_pixel_format{static_cast<winrt::hresult>(WINCODEC_ERR_UNSUPPORTEDPIXELFORMAT)};
-constexpr winrt::hresult error_codec_too_many_scan_lines{static_cast<winrt::hresult>(WINCODEC_ERR_CODECTOOMANYSCANLINES)};
-constexpr winrt::hresult error_component_not_found{static_cast<winrt::hresult>(WINCODEC_ERR_COMPONENTNOTFOUND)};
-constexpr winrt::hresult error_bad_header{static_cast<winrt::hresult>(WINCODEC_ERR_BADHEADER)};
-constexpr winrt::hresult error_bad_image{static_cast<winrt::hresult>(WINCODEC_ERR_BADIMAGE)};
+namespace wincodec {
+
+inline constexpr winrt::hresult error_palette_unavailable{WINCODEC_ERR_PALETTEUNAVAILABLE};
+inline constexpr winrt::hresult error_unsupported_operation{WINCODEC_ERR_UNSUPPORTEDOPERATION};
+inline constexpr winrt::hresult error_codec_no_thumbnail{WINCODEC_ERR_CODECNOTHUMBNAIL};
+inline constexpr winrt::hresult error_frame_missing{WINCODEC_ERR_FRAMEMISSING};
+inline constexpr winrt::hresult error_not_initialized{WINCODEC_ERR_NOTINITIALIZED};
+inline constexpr winrt::hresult error_wrong_state{WINCODEC_ERR_WRONGSTATE};
+inline constexpr winrt::hresult error_unsupported_pixel_format{WINCODEC_ERR_UNSUPPORTEDPIXELFORMAT};
+inline constexpr winrt::hresult error_codec_too_many_scan_lines{WINCODEC_ERR_CODECTOOMANYSCANLINES};
+inline constexpr winrt::hresult error_component_not_found{WINCODEC_ERR_COMPONENTNOTFOUND};
+inline constexpr winrt::hresult error_bad_header{WINCODEC_ERR_BADHEADER};
+inline constexpr winrt::hresult error_bad_image{WINCODEC_ERR_BADIMAGE};
 
 } // namespace wincodec
 
-export constexpr bool failed(const winrt::hresult result) noexcept
+constexpr bool failed(const winrt::hresult result) noexcept
 {
     return result < 0;
+}
+
 }
