@@ -12,7 +12,7 @@ import buffered_stream_reader;
 
 using winrt::throw_hresult;
 
-enum class PnmType
+export enum class PnmType
 {
     Bitmap,
     Graymap,
@@ -26,7 +26,7 @@ export bool is_pnm_file(_In_ IStream* stream)
     unsigned long read;
     check_hresult(stream->Read(magic, sizeof magic, &read), wincodec::error_stream_read);
 
-    return read == sizeof magic && magic[0] == 'P' && magic[1] == '5';
+    return read == sizeof magic && magic[0] == 'P' && (magic[1] == '5' || magic[1] == '6');
 }
 
 export struct pnm_header
