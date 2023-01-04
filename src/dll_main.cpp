@@ -28,8 +28,8 @@ using namespace std::string_literals;
 
 namespace {
 
-constexpr wchar_t mime_type[]{L"image/x-portable-graymap"};
-constexpr wchar_t file_extension[]{L".pgm"};
+constexpr wchar_t mime_types[]{L"image/x-portable-graymap,image/x-portable-pixmap"};
+constexpr wchar_t file_extensions[]{L".pgm,.ppm"};
 
 void register_general_decoder_settings(const GUID& class_id, const GUID& wic_category_id, const wchar_t* friendly_name,
                                        const std::span<const GUID*> formats)
@@ -40,9 +40,9 @@ void register_general_decoder_settings(const GUID& class_id, const GUID& wic_cat
     registry::set_value(sub_key, L"ColorManagementVersion", L"1.0.0.0");
     registry::set_value(sub_key, L"ContainerFormat", guid_to_string(id::container_format_netpbm).c_str());
     registry::set_value(sub_key, L"Description", L"Netpbm Codec");
-    registry::set_value(sub_key, L"FileExtensions", file_extension);
+    registry::set_value(sub_key, L"FileExtensions", file_extensions);
     registry::set_value(sub_key, L"FriendlyName", friendly_name);
-    registry::set_value(sub_key, L"MimeTypes", mime_type);
+    registry::set_value(sub_key, L"MimeTypes", mime_types);
     registry::set_value(sub_key, L"SpecVersion", L"1.0.0.0");
     registry::set_value(sub_key, L"SupportAnimation", 0U);
     registry::set_value(sub_key, L"SupportChromaKey", 0U);
@@ -69,24 +69,9 @@ void register_general_decoder_settings(const GUID& class_id, const GUID& wic_cat
     registry::set_value(category_id_key, L"CLSID", guid_to_string(class_id).c_str());
 }
 
-void register_decoder()
+void register_decoder_file_extension(const wchar_t* file_type_name, const wchar_t* file_extension, const wchar_t* mime_type)
 {
-    array formats{&GUID_WICPixelFormat2bppGray, &GUID_WICPixelFormat4bppGray, &GUID_WICPixelFormat8bppGray, &GUID_WICPixelFormat16bppGray};
-    register_general_decoder_settings(id::netpbm_decoder, CATID_WICBitmapDecoders, L"Netpbm Decoder", formats);
-
-    const wstring sub_key{LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(id::netpbm_decoder)};
-
-    // Register the byte pattern that allows WICs to identify files as our image type.
-    const wstring patterns_sub_key{sub_key + LR"(\Patterns\0)"};
-    const array mask{0xFF_byte, 0xFF_byte};
-    const array pattern{0x50_byte, 0x35_byte};
-    registry::set_value(patterns_sub_key, L"Length", static_cast<uint32_t>(pattern.size()));
-    registry::set_value(patterns_sub_key, L"Position", 0U);
-    registry::set_value(patterns_sub_key, L"Mask", mask);
-    registry::set_value(patterns_sub_key, L"Pattern", pattern);
-
     const wstring extension_sub_key{LR"(SOFTWARE\Classes\"s + file_extension + LR"\)"};
-    constexpr wchar_t file_type_name[]{L"pgmfile"};
     registry::set_value(extension_sub_key, L"", file_type_name);
     registry::set_value(extension_sub_key, L"Content Type", mime_type);
     registry::set_value(extension_sub_key, L"PerceivedType", L"image");
@@ -110,7 +95,33 @@ void register_decoder()
                         L"PhotoViewer.FileAssoc.Tiff");
 }
 
-HRESULT unregister(const GUID& class_id, const GUID& wic_category_id)
+ void register_decoder_pattern(const wstring& sub_key, const int index, const std::span<const std::byte> pattern)
+{
+     const wstring patterns_sub_key{sub_key + LR"(\Patterns\)" + std::to_wstring(index)};
+     const array mask{0xFF_byte, 0xFF_byte};
+     registry::set_value(patterns_sub_key, L"Length", static_cast<uint32_t>(pattern.size()));
+     registry::set_value(patterns_sub_key, L"Position", 0U);
+     registry::set_value(patterns_sub_key, L"Mask", mask);
+     registry::set_value(patterns_sub_key, L"Pattern", pattern);
+ }
+
+void register_decoder()
+{
+    array formats{&GUID_WICPixelFormat2bppGray, &GUID_WICPixelFormat4bppGray, &GUID_WICPixelFormat8bppGray,
+                  &GUID_WICPixelFormat16bppGray, &GUID_WICPixelFormat24bppRGB};
+    register_general_decoder_settings(id::netpbm_decoder, CATID_WICBitmapDecoders, L"Netpbm Decoder", formats);
+
+    const wstring sub_key{LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(id::netpbm_decoder)};
+
+    // Register the byte pattern that allows WICs to identify files as our image type.
+    register_decoder_pattern(sub_key, 0, array{std::byte{0x50}, std::byte{0x35}});
+    register_decoder_pattern(sub_key, 0, array{std::byte{0x50}, std::byte{0x36}});
+
+    register_decoder_file_extension(L"pgmfile", L".pgm", L"image/x-portable-graymap");
+    register_decoder_file_extension(L"ppmfile", L".ppm", L"image/x-portable-pixmap");
+}
+
+[[nodiscard]] HRESULT unregister(const GUID& class_id, const GUID& wic_category_id)
 {
     const wstring sub_key{LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(class_id)};
     const HRESULT result1{registry::delete_tree(sub_key.c_str())};

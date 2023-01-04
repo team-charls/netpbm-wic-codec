@@ -328,6 +328,23 @@ public:
         decode_2_byte_samples_monochrome(L"16bit_1x2.pgm", "16bit_1x2.pgm");
     }
 
+    TEST_METHOD(decode_8_bit_color) // NOLINT
+    {
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"jpegls-conformance-test-8bit-256-256.ppm")};
+
+        uint32_t width;
+        uint32_t height;
+
+        check_hresult(bitmap_frame_decoder->GetSize(&width, &height));
+        const uint32_t stride{width * 3};
+        vector<std::byte> buffer(static_cast<size_t>(height) * stride);
+
+        const hresult result{copy_pixels(bitmap_frame_decoder.get(), stride, buffer)};
+        Assert::AreEqual(error_ok, result);
+
+        compare("jpegls-conformance-test-8bit-256-256.ppm", buffer);
+    }
+
 private:
     void decode_2_bit_monochrome(_Null_terminated_ const wchar_t* filename_actual, const char* filename_expected) const
     {

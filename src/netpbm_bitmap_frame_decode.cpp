@@ -26,25 +26,45 @@ using winrt::to_hresult;
 
 namespace {
 
-[[nodiscard]] std::pair<GUID, uint32_t> get_pixel_format_and_shift(const uint32_t bits_per_sample)
+[[nodiscard]] std::pair<GUID, uint32_t> get_pixel_format_and_shift(PnmType type, const uint32_t bits_per_sample)
 {
-    switch (bits_per_sample)
+    switch (type)
     {
-    case 2:
-        return {GUID_WICPixelFormat2bppGray, 0};
+    case PnmType::Bitmap:
+        break;
 
-    case 4:
-        return {GUID_WICPixelFormat4bppGray, 0};
+    case PnmType::Graymap:
+        switch (bits_per_sample)
+        {
+        case 2:
+            return {GUID_WICPixelFormat2bppGray, 0};
 
-    case 8:
-        return {GUID_WICPixelFormat8bppGray, 0};
+        case 4:
+            return {GUID_WICPixelFormat4bppGray, 0};
 
-    case 10:
-    case 12:
-    case 16:
-        return {GUID_WICPixelFormat16bppGray, 16 - bits_per_sample};
+        case 8:
+            return {GUID_WICPixelFormat8bppGray, 0};
 
-    default:
+        case 10:
+        case 12:
+        case 16:
+            return {GUID_WICPixelFormat16bppGray, 16 - bits_per_sample};
+
+        default:
+            break;
+        }
+        break;
+
+    case PnmType::Pixmap:
+        switch (bits_per_sample)
+        {
+        case 8:
+            return {GUID_WICPixelFormat24bppRGB, 0};
+        case 16:
+            return {GUID_WICPixelFormat48bppRGB, 0};
+        default:
+            break;
+        }
         break;
     }
 
@@ -154,73 +174,125 @@ void pack_to_words(const span<const std::uint16_t> source_pixels, std::uint16_t*
     }
 }
 
+void decode_monochrome_bitmap(buffered_stream_reader& stream_reader, const pnm_header& header,
+                              const uint32_t bits_per_sample, const uint32_t sample_shift, const uint32_t stride,
+                              std::span<std::byte> destination_pixels)
+{
+    switch (bits_per_sample)
+    {
+    case 2:
+        pack_to_crumbs(stream_reader.read_bytes(static_cast<size_t>(header.width) * header.height),
+                       destination_pixels.data(), header.width, header.height, stride);
+        break;
+
+    case 4:
+        pack_to_nibbles(stream_reader.read_bytes(static_cast<size_t>(header.width) * header.height),
+                        destination_pixels.data(), header.width, header.height, stride);
+        break;
+
+    case 8:
+        if (header.width % stride == 0)
+        {
+            stream_reader.read_bytes(destination_pixels.data(), destination_pixels.size());
+        }
+        else
+        {
+            pack_to_bytes(stream_reader.read_bytes(static_cast<size_t>(header.width) * header.height),
+                          destination_pixels.data(), header.width, header.height, stride);
+        }
+        break;
+
+    default:
+        if (const auto header_width_in_bytes{static_cast<size_t>(header.width) * 2}; header_width_in_bytes % stride == 0)
+        {
+            // Binary 16 bit Netpbm images are stored in big endian format (the defacto standard).
+            stream_reader.read_bytes(destination_pixels.data(), destination_pixels.size());
+            convert_to_little_endian_and_optional_shift(
+                {reinterpret_cast<uint16_t*>(destination_pixels.data()), destination_pixels.size() / sizeof uint16_t},
+                sample_shift);
+        }
+        else
+        {
+            auto samples{stream_reader.read_bytes(header_width_in_bytes * header.height)};
+            const span samples_16_bit{reinterpret_cast<uint16_t*>(samples.data()), samples.size() / sizeof uint16_t};
+            convert_to_little_endian_and_optional_shift(samples_16_bit, sample_shift);
+            pack_to_words(samples_16_bit, reinterpret_cast<uint16_t*>(destination_pixels.data()), header.width,
+                          header.height, stride);
+        }
+        break;
+    }
+}
+
+void decode_color_bitmap(buffered_stream_reader& stream_reader, const pnm_header& header, const uint32_t bits_per_sample,
+                         const uint32_t stride, std::span<std::byte> destination_samples)
+{
+    switch (bits_per_sample)
+    {
+    case 8:
+        if (const auto header_width_in_bytes{static_cast<size_t>(header.width) * 3}; header_width_in_bytes % stride == 0)
+        {
+            stream_reader.read_bytes(destination_samples.data(), destination_samples.size());
+        }
+        else
+        {
+            throw_hresult(wincodec::error_unsupported_pixel_format);
+        }
+        break;
+
+    case 16:
+        if (const auto header_width_in_bytes{static_cast<size_t>(header.width) * 3 * 2}; header_width_in_bytes % stride == 0)
+        {
+            throw_hresult(wincodec::error_unsupported_pixel_format);
+        }
+        else
+        {
+            throw_hresult(wincodec::error_unsupported_pixel_format);
+        }
+        break;
+
+    default:
+        ASSERT(false);
+        break;
+    }
+}
+
 [[nodiscard]] com_ptr<IWICBitmap> create_bitmap(_In_ IStream* source_stream, _In_ IWICImagingFactory* factory)
 {
     buffered_stream_reader stream_reader{source_stream};
     const pnm_header header{stream_reader};
-
     const uint32_t bits_per_sample{static_cast<uint32_t>(std::bit_width(header.MaxColorValue))};
-    const auto& [pixel_format, sample_shift] = get_pixel_format_and_shift(bits_per_sample);
+    const auto& [pixel_format, sample_shift] = get_pixel_format_and_shift(header.PnmType, bits_per_sample);
+
     com_ptr<IWICBitmap> bitmap;
     check_hresult(factory->CreateBitmap(header.width, header.height, pixel_format, WICBitmapCacheOnLoad, bitmap.put()));
     check_hresult(bitmap->SetResolution(96., 96.));
 
+    const WICRect complete_image{
+        .X{0}, .Y{0}, .Width{static_cast<int32_t>(header.width)}, .Height{static_cast<int32_t>(header.height)}};
+    com_ptr<IWICBitmapLock> bitmap_lock;
+    check_hresult(bitmap->Lock(&complete_image, WICBitmapLockWrite, bitmap_lock.put()));
+
+    uint32_t stride;
+    winrt::check_hresult(bitmap_lock->GetStride(&stride));
+
+    std::byte* data_buffer;
+    uint32_t data_buffer_size;
+    winrt::check_hresult(bitmap_lock->GetDataPointer(&data_buffer_size, reinterpret_cast<BYTE**>(&data_buffer)));
+    __assume(data_buffer != nullptr);
+
+    switch (header.PnmType)
     {
-        const WICRect complete_image{
-            .X{0}, .Y{0}, .Width{static_cast<int32_t>(header.width)}, .Height{static_cast<int32_t>(header.height)}};
-        com_ptr<IWICBitmapLock> bitmap_lock;
-        check_hresult(bitmap->Lock(&complete_image, WICBitmapLockWrite, bitmap_lock.put()));
+    case PnmType::Graymap:
+        decode_monochrome_bitmap(stream_reader, header, bits_per_sample, sample_shift, stride,
+                                 {data_buffer, data_buffer_size});
+        break;
 
-        uint32_t stride;
-        winrt::check_hresult(bitmap_lock->GetStride(&stride));
+    case PnmType::Pixmap:
+        decode_color_bitmap(stream_reader, header, bits_per_sample, stride, {data_buffer, data_buffer_size});
+        break;
 
-        std::byte* data_buffer;
-        uint32_t data_buffer_size;
-        winrt::check_hresult(bitmap_lock->GetDataPointer(&data_buffer_size, reinterpret_cast<BYTE**>(&data_buffer)));
-        __assume(data_buffer != nullptr);
-
-        switch (bits_per_sample)
-        {
-        case 2:
-            pack_to_crumbs(stream_reader.read_bytes(static_cast<size_t>(header.width) * header.height), data_buffer,
-                           header.width, header.height, stride);
-            break;
-
-        case 4:
-            pack_to_nibbles(stream_reader.read_bytes(static_cast<size_t>(header.width) * header.height), data_buffer,
-                            header.width, header.height, stride);
-            break;
-
-        case 8:
-            if (header.width % stride == 0)
-            {
-                stream_reader.read_bytes(data_buffer, data_buffer_size);
-            }
-            else
-            {
-                pack_to_bytes(stream_reader.read_bytes(static_cast<size_t>(header.width) * header.height), data_buffer,
-                              header.width, header.height, stride);
-            }
-            break;
-
-        default:
-            if (const auto header_width_in_bytes{static_cast<size_t>(header.width) * 2};
-                header_width_in_bytes % stride == 0)
-            {
-                // Binary 16 bit Netpbm images are stored in big endian format (the defacto standard).
-                stream_reader.read_bytes(data_buffer, data_buffer_size);
-                convert_to_little_endian_and_optional_shift(
-                    {reinterpret_cast<uint16_t*>(data_buffer), data_buffer_size / sizeof uint16_t}, sample_shift);
-            }
-            else
-            {
-                auto samples{stream_reader.read_bytes(header_width_in_bytes * header.height)};
-                const span samples_16_bit{reinterpret_cast<uint16_t*>(samples.data()), samples.size() / sizeof uint16_t};
-                convert_to_little_endian_and_optional_shift(samples_16_bit, sample_shift);
-                pack_to_words(samples_16_bit, reinterpret_cast<uint16_t*>(data_buffer), header.width, header.height, stride);
-            }
-            break;
-        }
+    default:
+        break;
     }
 
     return bitmap;

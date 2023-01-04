@@ -227,6 +227,9 @@
     <CopyFileToFolders Include="data-files\16bit_1x2.pgm">
       <FileType>Document</FileType>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\jpegls-conformance-test-8bit-256-256.ppm">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\netpbm-wic-codec.vcxproj">
