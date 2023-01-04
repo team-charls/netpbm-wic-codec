@@ -26,7 +26,7 @@ using winrt::to_hresult;
 
 namespace {
 
-std::pair<GUID, uint32_t> get_pixel_format_and_shift(const uint32_t bits_per_sample)
+[[nodiscard]] std::pair<GUID, uint32_t> get_pixel_format_and_shift(const uint32_t bits_per_sample)
 {
     switch (bits_per_sample)
     {
@@ -130,7 +130,7 @@ void pack_to_bytes(const span<const std::byte> source_pixels, std::byte* destina
     }
 }
 
-com_ptr<IWICBitmap> create_bitmap(_In_ IStream* source_stream, _In_ IWICImagingFactory* factory)
+[[nodiscard]] com_ptr<IWICBitmap> create_bitmap(_In_ IStream* source_stream, _In_ IWICImagingFactory* factory)
 {
     buffered_stream_reader stream_reader{source_stream};
     const pnm_header header{stream_reader};
@@ -243,7 +243,8 @@ HRESULT __stdcall netpbm_bitmap_frame_decode::CopyPalette(IWICPalette*) noexcept
 }
 
 // IWICBitmapFrameDecode : IWICBitmapSource
-SUPPRESS_WARNING_NEXT_LINE(6101)
+
+SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
 HRESULT __stdcall netpbm_bitmap_frame_decode::GetThumbnail(IWICBitmapSource**) noexcept
 {
     TRACE("%p netpbm_bitmap_frame_decode::GetThumbnail (not supported)\n", this);
@@ -265,7 +266,7 @@ catch (...)
     return to_hresult();
 }
 
-SUPPRESS_WARNING_NEXT_LINE(6101)
+SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
 HRESULT __stdcall netpbm_bitmap_frame_decode::GetMetadataQueryReader(
     [[maybe_unused]] IWICMetadataQueryReader** metadata_query_reader) noexcept
 {
