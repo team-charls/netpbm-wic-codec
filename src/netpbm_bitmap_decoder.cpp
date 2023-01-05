@@ -13,8 +13,9 @@ import errors;
 import pnm_header;
 import guids;
 import netpbm_bitmap_frame_decode;
-import trace;
+
 import <mutex>;
+
 import <wincodec.h>;
 
 using std::scoped_lock;
@@ -30,8 +31,8 @@ public:
     HRESULT __stdcall QueryCapability(_In_ IStream* stream, _Out_ DWORD* capability) noexcept override
     try
     {
-        TRACE("%p netpbm_bitmap_decoder::QueryCapability.1, stream address=%p, capability address=%p\n", this, stream,
-              capability);
+        TRACE("{} netpbm_bitmap_decoder::QueryCapability.1, stream address={}, capability address={}\n",
+              static_cast<void*>(this), static_cast<void*>(stream), static_cast<void*>(capability));
 
         check_in_pointer(stream);
         *check_out_pointer(capability) = 0;
@@ -49,7 +50,7 @@ public:
 
         check_hresult(stream->Seek(*reinterpret_cast<LARGE_INTEGER*>(&original_position), STREAM_SEEK_CUR, nullptr));
 
-        TRACE("%p netpbm_bitmap_decoder::QueryCapability.2, *capability=%d\n", this, *capability);
+        TRACE("{} netpbm_bitmap_decoder::QueryCapability.2, *capability={}\n", static_cast<void*>(this), *capability);
         return error_ok;
     }
     catch (...)
@@ -61,7 +62,8 @@ public:
                                  [[maybe_unused]] const WICDecodeOptions cache_options) noexcept override
     try
     {
-        TRACE("%p netpbm_bitmap_decoder::Initialize, stream address=%p, cache_options=%d\n", this, stream, cache_options);
+        TRACE("{} netpbm_bitmap_decoder::Initialize, stream address={}, cache_options={}\n", static_cast<void*>(this),
+              static_cast<void*>(stream), static_cast<int>(cache_options));
 
         SUPPRESS_FALSE_WARNING_C26447_NEXT_LINE
         scoped_lock lock{mutex_};
@@ -78,7 +80,8 @@ public:
     HRESULT __stdcall GetContainerFormat(_Out_ GUID* container_format) noexcept override
     try
     {
-        TRACE("%p netpbm_bitmap_decoder::GetContainerFormat, container_format address=%p\n", this, container_format);
+        TRACE("{} netpbm_bitmap_decoder::GetContainerFormat, container_format address={}\n", static_cast<void*>(this),
+              static_cast<void*>(container_format));
 
         *check_out_pointer(container_format) = id::container_format_netpbm;
         return error_ok;
@@ -91,7 +94,8 @@ public:
     HRESULT __stdcall GetDecoderInfo(_Outptr_ IWICBitmapDecoderInfo** decoder_info) noexcept override
     try
     {
-        TRACE("%p netpbm_bitmap_decoder::GetContainerFormat, decoder_info address=%p\n", this, decoder_info);
+        TRACE("{} netpbm_bitmap_decoder::GetContainerFormat, decoder_info address={}\n", static_cast<void*>(this),
+              static_cast<void*>(decoder_info));
 
         com_ptr<IWICComponentInfo> component_info;
         check_hresult(imaging_factory()->CreateComponentInfo(id::netpbm_decoder, component_info.put()));
@@ -106,7 +110,8 @@ public:
 
     HRESULT __stdcall CopyPalette([[maybe_unused]] _In_ IWICPalette* palette) noexcept override
     {
-        TRACE("%p netpbm_bitmap_decoder::CopyPalette, palette address=%p\n", this, palette);
+        TRACE("{} netpbm_bitmap_decoder::CopyPalette, palette address={}\n", static_cast<void*>(this),
+              static_cast<void*>(palette));
 
         // NetPbm images don't have palettes.
         return wincodec::error_palette_unavailable;
@@ -115,8 +120,8 @@ public:
     HRESULT __stdcall GetMetadataQueryReader(
         [[maybe_unused]] _Outptr_ IWICMetadataQueryReader** metadata_query_reader) noexcept override
     {
-        TRACE("%p netpbm_bitmap_decoder::GetMetadataQueryReader (not supported), metadata_query_reader address=%p\n", this,
-              metadata_query_reader);
+        TRACE("{} netpbm_bitmap_decoder::GetMetadataQueryReader (not supported), metadata_query_reader address={}\n",
+              static_cast<void*>(this), static_cast<void*>(metadata_query_reader));
 
         // Keep the initial design simple: no support for container-level metadata.
         // Note: Conceptual, comments from the NetPbm file could converted into metadata.
@@ -125,7 +130,8 @@ public:
 
     HRESULT __stdcall GetPreview([[maybe_unused]] _Outptr_ IWICBitmapSource** bitmap_source) noexcept override
     {
-        TRACE("%p netpbm_bitmap_decoder::GetPreview (not supported), bitmap_source address=%p\n", this, bitmap_source);
+        TRACE("{} netpbm_bitmap_decoder::GetPreview (not supported), bitmap_source address={}\n", static_cast<void*>(this),
+              static_cast<void*>(bitmap_source));
 
         // The Netpbm format doesn't support storing previews in the file format.
         return wincodec::error_unsupported_operation;
@@ -136,9 +142,9 @@ public:
                                        [[maybe_unused]] uint32_t* actual_count) noexcept override
     try
     {
-        TRACE("%p netpbm_bitmap_decoder::GetColorContexts (always 0), count=%u, color_contexts address=%p, actual_count "
-              "address=%p\n",
-              this, count, color_contexts, actual_count);
+        TRACE("{} netpbm_bitmap_decoder::GetColorContexts (always 0), count={}, color_contexts address={}, actual_count "
+              "address={}\n",
+              static_cast<void*>(this), count, static_cast<void*>(color_contexts), static_cast<void*>(actual_count));
 
         // The Netpbm format doesn't support storing color contexts (ICC profiles) in the file format.
         *check_out_pointer(actual_count) = 0;
@@ -151,7 +157,8 @@ public:
 
     HRESULT __stdcall GetThumbnail([[maybe_unused]] _Outptr_ IWICBitmapSource** thumbnail) noexcept override
     {
-        TRACE("%p netpbm_bitmap_decoder::GetThumbnail (not supported), thumbnail address=%p\n", this, thumbnail);
+        TRACE("%p netpbm_bitmap_decoder::GetThumbnail (not supported), thumbnail address=%p\n", static_cast<void*>(this),
+              static_cast<void*>(thumbnail));
 
         // The Netpbm format doesn't support storing thumbnails in the file format.
         return wincodec::error_codec_no_thumbnail;
@@ -160,7 +167,8 @@ public:
     HRESULT __stdcall GetFrameCount(_Out_ uint32_t* count) noexcept override
     try
     {
-        TRACE("%p netpbm_bitmap_decoder::GetFrameCount (always 1), count address=%p\n", this, count);
+        TRACE("{} netpbm_bitmap_decoder::GetFrameCount (always 1), count address={}\n", static_cast<void*>(this),
+              static_cast<void*>(count));
 
         // Only 1 frame is supported by this implementation (no real world samples are known that have more)
         *check_out_pointer(count) = 1;
@@ -174,8 +182,8 @@ public:
     HRESULT __stdcall GetFrame(const uint32_t index, _Outptr_ IWICBitmapFrameDecode** bitmap_frame_decode) noexcept override
     try
     {
-        TRACE("%p netpbm_bitmap_decoder::GetFrame, index=%d, bitmap_frame_decode address=%p\n", this, index,
-              bitmap_frame_decode);
+        TRACE("{} netpbm_bitmap_decoder::GetFrame, index={}, bitmap_frame_decode address={}\n", static_cast<void*>(this),
+              index, static_cast<void*>(bitmap_frame_decode));
 
         check_condition(index == 0, wincodec::error_frame_missing);
 

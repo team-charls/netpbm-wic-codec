@@ -12,7 +12,7 @@ import errors;
 import guids;
 import registry;
 import util;
-import trace;
+
 import <string>;
 import <array>;
 import <cassert>;
@@ -182,7 +182,7 @@ catch (...)
 extern "C" __control_entrypoint(DllExport) HRESULT __stdcall DllCanUnloadNow()
 {
     const auto result{winrt::get_module_lock() ? S_FALSE : S_OK};
-    TRACE("netpbm-wic-codec::DllCanUnloadNow hr = %d (0 = S_OK -> unload OK)\n", result);
+    TRACE("netpbm-wic-codec::DllCanUnloadNow hr = {} (0 = S_OK -> unload OK)\n", result);
     return result;
 }
 
@@ -197,7 +197,7 @@ try
 }
 catch (...)
 {
-    TRACE("netpbm-wic-codec::DllRegisterServer failed hr = %d\n", winrt::to_hresult());
+    TRACE("netpbm-wic-codec::DllRegisterServer failed hr = {}\n", winrt::to_hresult());
     return self_registration::error_class;
 }
 
@@ -210,7 +210,7 @@ try
 catch (...)
 {
     const HRESULT hresult{winrt::to_hresult()};
-    TRACE("netpbm-wic-codec::DllUnregisterServer failed hr = %d\n", hresult);
+    TRACE("netpbm-wic-codec::DllUnregisterServer failed hr = {}\n", hresult);
     return hresult;
 }
 

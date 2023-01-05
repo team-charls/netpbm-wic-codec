@@ -203,31 +203,19 @@
     <ClInclude Include="winrt.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="buffered_stream_reader.cpp">
-    </ClCompile>
-    <ClCompile Include="buffered_stream_reader.ixx">
-    </ClCompile>
-    <ClCompile Include="class_factory.ixx">
-    </ClCompile>
+    <ClCompile Include="buffered_stream_reader.cpp" />
+    <ClCompile Include="buffered_stream_reader.ixx" />
+    <ClCompile Include="class_factory.ixx" />
     <ClCompile Include="dll_main.cpp" />
     <ClCompile Include="errors.ixx" />
-    <ClCompile Include="guids.ixx">
-    </ClCompile>
-    <ClCompile Include="netpbm_bitmap_decoder.cpp">
-    </ClCompile>
-    <ClCompile Include="netpbm_bitmap_frame_decode.cpp">
-    </ClCompile>
-    <ClCompile Include="pnm_header.ixx">
-    </ClCompile>
-    <ClCompile Include="netpbm_bitmap_decoder.ixx">
-    </ClCompile>
-    <ClCompile Include="netpbm_bitmap_frame_decode.ixx">
-    </ClCompile>
-    <ClCompile Include="registry.ixx">
-    </ClCompile>
-    <ClCompile Include="trace.ixx" />
-    <ClCompile Include="util.ixx">
-    </ClCompile>
+    <ClCompile Include="guids.ixx" />
+    <ClCompile Include="netpbm_bitmap_decoder.cpp" />
+    <ClCompile Include="netpbm_bitmap_frame_decode.cpp" />
+    <ClCompile Include="pnm_header.ixx" />
+    <ClCompile Include="netpbm_bitmap_decoder.ixx" />
+    <ClCompile Include="netpbm_bitmap_frame_decode.ixx" />
+    <ClCompile Include="registry.ixx" />
+    <ClCompile Include="util.ixx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="netpbm-wic-codec.def" />
