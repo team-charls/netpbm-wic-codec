@@ -65,9 +65,6 @@
     <ClCompile Include="buffered_stream_reader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="trace.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="netpbm-wic-codec.def">

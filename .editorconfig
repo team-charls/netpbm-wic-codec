@@ -17,10 +17,11 @@ indent_size = 4
 # MSBuild files
 [*.{props,vcxproj}]
 indent_size = 2
+insert_final_newline = false # Follow formatting of Visual Studio
 
 [*.yml]
 indent_size = 2
 
 [*.md]
-trim_trailing_whitespace = false # ending with 2 spaces is used for layout in Markdown
+trim_trailing_whitespace = false # Ending with 2 spaces is used for layout in Markdown
 indent_size = 2

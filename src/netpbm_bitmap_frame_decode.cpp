@@ -6,15 +6,15 @@ module;
 #include "macros.h"
 #include "winrt.h"
 
+#include <span>
+
 module netpbm_bitmap_frame_decode;
 
 import errors;
 import buffered_stream_reader;
 import pnm_header;
-import trace;
 import <algorithm>;
 import <bit>;
-import <span>;
 import <wincodec.h>;
 
 using std::span;
@@ -26,7 +26,7 @@ using winrt::to_hresult;
 
 namespace {
 
-[[nodiscard]] std::pair<GUID, uint32_t> get_pixel_format_and_shift(PnmType type, const uint32_t bits_per_sample)
+[[nodiscard]] std::pair<GUID, uint32_t> get_pixel_format_and_shift(const PnmType type, const uint32_t bits_per_sample)
 {
     switch (type)
     {
@@ -310,34 +310,36 @@ netpbm_bitmap_frame_decode::netpbm_bitmap_frame_decode(_In_ IStream* source_stre
 // IWICBitmapSource
 HRESULT __stdcall netpbm_bitmap_frame_decode::GetSize(uint32_t* width, uint32_t* height)
 {
-    TRACE("%p netpbm_bitmap_frame_decode::GetSize, width address=%p, height address=%p\n", this, width, height);
+    TRACE("{} netpbm_bitmap_frame_decode::GetSize, width address={}, height address={}\n", static_cast<void*>(this), static_cast<void*>(width), static_cast<void*>(height));
     return bitmap_source_->GetSize(width, height);
 }
 
 HRESULT __stdcall netpbm_bitmap_frame_decode::GetPixelFormat(GUID* pixel_format)
 {
-    TRACE("%p netpbm_bitmap_frame_decode::GetPixelFormat.1, pixel_format address=%p\n", this, pixel_format);
+    TRACE("{} netpbm_bitmap_frame_decode::GetPixelFormat.1, pixel_format address={}\n", static_cast<void*>(this),
+          static_cast<void*>(pixel_format));
     return bitmap_source_->GetPixelFormat(pixel_format);
 }
 
 HRESULT __stdcall netpbm_bitmap_frame_decode::GetResolution(double* dpi_x, double* dpi_y)
 {
-    TRACE("%p netpbm_bitmap_frame_decode::GetResolution, dpi_x address=%p, dpi_y address=%p\n", this, dpi_x, dpi_y);
+    TRACE("{} netpbm_bitmap_frame_decode::GetResolution, dpi_x address={}, dpi_y address={}\n", static_cast<void*>(this),
+          static_cast<void*>(dpi_x), static_cast<void*>(dpi_y));
     return bitmap_source_->GetResolution(dpi_x, dpi_y);
 }
 
 HRESULT __stdcall netpbm_bitmap_frame_decode::CopyPixels(const WICRect* rectangle, const uint32_t stride,
                                                          const uint32_t buffer_size, BYTE* buffer)
 {
-    TRACE("%p netpbm_bitmap_frame_decode::CopyPixels, rectangle address=%p, stride=%d, buffer_size=%d, buffer "
-          "address=%p\n",
-          this, rectangle, stride, buffer_size, buffer);
+    TRACE("{} netpbm_bitmap_frame_decode::CopyPixels, rectangle address={}, stride={}, buffer_size={}, buffer "
+          "address={}\n",
+          static_cast<void*>(this), static_cast<const void*>(rectangle), stride, buffer_size, static_cast<void*>(buffer));
     return bitmap_source_->CopyPixels(rectangle, stride, buffer_size, buffer);
 }
 
 HRESULT __stdcall netpbm_bitmap_frame_decode::CopyPalette(IWICPalette*) noexcept
 {
-    TRACE("%p netpbm_bitmap_frame_decode::CopyPalette (not supported)\n", this);
+    TRACE("{} netpbm_bitmap_frame_decode::CopyPalette (not supported)\n", static_cast<void*>(this));
     return wincodec::error_palette_unavailable;
 }
 
@@ -346,7 +348,7 @@ HRESULT __stdcall netpbm_bitmap_frame_decode::CopyPalette(IWICPalette*) noexcept
 SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
 HRESULT __stdcall netpbm_bitmap_frame_decode::GetThumbnail(IWICBitmapSource**) noexcept
 {
-    TRACE("%p netpbm_bitmap_frame_decode::GetThumbnail (not supported)\n", this);
+    TRACE("{} netpbm_bitmap_frame_decode::GetThumbnail (not supported)\n", static_cast<void*>(this));
     return wincodec::error_codec_no_thumbnail;
 }
 
@@ -354,9 +356,9 @@ HRESULT __stdcall netpbm_bitmap_frame_decode::GetColorContexts(const uint32_t co
                                                                uint32_t* actual_count)
 try
 {
-    TRACE("%p netpbm_bitmap_frame_decode::GetColorContexts (always 0), count=%d, color_contexts address=%p, "
-          "actual_count address=%p\n",
-          this, count, color_contexts, actual_count);
+    TRACE("{} netpbm_bitmap_frame_decode::GetColorContexts (always 0), count={}, color_contexts address={}, "
+          "actual_count address={}\n",
+          static_cast<void*>(this), count, static_cast<void*>(color_contexts), static_cast<void*>(actual_count));
     *check_out_pointer(actual_count) = 0;
     return error_ok;
 }
@@ -369,7 +371,7 @@ SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
 HRESULT __stdcall netpbm_bitmap_frame_decode::GetMetadataQueryReader(
     [[maybe_unused]] IWICMetadataQueryReader** metadata_query_reader) noexcept
 {
-    TRACE("%p netpbm_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader address=%p\n", this,
-          metadata_query_reader);
+    TRACE("{} netpbm_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader address={}\n", static_cast<void*>(this),
+          static_cast<void*>(metadata_query_reader));
     return wincodec::error_unsupported_operation;
 }
