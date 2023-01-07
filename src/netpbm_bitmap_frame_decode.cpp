@@ -226,10 +226,12 @@ void decode_monochrome_bitmap(buffered_stream_reader& stream_reader, const pnm_h
 void decode_color_bitmap(buffered_stream_reader& stream_reader, const pnm_header& header, const uint32_t bits_per_sample,
                          const uint32_t stride, std::span<std::byte> destination_samples)
 {
+    constexpr size_t sample_per_pixel{3};
+
     switch (bits_per_sample)
     {
     case 8:
-        if (const auto header_width_in_bytes{static_cast<size_t>(header.width) * 3}; header_width_in_bytes % stride == 0)
+        if (const auto header_width_in_bytes{header.width * sample_per_pixel}; header_width_in_bytes % stride == 0)
         {
             stream_reader.read_bytes(destination_samples.data(), destination_samples.size());
         }
@@ -239,16 +241,21 @@ void decode_color_bitmap(buffered_stream_reader& stream_reader, const pnm_header
         }
         break;
 
-    case 16:
-        if (const auto header_width_in_bytes{static_cast<size_t>(header.width) * 3 * 2}; header_width_in_bytes % stride == 0)
+    case 16: {
+        constexpr size_t bytes_per_sample{2};
+        if (const auto header_width_in_bytes{header.width * sample_per_pixel * bytes_per_sample};
+            header_width_in_bytes % stride == 0)
         {
-            throw_hresult(wincodec::error_unsupported_pixel_format);
+            stream_reader.read_bytes(destination_samples.data(), destination_samples.size());
+            convert_to_little_endian_and_optional_shift(
+                {reinterpret_cast<uint16_t*>(destination_samples.data()), destination_samples.size() / sizeof uint16_t}, 0);
         }
         else
         {
             throw_hresult(wincodec::error_unsupported_pixel_format);
         }
-        break;
+    }
+    break;
 
     default:
         ASSERT(false);
@@ -310,7 +317,8 @@ netpbm_bitmap_frame_decode::netpbm_bitmap_frame_decode(_In_ IStream* source_stre
 // IWICBitmapSource
 HRESULT __stdcall netpbm_bitmap_frame_decode::GetSize(uint32_t* width, uint32_t* height)
 {
-    TRACE("{} netpbm_bitmap_frame_decode::GetSize, width address={}, height address={}\n", static_cast<void*>(this), static_cast<void*>(width), static_cast<void*>(height));
+    TRACE("{} netpbm_bitmap_frame_decode::GetSize, width address={}, height address={}\n", static_cast<void*>(this),
+          static_cast<void*>(width), static_cast<void*>(height));
     return bitmap_source_->GetSize(width, height);
 }
 

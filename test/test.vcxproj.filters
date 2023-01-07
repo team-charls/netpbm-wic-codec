@@ -100,6 +100,9 @@
     <CopyFileToFolders Include="data-files\jpegls-conformance-test-8bit-256-256.ppm">
       <Filter>Data Files</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\16bit_2x1.ppm">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
