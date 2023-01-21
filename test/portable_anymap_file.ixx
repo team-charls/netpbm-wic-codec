@@ -79,10 +79,8 @@ private:
     {
         std::vector<int> result;
 
-        const auto first = static_cast<char>(pnm_file.get());
-
         // All portable anymap format (PNM) start with the character P.
-        if (first != 'P')
+        if (const auto first = static_cast<char>(pnm_file.get()); first != 'P')
             throw std::istream::failure("Missing P");
 
         while (result.size() < 4)
