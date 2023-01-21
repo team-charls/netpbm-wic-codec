@@ -8,7 +8,7 @@ module;
 
 export module factory;
 
-export inline constexpr GUID CLSID_NetPbmDecoder{0x6891bbe, 0xcc02, 0x4bb2, {0x9c, 0xf0, 0x30, 0x3f, 0xc4, 0xe6, 0x68, 0xc3}};
+export inline constexpr GUID net_pbm_decoder_class_id{0x6891bbe, 0xcc02, 0x4bb2, {0x9c, 0xf0, 0x30, 0x3f, 0xc4, 0xe6, 0x68, 0xc3}};
 
 export class factory final
 {
@@ -35,7 +35,7 @@ public:
     [[nodiscard]] winrt::com_ptr<IWICBitmapDecoder> create_decoder() const
     {
         winrt::com_ptr<IWICBitmapDecoder> decoder;
-        winrt::check_hresult(get_class_factory(CLSID_NetPbmDecoder)->CreateInstance(nullptr, IID_PPV_ARGS(decoder.put())));
+        winrt::check_hresult(get_class_factory(net_pbm_decoder_class_id)->CreateInstance(nullptr, IID_PPV_ARGS(decoder.put())));
 
         return decoder;
     }
