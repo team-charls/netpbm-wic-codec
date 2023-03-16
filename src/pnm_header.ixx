@@ -49,14 +49,14 @@ export struct pnm_header
         char magic[2];
         ULONG bytesRead;
 
-        HRESULT hr = streamReader.ReadBytes((BYTE*)&magic, sizeof(magic), &bytesRead);
+        const HRESULT hr = streamReader.ReadBytes((BYTE*)&magic, sizeof(magic), &bytesRead);
 
         if (FAILED(hr))
             return hr;
         if (bytesRead != sizeof(magic))
             throw_hresult(wincodec::error_bad_header);
 
-        if (magic[0] != 'P' || magic[1] < '1' || magic[1] > '6')
+        if (magic[0] != 'P')
             throw_hresult(wincodec::error_bad_header);
 
         AsciiFormat = false;
@@ -78,6 +78,8 @@ export struct pnm_header
         case '6': // P6: pixmap, binary
             PnmType = PnmType::Pixmap;
             break;
+        default:
+            throw_hresult(wincodec::error_bad_header);
         }
 
         width = streamReader.read_int_slow();
