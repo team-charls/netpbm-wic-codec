@@ -39,11 +39,6 @@
 #ifdef NDEBUG
     #define TRACE __noop
 #else
-    #ifdef __RESHARPER__
-        // ReSharper 2022.3.1 fails to parse C++20 macro __VA_OPT__
-        #define TRACE __noop
-    #else
-        // Use std::format directly to get compile time checking of the string arguments.
-        #define TRACE(fmt, ...) OutputDebugStringA(std::format(fmt __VA_OPT__(,) __VA_ARGS__).c_str())
-    #endif
+    // Use std::format directly to get compile time checking of the string arguments.
+    #define TRACE(fmt, ...) OutputDebugStringA(std::format(fmt __VA_OPT__(,) __VA_ARGS__).c_str())
 #endif
