@@ -26,6 +26,9 @@ Most of these rules\warning are based on the C++ Core Guidelines.
 - C26472: Don't use static_cast for arithmetic conversions  
 **Rationale**: can only be solved with gsl::narrow_cast
 
+- C26478: Don't use std::move on constant variables. (es.56).
+**Rationale**: false warnings (VS 2022 17.7.0 Preview 3.0)
+
 - C26481: Do not pass an array as a single pointer.  
 **Rationale**: gsl::span is not available.
 
