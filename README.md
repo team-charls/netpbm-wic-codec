@@ -35,7 +35,7 @@ WIC is implemented using COM technology. Image codecs for many popular formats a
 
 This project is the development phase:
 
-- Visual Studio 2022 17.4 or newer is needed to build the project.
+- Visual Studio 2022 17.7 Preview 3.0 or newer is needed to build the project.
 - No installer with pre-built binaries is available, manually building and registering is required.
 - Only .pgm P5 gray scale images can be decoded.
 - All .pgm files are considered single frame (the Netpbm standard also allows multi-frame)
@@ -45,11 +45,8 @@ This project is the development phase:
 
 The Netpbm WIC codec supports the following Windows operating systems:
 
-- Windows 11
-- Windows 10
-- Windows Server 2022
-- Windows Server 2019
-- Windows Server 2016
+- Windows 11, 10
+- Windows Server 2022, 2019, 2016
 
 ### Applications that can use the Netpbm WIC codec
 
@@ -100,7 +97,7 @@ Note *: monochrome images with 10 or 12 bits per sample will be upscaled to 16 b
 ## Build Instructions
 
 1. Clone this repro
-1. Use Visual Studio 2022 17.4 or newer and open the netpbm-wic-codec.sln. Batch build all projects.
+1. Use Visual Studio 2022 17.7 Preview 3.0 or newer and open the netpbm-wic-codec.sln. Batch build all projects.
 1. Or use a Developer Command Prompt and run use MSbuild in the root of the cloned repository.
 
 ## Installation
