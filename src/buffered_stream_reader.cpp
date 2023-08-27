@@ -139,11 +139,10 @@ uint32_t buffered_stream_reader::read_int_slow()
     return value;
 }
 
-bool buffered_stream_reader::try_read_bytes(void* buffer, size_t size)
+bool buffered_stream_reader::try_read_bytes(void* buffer, const size_t size)
 {
     ULONG bytes_read;
-    const HRESULT hr = ReadBytes(buffer, static_cast<ULONG>(size), &bytes_read);
-    if (FAILED(hr) || bytes_read != size)
+    if (const HRESULT hr{ReadBytes(buffer, static_cast<ULONG>(size), &bytes_read)}; FAILED(hr) || bytes_read != size)
         return false;
 
     return true;
@@ -169,9 +168,9 @@ void buffered_stream_reader::read_bytes(void* buffer, size_t size)
                   wincodec::error_stream_read);
 }
 
-HRESULT buffered_stream_reader::ReadBytes(void* buf, ULONG count, ULONG* bytesRead)
+HRESULT buffered_stream_reader::ReadBytes(void* buf, const ULONG count, ULONG* bytesRead)
 {
-    BYTE* b{static_cast<BYTE*>(buf)};
+    auto b{static_cast<BYTE*>(buf)};
     ULONG remaining = count;
 
     while (true)
@@ -206,7 +205,8 @@ void buffered_stream_reader::RefillBuffer()
     position_ = buffer_size_ - position_;
 
     unsigned long read;
-    check_hresult(stream_->Read(buffer_.data() + position_, static_cast<ULONG>(buffer_size_ - position_), &read), wincodec::error_stream_read);
+    check_hresult(stream_->Read(buffer_.data() + position_, static_cast<ULONG>(buffer_size_ - position_), &read),
+                  wincodec::error_stream_read);
 
     buffer_size_ = position_ + read;
     position_ = 0;

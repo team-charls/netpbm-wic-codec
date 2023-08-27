@@ -49,9 +49,7 @@ export struct pnm_header
         char magic[2];
         ULONG bytesRead;
 
-        const HRESULT hr = streamReader.ReadBytes((BYTE*)&magic, sizeof(magic), &bytesRead);
-
-        if (FAILED(hr))
+        if (const HRESULT hr{streamReader.ReadBytes((BYTE*)&magic, sizeof(magic), &bytesRead)}; FAILED(hr))
             return hr;
         if (bytesRead != sizeof(magic))
             throw_hresult(wincodec::error_bad_header);
