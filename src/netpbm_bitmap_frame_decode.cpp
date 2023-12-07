@@ -4,18 +4,17 @@
 module;
 
 #include "macros.h"
-#include "winrt.h"
-
-#include <span>
 
 module netpbm_bitmap_frame_decode;
+
+import <std.h>;
+import <win.h>;
+import winrt;
 
 import errors;
 import buffered_stream_reader;
 import pnm_header;
-import <algorithm>;
-import <bit>;
-import <wincodec.h>;
+import util;
 
 using std::span;
 using winrt::check_hresult;

@@ -1,13 +1,9 @@
 // Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
-module;
-
-#include "winrt.h"
-
 export module errors;
 
-import <olectl.h>;
+import <win.h>;
 
 export {
 
@@ -41,40 +37,5 @@ inline constexpr HRESULT error_stream_not_available{WINCODEC_ERR_STREAMNOTAVAILA
 inline constexpr HRESULT error_stream_read{WINCODEC_ERR_STREAMREAD};
 
 } // namespace wincodec
-
-inline void check_hresult(const winrt::hresult result, const winrt::hresult result_to_throw)
-{
-    if (result < 0)
-        throw_hresult(result_to_throw);
-}
-
-[[nodiscard]] constexpr bool failed(const winrt::hresult result) noexcept
-{
-    return result < 0;
-}
-
-template<typename T>
-T* check_in_pointer(_In_ T* pointer)
-{
-    if (!pointer)
-        winrt::throw_hresult(error_invalid_argument);
-
-    return pointer;
-}
-
-template<typename T>
-T* check_out_pointer(T* pointer)
-{
-    if (!pointer)
-        winrt::throw_hresult(error_pointer);
-
-    return pointer;
-}
-
-inline void check_condition(const bool condition, const winrt::hresult result_to_throw)
-{
-    if (!condition)
-        throw_hresult(result_to_throw);
-}
 
 }

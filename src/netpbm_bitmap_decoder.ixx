@@ -2,6 +2,6 @@
 // SPDX-License-Identifier: MIT
 export module netpbm_bitmap_decoder;
 
-import <guiddef.h>;
+import <win.h>;
 
 export void create_netpbm_bitmap_decoder_factory(GUID const& interface_id, void** result);

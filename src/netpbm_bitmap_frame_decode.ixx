@@ -1,14 +1,11 @@
 // Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
-module;
-
-#include "winrt.h"
-
 export module netpbm_bitmap_frame_decode;
 
-import <cstdint>;
-import <wincodec.h>;
+import <std.h>;
+import <win.h>;
+import winrt;
 
 export class netpbm_bitmap_frame_decode final
     : public winrt::implements<netpbm_bitmap_frame_decode, IWICBitmapFrameDecode, IWICBitmapSource>
@@ -34,4 +31,3 @@ public:
 private:
     winrt::com_ptr<IWICBitmapSource> bitmap_source_;
 };
-

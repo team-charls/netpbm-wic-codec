@@ -3,23 +3,16 @@
 
 #include "macros.h"
 #include "version.h"
-#include "winrt.h"
 
-#include <span>
+import <std.h>;
+import <win.h>;
+import winrt;
 
 import netpbm_bitmap_decoder;
 import errors;
 import guids;
 import registry;
 import util;
-
-import <string>;
-import <array>;
-import <cassert>;
-import <format>;
-import <olectl.h>;
-import <ShlObj.h>;
-import <wincodec.h>;
 
 using std::array;
 using std::format;

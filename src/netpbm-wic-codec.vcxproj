@@ -200,7 +200,6 @@
   <ItemGroup>
     <ClInclude Include="macros.h" />
     <ClInclude Include="version.h" />
-    <ClInclude Include="winrt.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffered_stream_reader.cpp" />
@@ -216,6 +215,7 @@
     <ClCompile Include="netpbm_bitmap_frame_decode.ixx" />
     <ClCompile Include="registry.ixx" />
     <ClCompile Include="util.ixx" />
+    <ClCompile Include="winrt.ixx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="netpbm-wic-codec.def" />

@@ -4,19 +4,19 @@
 module;
 
 #include "macros.h"
-#include "winrt.h"
 
 module netpbm_bitmap_decoder;
+
+import <std.h>;
+import <win.h>;
+import winrt;
 
 import class_factory;
 import errors;
 import pnm_header;
 import guids;
 import netpbm_bitmap_frame_decode;
-
-import <mutex>;
-
-import <wincodec.h>;
+import util;
 
 using std::scoped_lock;
 using winrt::check_hresult;

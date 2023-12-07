@@ -1,11 +1,11 @@
 // Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
-module;
-
-#include "winrt.h"
-
 export module buffered_stream_reader;
+
+import <win.h>;
+import <std.h>;
+import winrt;
 
 export class buffered_stream_reader final
 {

@@ -1,8 +1,9 @@
 // Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
+
 export module guids;
 
-import <guiddef.h>;
+import <win.h>;
 
 export namespace id {
 

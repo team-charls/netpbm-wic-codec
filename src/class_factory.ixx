@@ -1,13 +1,13 @@
 // Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
-module;
-
-#include "winrt.h"
-
 export module class_factory;
 
+import <win.h>;
+import winrt;
+
 import errors;
+import util;
 
 export template<typename Class>
 struct class_factory : winrt::implements<class_factory<Class>, IClassFactory>

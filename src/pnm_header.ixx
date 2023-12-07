@@ -1,14 +1,15 @@
 // Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
-module;
-
-#include "winrt.h"
-
 export module pnm_header;
 
-import errors;
+import <std.h>;
+import <win.h>;
+import winrt;
+
 import buffered_stream_reader;
+import errors;
+import util;
 
 using winrt::throw_hresult;
 
