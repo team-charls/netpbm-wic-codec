@@ -4,13 +4,13 @@
 module;
 
 #include "macros.h"
-#include "winrt.h"
-
-#include <span>
 
 export module registry;
 
+import <std.h>;
+import <win.h>;
 import errors;
+import winrt;
 
 using winrt::check_win32;
 

@@ -7,10 +7,11 @@ module;
 
 export module util;
 
-import <wincodec.h>;
-import <cstddef>;
-import <string>;
-import <cassert>;
+import <win.h>;
+import <std.h>;
+import winrt;
+
+import errors;
 
 [[nodiscard]] HMODULE get_current_module() noexcept
 {
@@ -84,5 +85,49 @@ export
 
         path.resize(actual_size);
         return path;
+    }
+
+    template<>
+    struct std::formatter<winrt::hresult> : std::formatter<int32_t>
+    {
+        auto format(const winrt::hresult& result, std::format_context& ctx) const
+        {
+            return std::formatter<int32_t>::format(result.value, ctx);
+        }
+    };
+
+    inline void check_hresult(const winrt::hresult result, const winrt::hresult result_to_throw)
+    {
+        if (result < 0)
+            throw_hresult(result_to_throw);
+    }
+
+    [[nodiscard]] constexpr bool failed(const winrt::hresult result) noexcept
+    {
+        return result < 0;
+    }
+
+    template<typename T>
+    T* check_in_pointer(_In_ T * pointer)
+    {
+        if (!pointer)
+            winrt::throw_hresult(error_invalid_argument);
+
+        return pointer;
+    }
+
+    template<typename T>
+    T* check_out_pointer(T * pointer)
+    {
+        if (!pointer)
+            winrt::throw_hresult(error_pointer);
+
+        return pointer;
+    }
+
+    inline void check_condition(const bool condition, const winrt::hresult result_to_throw)
+    {
+        if (!condition)
+            throw_hresult(result_to_throw);
     }
 }

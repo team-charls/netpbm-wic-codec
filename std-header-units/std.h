@@ -1,19 +1,23 @@
+// Copyright (c) Victor Derks.
+// SPDX-License-Identifier: MIT
+
 #pragma once
 
-#include <vector>
-#include <fstream>
-#include <ios>
-#include <sstream>
-#include <string>
-#include <array>
 #include <algorithm>
+#include <array>
 #include <bit>
-#include <mutex>
-#include <span>
+#include <cassert>
+#include <chrono>
+#include <cstddef>
 #include <cstdint>
 #include <cstdio>
-#include <cstddef>
-#include <cassert>
-#include <utility>
-#include <chrono>
+#include <format>
+#include <fstream>
+#include <ios>
 #include <memory>
+#include <mutex>
+#include <span>
+#include <sstream>
+#include <string>
+#include <utility>
+#include <vector>

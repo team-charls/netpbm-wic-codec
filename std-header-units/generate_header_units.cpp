@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 import "std.h";
+import "win.h";
 
 import <vector>;
 import <fstream>;

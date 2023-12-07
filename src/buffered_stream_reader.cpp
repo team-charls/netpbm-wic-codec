@@ -1,15 +1,14 @@
 // Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
-module;
-
-#include "winrt.h"
-
 module buffered_stream_reader;
 
+import <std.h>;
+import <win.h>;
+import winrt;
+
 import errors;
-import <cstddef>;
-import <vector>;
+import util;
 
 constexpr UINT MAX_BUFFER_SIZE = 65536;
 
