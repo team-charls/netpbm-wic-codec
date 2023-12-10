@@ -2,10 +2,13 @@
 // SPDX-License-Identifier: MIT
 
 #include "cpp_unit_test.h"
-#include "winrt.h"
+
+import <std.h>;
+import <win.h>;
+import winrt;
 
 import pnm_header;
-import test_util;
+import test.util;
 
 using std::array;
 using winrt::com_ptr;

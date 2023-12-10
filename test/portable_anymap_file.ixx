@@ -3,12 +3,9 @@
 
 export module portable_anymap_file;
 
-import <fstream>;
-import <ios>;
-import <sstream>;
-import <string>;
-import <vector>;
+import <std.h>;
 
+namespace {
 
 constexpr int32_t log_2(const int32_t n) noexcept
 {
@@ -19,6 +16,8 @@ constexpr int32_t log_2(const int32_t n) noexcept
     }
     return x; 
 }
+
+} // namespace
 
 
 // Purpose: this class can read an image stored in the Portable Anymap Format (PNM).
