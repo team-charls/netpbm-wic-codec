@@ -18,7 +18,7 @@
     <ClCompile Include="netpbm_bitmap_decoder_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test.errors.ixx">
+    <ClCompile Include="test_errors.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="dll_main_test.cpp">
@@ -42,12 +42,12 @@
     <ClCompile Include="factory.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="test_winrt.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="util.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="winrt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cpp_unit_test.h">

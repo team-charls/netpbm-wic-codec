@@ -3,14 +3,14 @@
 
 module;
 
-#include "winrt.h"
+#include "util.h"
 
-export module test_stream;
+export module test.stream;
+
+import <win.h>;
+import test.winrt;
 
 import test.errors;
-
-import <Shlwapi.h>;
-
 
 export class test_stream final : public winrt::implements<test_stream, IStream>
 {
@@ -20,18 +20,21 @@ public:
     {
     }
 
+    SUPPRESS_WARNING_NEXT_LINE(28285 6101)
     HRESULT __stdcall Read(_Out_writes_bytes_to_(cb, *pcbRead) void* /*pv*/, _In_ ULONG /*cb*/,
                            _Out_opt_ ULONG* /*pcbRead*/) noexcept override
     {
         return fail_on_read_ ? error_fail : error_ok;
     }
 
+    SUPPRESS_WARNING_NEXT_LINE(28285)
     HRESULT __stdcall Write(_In_reads_bytes_(cb) const void* /*pv*/, _In_ ULONG /*cb*/,
                             _Out_opt_ ULONG* /*pcbWritten*/) noexcept override
     {
         return error_fail;
     }
 
+    SUPPRESS_WARNING_NEXT_LINE(6101)
     HRESULT __stdcall Seek(LARGE_INTEGER, DWORD /*dwOrigin*/, _Out_opt_ ULARGE_INTEGER*) override
     {
         --fail_on_seek_counter_;
@@ -44,6 +47,7 @@ public:
         return error_fail;
     }
 
+    //SUPPRESS_WARNING_NEXT_LINE(6101)
     HRESULT __stdcall CopyTo(_In_ IStream*, ULARGE_INTEGER /*cb*/, _Out_opt_ ULARGE_INTEGER* /*pcbRead*/,
                              _Out_opt_ ULARGE_INTEGER* /*pcbWritten*/) noexcept override
     {
