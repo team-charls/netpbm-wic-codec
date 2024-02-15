@@ -39,6 +39,10 @@
       <UseFullPaths>true</UseFullPaths>
       <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
 
+      <!-- Enables recommended Security Development Lifecycle (SDL) checks.
+           These checks change security-relevant warnings into errors, and set additional secure code-generation features. -->
+      <SDLCheck>true</SDLCheck>
+
       <!-- For development purposes, All warnings can be used to discover useful compiler warnings.
            This requires also that some warnings need to be disabled from this all warning list. -->
       <WarningLevel Condition="'$(NETPBM_WIC_CODEC_ALL_WARNINGS)'!=''">EnableAllWarnings</WarningLevel>

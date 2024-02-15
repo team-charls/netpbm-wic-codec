@@ -42,3 +42,13 @@
     // Use std::format directly to get compile time checking of the string arguments.
     #define TRACE(fmt, ...) OutputDebugStringA(std::format(fmt __VA_OPT__(,) __VA_ARGS__).c_str())
 #endif
+
+// Include sal.h as workaround that IntelliSense in VS 2020 17.9 fails to parse #import <win.h>
+#ifdef __INTELLISENSE__
+#define _AMD64_
+#include <sal.h>
+#include <winreg.h>
+#include <libloaderapi.h>
+#include <combaseapi.h>
+#include <cassert>
+#endif

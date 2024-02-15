@@ -1,6 +1,10 @@
 // Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
+module;
+
+#include "macros.h"
+
 export module errors;
 
 import <win.h>;
