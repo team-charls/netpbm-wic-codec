@@ -5,7 +5,7 @@
 
 import <std.h>;
 import <win.h>;
-import winrt;
+import test.winrt;
 
 import pnm_header;
 import test.util;
