@@ -23,10 +23,10 @@ using winrt::check_hresult;
 using winrt::com_ptr;
 using winrt::to_hresult;
 
+namespace {
 
-class netpbm_bitmap_decoder final : public winrt::implements<netpbm_bitmap_decoder, IWICBitmapDecoder>
+struct netpbm_bitmap_decoder :  winrt::implements<netpbm_bitmap_decoder, IWICBitmapDecoder>
 {
-public:
     // IWICBitmapDecoder
     HRESULT __stdcall QueryCapability(_In_ IStream* stream, _Out_ DWORD* capability) noexcept override
     try
@@ -222,6 +222,7 @@ private:
     com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode_;
 };
 
+} // namespace
 
 void create_netpbm_bitmap_decoder_factory(GUID const& interface_id, void** result)
 {
