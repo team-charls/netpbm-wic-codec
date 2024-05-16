@@ -32,7 +32,7 @@ jobs:
 
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild /v:m /m /p:Configuration=${{matrix.buildConfiguration}} /p:Platform=${{matrix.buildPlatform}} ${{env.SOLUTION_FILE_PATH}} /p:VCToolsVersion=14.38.33130
+      run: msbuild /v:m /m /p:Configuration=${{matrix.buildConfiguration}} /p:Platform=${{matrix.buildPlatform}} ${{env.SOLUTION_FILE_PATH}} /p:NETPBM_WIC_CODEC_ALL_WARNINGS=true
 
     - name: Test
       working-directory: .\build\bin\${{matrix.buildPlatform}}\${{matrix.buildConfiguration}}\
