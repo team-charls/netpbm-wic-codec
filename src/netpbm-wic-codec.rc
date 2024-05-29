@@ -34,6 +34,7 @@ BEGIN
             VALUE "OriginalFilename", L"netpbm-wic-codec.dll"
             VALUE "ProductName", L"Netpbm WIC codec"
             VALUE "ProductVersion", VERSION
+            VALUE "OLESelfRegister", "\0"
         END
     END
     BLOCK "VarFileInfo"
