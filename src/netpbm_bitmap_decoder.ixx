@@ -1,5 +1,6 @@
 // Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
+
 export module netpbm_bitmap_decoder;
 
 import <win.h>;

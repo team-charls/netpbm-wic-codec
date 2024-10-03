@@ -7,6 +7,7 @@ module;
 
 module netpbm_bitmap_decoder;
 
+import std;
 import <win.h>;
 import winrt;
 
@@ -17,6 +18,7 @@ import guids;
 import netpbm_bitmap_frame_decode;
 import util;
 
+using std::uint32_t;
 using std::scoped_lock;
 using winrt::check_hresult;
 using winrt::com_ptr;

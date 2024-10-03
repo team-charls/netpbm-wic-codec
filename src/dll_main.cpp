@@ -16,6 +16,7 @@ import util;
 
 using std::array;
 using std::format;
+using std::uint32_t;
 using std::wstring;
 using namespace std::string_literals;
 
@@ -88,15 +89,15 @@ void register_decoder_file_extension(const wchar_t* file_type_name, const wchar_
                         L"PhotoViewer.FileAssoc.Tiff");
 }
 
- void register_decoder_pattern(const wstring& sub_key, const int index, const std::span<const std::byte> pattern)
+void register_decoder_pattern(const wstring& sub_key, const int index, const std::span<const std::byte> pattern)
 {
-     const wstring patterns_sub_key{sub_key + LR"(\Patterns\)" + std::to_wstring(index)};
-     constexpr array mask{0xFF_byte, 0xFF_byte};
-     registry::set_value(patterns_sub_key, L"Length", static_cast<uint32_t>(pattern.size()));
-     registry::set_value(patterns_sub_key, L"Position", 0U);
-     registry::set_value(patterns_sub_key, L"Mask", mask);
-     registry::set_value(patterns_sub_key, L"Pattern", pattern);
- }
+    const wstring patterns_sub_key{sub_key + LR"(\Patterns\)" + std::to_wstring(index)};
+    constexpr array mask{0xFF_byte, 0xFF_byte};
+    registry::set_value(patterns_sub_key, L"Length", static_cast<uint32_t>(pattern.size()));
+    registry::set_value(patterns_sub_key, L"Position", 0U);
+    registry::set_value(patterns_sub_key, L"Mask", mask);
+    registry::set_value(patterns_sub_key, L"Pattern", pattern);
+}
 
 void register_decoder()
 {
