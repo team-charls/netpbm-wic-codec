@@ -7,6 +7,7 @@ module;
 
 module netpbm_bitmap_frame_decode;
 
+import std;
 import <win.h>;
 import winrt;
 
@@ -17,6 +18,8 @@ import util;
 
 using std::span;
 using std::uint16_t;
+using std::int32_t;
+using std::uint32_t;
 using winrt::check_hresult;
 using winrt::com_ptr;
 using winrt::throw_hresult;

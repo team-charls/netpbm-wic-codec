@@ -12,6 +12,8 @@ import <win.h>;
 import errors;
 import util;
 
+using std::uint32_t;
+
 constexpr UINT MAX_BUFFER_SIZE = 65536;
 
 

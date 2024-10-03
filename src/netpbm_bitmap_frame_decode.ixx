@@ -7,8 +7,11 @@ module;
 
 export module netpbm_bitmap_frame_decode;
 
+import std;
 import <win.h>;
 import winrt;
+
+using std::uint32_t;
 
 export struct netpbm_bitmap_frame_decode
     : winrt::implements<netpbm_bitmap_frame_decode, IWICBitmapFrameDecode, IWICBitmapSource>
