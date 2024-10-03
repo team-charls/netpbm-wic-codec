@@ -179,8 +179,9 @@
     <ClCompile Include="test_winrt.ixx" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cpp_unit_test.h" />
-    <ClInclude Include="util.h" />
+    <ClInclude Include="cpp_unit_test.hpp" />
+    <ClInclude Include="intellisense.hpp" />
+    <ClInclude Include="util.hpp" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="data-files\2bit_4x1.pgm">

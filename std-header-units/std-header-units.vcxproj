@@ -170,7 +170,6 @@
     <ClCompile Include="generate_header_units.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="std.h" />
     <ClInclude Include="win.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

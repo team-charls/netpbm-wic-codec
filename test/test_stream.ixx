@@ -3,7 +3,8 @@
 
 module;
 
-#include "util.h"
+#include "util.hpp"
+#include "intellisense.hpp"
 
 export module test.stream;
 
@@ -19,24 +20,26 @@ export struct test_stream : winrt::implements<test_stream, IStream>
     {
     }
 
-    SUPPRESS_WARNING_NEXT_LINE(28285 6101)
-    HRESULT __stdcall Read(_Out_writes_bytes_to_(cb, *pcbRead) void* /*pv*/, _In_ ULONG /*cb*/,
-                           _Out_opt_ ULONG* /*pcbRead*/) noexcept override
+    HRESULT __stdcall Read(_Out_writes_bytes_to_(cb, *pcbRead) void* /*pv*/, [[maybe_unused]] _In_ ULONG cb,
+                           _Out_opt_ ULONG* pcbRead) noexcept override
     {
+        if (pcbRead)
+            pcbRead = 0;
+
         return fail_on_read_ ? error_fail : error_ok;
     }
 
-    SUPPRESS_WARNING_NEXT_LINE(28285)
-    HRESULT __stdcall Write(_In_reads_bytes_(cb) const void* /*pv*/, _In_ ULONG /*cb*/,
+    HRESULT __stdcall Write(_In_reads_bytes_(cb) const void* /*pv*/, [[maybe_unused]] _In_ ULONG cb,
                             _Out_opt_ ULONG* /*pcbWritten*/) noexcept override
     {
         return error_fail;
     }
 
-    SUPPRESS_WARNING_NEXT_LINE(6101)
-    HRESULT __stdcall Seek(LARGE_INTEGER, DWORD /*dwOrigin*/, _Out_opt_ ULARGE_INTEGER*) override
+    HRESULT __stdcall Seek(LARGE_INTEGER, DWORD /*dwOrigin*/, _Out_opt_ ULARGE_INTEGER* plibNewPosition) override
     {
         --fail_on_seek_counter_;
+        if (plibNewPosition)
+            plibNewPosition->QuadPart = 0L;
 
         return fail_on_seek_counter_ <= 0 ? error_fail : error_ok;
     }
@@ -46,7 +49,6 @@ export struct test_stream : winrt::implements<test_stream, IStream>
         return error_fail;
     }
 
-    //SUPPRESS_WARNING_NEXT_LINE(6101)
     HRESULT __stdcall CopyTo(_In_ IStream*, ULARGE_INTEGER /*cb*/, _Out_opt_ ULARGE_INTEGER* /*pcbRead*/,
                              _Out_opt_ ULARGE_INTEGER* /*pcbWritten*/) noexcept override
     {

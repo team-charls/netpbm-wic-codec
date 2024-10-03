@@ -3,15 +3,17 @@
 
 module;
 
-#include "macros.h"
+#include "macros.hpp"
 
 export module util;
 
+import std;
 import <win.h>;
-import <std.h>;
 import winrt;
 
 import errors;
+
+namespace {
 
 [[nodiscard]] HMODULE get_current_module() noexcept
 {
@@ -22,13 +24,15 @@ import errors;
     return module;
 }
 
+} // namespace
+
 export constexpr std::byte operator"" _byte(const unsigned long long int n)
 {
     return static_cast<std::byte>(n);
 }
 
 
-export [[nodiscard]] inline const char* pixel_format_to_string(const GUID& guid) noexcept
+export [[nodiscard]] const char* pixel_format_to_string(const GUID& guid) noexcept
 {
     if (guid == GUID_WICPixelFormat2bppGray)
         return "GUID_WICPixelFormat2bppGray";
@@ -51,7 +55,7 @@ export [[nodiscard]] inline const char* pixel_format_to_string(const GUID& guid)
     return "Unknown";
 }
 
-export [[nodiscard]] inline std::wstring guid_to_string(const GUID& guid)
+export [[nodiscard]] std::wstring guid_to_string(const GUID& guid)
 {
     std::wstring guid_text;
 
@@ -64,7 +68,7 @@ export [[nodiscard]] inline std::wstring guid_to_string(const GUID& guid)
     return guid_text;
 }
 
-export [[nodiscard]] inline std::wstring get_module_path()
+export [[nodiscard]] std::wstring get_module_path()
 {
     std::wstring path(100, L'?');
     size_t path_size;
@@ -94,7 +98,16 @@ struct std::formatter<winrt::hresult> : std::formatter<int32_t>
     }
 };
 
-export inline void check_hresult(const winrt::hresult result, const winrt::hresult result_to_throw)
+// Copied from fmtlib as standard C++20 lacks this helper method and requires fmt_ptr
+export template<typename T>
+[[nodiscard]]
+auto fmt_ptr(T p) noexcept -> const void*
+{
+    static_assert(std::is_pointer_v<T>);
+    return std::bit_cast<const void*>(p);
+}
+
+export void inline check_hresult(const winrt::hresult result, const winrt::hresult result_to_throw)
 {
     if (result < 0)
         throw_hresult(result_to_throw);
@@ -123,7 +136,7 @@ T* check_out_pointer(T* pointer)
     return pointer;
 }
 
-export inline void check_condition(const bool condition, const winrt::hresult result_to_throw)
+export void check_condition(const bool condition, const winrt::hresult result_to_throw)
 {
     if (!condition)
         throw_hresult(result_to_throw);

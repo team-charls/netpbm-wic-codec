@@ -1,10 +1,10 @@
 // Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
-#include "macros.h"
+#include "macros.hpp"
 #include "version.h"
 
-import <std.h>;
+import std;
 import <win.h>;
 import winrt;
 
@@ -131,7 +131,7 @@ void register_decoder()
 // ReSharper disable CppInconsistentNaming
 // ReSharper disable CppParameterNamesMismatch
 
-BOOL APIENTRY DllMain(const HMODULE module, const DWORD reason_for_call, void* /*reserved*/) noexcept
+BOOL __stdcall DllMain(const HMODULE module, const DWORD reason_for_call, void* /*reserved*/) noexcept
 {
     switch (reason_for_call)
     {

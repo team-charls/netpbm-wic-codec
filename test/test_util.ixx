@@ -3,8 +3,9 @@
 
 export module test.util;
 
-import <std.h>;
+import std;
 import <win.h>;
+
 import test.winrt;
 
 export winrt::com_ptr<IStream> create_memory_stream(const void* data, const size_t size) noexcept

@@ -3,11 +3,11 @@
 
 module;
 
-#include "macros.h"
+#include "intellisense.hpp"
 
 export module pnm_header;
 
-import <std.h>;
+import std;
 import <win.h>;
 import winrt;
 
@@ -16,6 +16,7 @@ import errors;
 import util;
 
 using winrt::throw_hresult;
+using std::uint32_t;
 
 export enum class PnmType
 {

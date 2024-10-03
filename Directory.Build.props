@@ -29,8 +29,8 @@
       <!-- Use all cores to speed up the compilation (MS recommended best practice). -->
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
 
-      <!-- Explicit define that all projects are compiled according the C++20 standard -->
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <!-- Explicit define that all projects are compiled according the draft C++23 standard -->
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
 
       <!-- To ensure high quality C++ code use warning level 4 and treat warnings as errors to ensure warnings are fixed promptly. -->

@@ -3,11 +3,10 @@
 
 module;
 
-#include "macros.h"
+#include "macros.hpp"
 
 module netpbm_bitmap_frame_decode;
 
-import <std.h>;
 import <win.h>;
 import winrt;
 
@@ -17,6 +16,7 @@ import pnm_header;
 import util;
 
 using std::span;
+using std::uint16_t;
 using winrt::check_hresult;
 using winrt::com_ptr;
 using winrt::throw_hresult;
@@ -162,13 +162,13 @@ void pack_to_bytes(const span<const std::byte> source_pixels, std::byte* destina
     }
 }
 
-void pack_to_words(const span<const std::uint16_t> source_pixels, std::uint16_t* destination_pixels, const size_t width,
+void pack_to_words(const span<const uint16_t> source_pixels, uint16_t* destination_pixels, const size_t width,
                    const size_t height, const size_t stride) noexcept
 {
     for (size_t row{}; row != height; ++row)
     {
-        const std::uint16_t* source_row{source_pixels.data() + row * width};
-        std::uint16_t* destination_row{destination_pixels + row * (stride / 2)};
+        const uint16_t* source_row{source_pixels.data() + row * width};
+        uint16_t* destination_row{destination_pixels + row * (stride / 2)};
         std::copy_n(source_row, width, destination_row);
     }
 }
@@ -204,7 +204,7 @@ void decode_monochrome_bitmap(buffered_stream_reader& stream_reader, const pnm_h
     default:
         if (const auto header_width_in_bytes{static_cast<size_t>(header.width) * 2}; header_width_in_bytes % stride == 0)
         {
-            // Binary 16 bit Netpbm images are stored in big endian format (the defacto standard).
+            // Binary 16 bit Netpbm images are stored in big endian format (the de facto standard).
             stream_reader.read_bytes(destination_pixels.data(), destination_pixels.size());
             convert_to_little_endian_and_optional_shift(
                 {reinterpret_cast<uint16_t*>(destination_pixels.data()), destination_pixels.size() / sizeof uint16_t},
@@ -316,22 +316,22 @@ netpbm_bitmap_frame_decode::netpbm_bitmap_frame_decode(_In_ IStream* source_stre
 // IWICBitmapSource
 HRESULT __stdcall netpbm_bitmap_frame_decode::GetSize(uint32_t* width, uint32_t* height)
 {
-    TRACE("{} netpbm_bitmap_frame_decode::GetSize, width address={}, height address={}\n", static_cast<void*>(this),
-          static_cast<void*>(width), static_cast<void*>(height));
+    TRACE("{} netpbm_bitmap_frame_decode::GetSize, width address={}, height address={}\n", fmt_ptr(this),
+          fmt_ptr(width), fmt_ptr(height));
     return bitmap_source_->GetSize(width, height);
 }
 
 HRESULT __stdcall netpbm_bitmap_frame_decode::GetPixelFormat(GUID* pixel_format)
 {
-    TRACE("{} netpbm_bitmap_frame_decode::GetPixelFormat.1, pixel_format address={}\n", static_cast<void*>(this),
-          static_cast<void*>(pixel_format));
+    TRACE("{} netpbm_bitmap_frame_decode::GetPixelFormat.1, pixel_format address={}\n", fmt_ptr(this),
+          fmt_ptr(pixel_format));
     return bitmap_source_->GetPixelFormat(pixel_format);
 }
 
 HRESULT __stdcall netpbm_bitmap_frame_decode::GetResolution(double* dpi_x, double* dpi_y)
 {
-    TRACE("{} netpbm_bitmap_frame_decode::GetResolution, dpi_x address={}, dpi_y address={}\n", static_cast<void*>(this),
-          static_cast<void*>(dpi_x), static_cast<void*>(dpi_y));
+    TRACE("{} netpbm_bitmap_frame_decode::GetResolution, dpi_x address={}, dpi_y address={}\n", fmt_ptr(this),
+          fmt_ptr(dpi_x), fmt_ptr(dpi_y));
     return bitmap_source_->GetResolution(dpi_x, dpi_y);
 }
 
@@ -340,32 +340,31 @@ HRESULT __stdcall netpbm_bitmap_frame_decode::CopyPixels(const WICRect* rectangl
 {
     TRACE("{} netpbm_bitmap_frame_decode::CopyPixels, rectangle address={}, stride={}, buffer_size={}, buffer "
           "address={}\n",
-          static_cast<void*>(this), static_cast<const void*>(rectangle), stride, buffer_size, static_cast<void*>(buffer));
+          fmt_ptr(this), static_cast<const void*>(rectangle), stride, buffer_size, fmt_ptr(buffer));
     return bitmap_source_->CopyPixels(rectangle, stride, buffer_size, buffer);
 }
 
 HRESULT __stdcall netpbm_bitmap_frame_decode::CopyPalette(IWICPalette*) noexcept
 {
-    TRACE("{} netpbm_bitmap_frame_decode::CopyPalette (not supported)\n", static_cast<void*>(this));
+    TRACE("{} netpbm_bitmap_frame_decode::CopyPalette (not supported)\n", fmt_ptr(this));
     return wincodec::error_palette_unavailable;
 }
 
 // IWICBitmapFrameDecode : IWICBitmapSource
 
-SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
 HRESULT __stdcall netpbm_bitmap_frame_decode::GetThumbnail(IWICBitmapSource**) noexcept
 {
-    TRACE("{} netpbm_bitmap_frame_decode::GetThumbnail (not supported)\n", static_cast<void*>(this));
+    TRACE("{} netpbm_bitmap_frame_decode::GetThumbnail (not supported)\n", fmt_ptr(this));
     return wincodec::error_codec_no_thumbnail;
 }
 
 HRESULT __stdcall netpbm_bitmap_frame_decode::GetColorContexts(const uint32_t count, IWICColorContext** color_contexts,
-                                                               uint32_t* actual_count)
+                                                               uint32_t* actual_count) noexcept
 try
 {
     TRACE("{} netpbm_bitmap_frame_decode::GetColorContexts (always 0), count={}, color_contexts address={}, "
           "actual_count address={}\n",
-          static_cast<void*>(this), count, static_cast<void*>(color_contexts), static_cast<void*>(actual_count));
+          fmt_ptr(this), count, fmt_ptr(color_contexts), fmt_ptr(actual_count));
     *check_out_pointer(actual_count) = 0;
     return error_ok;
 }
@@ -374,11 +373,10 @@ catch (...)
     return to_hresult();
 }
 
-SUPPRESS_FALSE_WARNING_C6101_NEXT_LINE
 HRESULT __stdcall netpbm_bitmap_frame_decode::GetMetadataQueryReader(
     [[maybe_unused]] IWICMetadataQueryReader** metadata_query_reader) noexcept
 {
-    TRACE("{} netpbm_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader address={}\n", static_cast<void*>(this),
-          static_cast<void*>(metadata_query_reader));
+    TRACE("{} netpbm_bitmap_decoder::GetMetadataQueryReader, metadata_query_reader address={}\n", fmt_ptr(this),
+          fmt_ptr(metadata_query_reader));
     return wincodec::error_unsupported_operation;
 }
