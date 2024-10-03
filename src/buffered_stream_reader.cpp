@@ -1,11 +1,13 @@
 // Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
+module;
+
+#include "intellisense.hpp"
+
 module buffered_stream_reader;
 
-import <std.h>;
 import <win.h>;
-import winrt;
 
 import errors;
 import util;

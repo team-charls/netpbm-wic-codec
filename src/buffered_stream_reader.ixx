@@ -1,10 +1,14 @@
 // Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
+module;
+
+#include "intellisense.hpp"
+
 export module buffered_stream_reader;
 
 import <win.h>;
-import <std.h>;
+import std;
 import winrt;
 
 export class buffered_stream_reader final
@@ -15,7 +19,7 @@ public:
     HRESULT ReadChar(char* c);
     HRESULT SkipLine();
     HRESULT ReadString(char* str, ULONG maxCount);
-    [[nodiscard]] uint32_t read_int_slow();
+    [[nodiscard]] std::uint32_t read_int_slow();
     bool try_read_bytes(void* buffer, size_t size);
     void read_bytes(void* buffer, size_t size);
 

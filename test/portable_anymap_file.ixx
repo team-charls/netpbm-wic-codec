@@ -3,7 +3,11 @@
 
 export module portable_anymap_file;
 
-import <std.h>;
+import std;
+
+using std::int32_t;
+using std::byte;
+using std::vector;
 
 namespace {
 
@@ -34,7 +38,7 @@ public:
         pnm_file.exceptions(std::ios::eofbit | std::ios::failbit | std::ios::badbit);
         pnm_file.open(filename, std::ios_base::in | std::ios_base::binary);
 
-        const std::vector<int> header_info = read_header(pnm_file);
+        const vector<int> header_info = read_header(pnm_file);
         if (header_info.size() != 4)
             throw std::ios_base::failure("Incorrect PNM header");
 
@@ -68,15 +72,15 @@ public:
         return bits_per_sample_;
     }
 
-    [[nodiscard]] std::vector<std::byte>& image_data() noexcept
+    [[nodiscard]] vector<byte>& image_data() noexcept
     {
         return input_buffer_;
     }
 
 private:
-    [[nodiscard]] static std::vector<int> read_header(std::istream& pnm_file)
+    [[nodiscard]] static vector<int> read_header(std::istream& pnm_file)
     {
-        std::vector<int> result;
+        vector<int> result;
 
         // All portable anymap format (PNM) start with the character P.
         if (const auto first = static_cast<char>(pnm_file.get()); first != 'P')
@@ -105,5 +109,5 @@ private:
     int width_;
     int height_;
     int bits_per_sample_;
-    std::vector<std::byte> input_buffer_;
+    vector<byte> input_buffer_;
 };

@@ -1,2 +1,16 @@
 ﻿
 ﻿hkey
+﻿misc
+﻿bugprone
+﻿Intelli
+﻿cppcoreguidelines
+﻿Multiframe
+﻿inproc
+﻿fccd
+﻿pgmfile
+﻿graymap
+﻿ppmfile
+﻿pixmap
+﻿derks
+﻿bcfd
+﻿Anymap

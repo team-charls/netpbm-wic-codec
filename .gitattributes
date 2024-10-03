@@ -4,6 +4,9 @@
 # Set default behavior to automatically normalize line endings.
 * text=auto
 
+# Explicit use CRLF for spell checker exclusion file.
+*.dic text eol=crlf
+
 # Explicit define text files types.
 *.cpp text diff=cpp
 *.ixx text diff=cpp

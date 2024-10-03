@@ -1,9 +1,9 @@
 // Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
-#include "util.h"
+#include "util.hpp"
 
-import <std.h>;
+import std;
 import <win.h>;
 import test.winrt;
 
@@ -425,13 +425,13 @@ private:
         return imaging_factory;
     }
 
-    [[nodiscard]] static auto copy_pixels(IWICBitmapFrameDecode* decoder, const uint32_t stride, const span<std::byte> buffer)
+    [[nodiscard]] static HRESULT copy_pixels(IWICBitmapFrameDecode* decoder, const uint32_t stride, const span<std::byte> buffer)
     {
         void* data = buffer.data();
         return decoder->CopyPixels(nullptr, stride, static_cast<uint32_t>(buffer.size()), static_cast<BYTE*>(data));
     }
 
-    [[nodiscard]] static auto copy_pixels(IWICBitmapFrameDecode* decoder, const uint32_t stride, const span<uint16_t> buffer)
+    [[nodiscard]] static HRESULT copy_pixels(IWICBitmapFrameDecode* decoder, const uint32_t stride, const span<uint16_t> buffer)
     {
         void* data = buffer.data();
         return decoder->CopyPixels(nullptr, stride, static_cast<uint32_t>(buffer.size()) * sizeof(uint16_t),

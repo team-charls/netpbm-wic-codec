@@ -3,11 +3,10 @@
 
 module;
 
-#include "macros.h"
+#include "intellisense.hpp"
 
 export module netpbm_bitmap_frame_decode;
 
-import <std.h>;
 import <win.h>;
 import winrt;
 
@@ -25,7 +24,8 @@ export struct netpbm_bitmap_frame_decode
 
     // IWICBitmapFrameDecode : IWICBitmapSource
     HRESULT __stdcall GetThumbnail(IWICBitmapSource**) noexcept override;
-    HRESULT __stdcall GetColorContexts(uint32_t count, IWICColorContext** color_contexts, uint32_t* actual_count) override;
+    HRESULT __stdcall GetColorContexts(uint32_t count, IWICColorContext** color_contexts,
+                                       uint32_t* actual_count) noexcept override;
     HRESULT __stdcall GetMetadataQueryReader(IWICMetadataQueryReader** metadata_query_reader) noexcept override;
 
 private:

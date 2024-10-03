@@ -1,9 +1,9 @@
 // Copyright (c) Victor Derks.
 // SPDX-License-Identifier: MIT
 
-#include "util.h"
+#include "util.hpp"
 
-import <std.h>;
+import std;
 import <win.h>;
 import test.winrt;
 import test.errors;

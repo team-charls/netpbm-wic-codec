@@ -18,7 +18,10 @@
     <ClInclude Include="version.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="macros.h">
+    <ClInclude Include="macros.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="intellisense.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

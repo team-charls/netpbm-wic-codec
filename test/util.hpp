@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "cpp_unit_test.h"
+#include "cpp_unit_test.hpp"
 
 #define SUPPRESS_WARNING_NEXT_LINE(x) \
     __pragma(warning(suppress \
