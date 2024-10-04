@@ -65,7 +65,7 @@ void register_general_decoder_settings(const GUID& class_id, const GUID& wic_cat
 
 void register_decoder_file_extension(const wchar_t* file_type_name, const wchar_t* file_extension, const wchar_t* mime_type)
 {
-    const wstring extension_sub_key{LR"(SOFTWARE\Classes\"s + file_extension + LR"\)"};
+    const wstring extension_sub_key{LR"(SOFTWARE\Classes\)"s + file_extension + LR"(\)"};
     registry::set_value(extension_sub_key, L"", file_type_name);
     registry::set_value(extension_sub_key, L"Content Type", mime_type);
     registry::set_value(extension_sub_key, L"PerceivedType", L"image");
@@ -109,7 +109,7 @@ void register_decoder()
 
     // Register the byte pattern that allows WICs to identify files as our image type.
     register_decoder_pattern(sub_key, 0, array{std::byte{0x50}, std::byte{0x35}});
-    register_decoder_pattern(sub_key, 0, array{std::byte{0x50}, std::byte{0x36}});
+    register_decoder_pattern(sub_key, 1, array{std::byte{0x50}, std::byte{0x36}});
 
     register_decoder_file_extension(L"pgmfile", L".pgm", L"image/x-portable-graymap");
     register_decoder_file_extension(L"ppmfile", L".ppm", L"image/x-portable-pixmap");
@@ -183,6 +183,7 @@ extern "C" __control_entrypoint(DllExport) HRESULT __stdcall DllCanUnloadNow()
 HRESULT __stdcall DllRegisterServer()
 try
 {
+    TRACE("netpbm-wic-codec::DllRegisterServer\n");
     register_decoder();
 
     SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, nullptr, nullptr);
@@ -198,6 +199,7 @@ catch (...)
 HRESULT __stdcall DllUnregisterServer()
 try
 {
+    TRACE("netpbm-wic-codec::DllUnregisterServer\n");
     // Note: keep the .pgm file registration intact.
     return unregister(id::netpbm_decoder, CATID_WICBitmapDecoders);
 }

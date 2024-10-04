@@ -167,6 +167,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="buffered_stream_reader_test.cpp" />
     <ClCompile Include="dll_main_test.cpp" />
     <ClCompile Include="test_errors.ixx" />
     <ClCompile Include="netpbm_bitmap_decoder_test.cpp" />

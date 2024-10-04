@@ -55,8 +55,7 @@ export struct pnm_header
         char magic[2];
         ULONG bytesRead;
 
-        if (const HRESULT hr{streamReader.ReadBytes((BYTE*)&magic, sizeof(magic), &bytesRead)}; FAILED(hr))
-            return hr;
+        streamReader.read_bytes((BYTE*)&magic, sizeof(magic), &bytesRead);
         if (bytesRead != sizeof(magic))
             throw_hresult(wincodec::error_bad_header);
 
@@ -86,8 +85,8 @@ export struct pnm_header
             throw_hresult(wincodec::error_bad_header);
         }
 
-        width = streamReader.read_int_slow();
-        height = streamReader.read_int_slow();
+        width = streamReader.read_int();
+        height = streamReader.read_int();
 
         if (width < 1 || height < 1)
             return WINCODEC_ERR_BADHEADER;
@@ -96,7 +95,7 @@ export struct pnm_header
 
         if (PnmType != PnmType::Bitmap)
         {
-            maxColorValue = streamReader.read_int_slow();
+            maxColorValue = streamReader.read_int();
         }
         else
             maxColorValue = 1;
