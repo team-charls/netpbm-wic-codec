@@ -16,10 +16,12 @@ import buffered_stream_reader;
 import pnm_header;
 import util;
 
+using std::int32_t;
 using std::span;
 using std::uint16_t;
-using std::int32_t;
 using std::uint32_t;
+using std::byteswap;
+using std::ranges::transform;
 using winrt::check_hresult;
 using winrt::com_ptr;
 using winrt::throw_hresult;
@@ -75,14 +77,13 @@ namespace {
 
 constexpr void convert_to_little_endian(span<uint16_t> samples) noexcept
 {
-    std::ranges::transform(samples, samples.begin(),
-                           [](const uint16_t sample) noexcept -> uint16_t { return _byteswap_ushort(sample); });
+    transform(samples, samples.begin(), [](const uint16_t sample) noexcept -> uint16_t { return byteswap(sample); });
 }
 
 constexpr void convert_to_little_endian_and_shift(span<uint16_t> samples, const uint32_t sample_shift) noexcept
 {
-    std::ranges::transform(samples, samples.begin(), [sample_shift](const uint16_t sample) noexcept -> uint16_t {
-        return _byteswap_ushort(sample) << sample_shift;
+    transform(samples, samples.begin(), [sample_shift](const uint16_t sample) noexcept -> uint16_t {
+        return byteswap(sample) << sample_shift;
     });
 }
 
@@ -178,7 +179,7 @@ void pack_to_words(const span<const uint16_t> source_pixels, uint16_t* destinati
 
 void decode_monochrome_bitmap(buffered_stream_reader& stream_reader, const pnm_header& header,
                               const uint32_t bits_per_sample, const uint32_t sample_shift, const uint32_t stride,
-                              std::span<std::byte> destination_pixels)
+                              span<std::byte> destination_pixels)
 {
     switch (bits_per_sample)
     {
@@ -226,7 +227,7 @@ void decode_monochrome_bitmap(buffered_stream_reader& stream_reader, const pnm_h
 }
 
 void decode_color_bitmap(buffered_stream_reader& stream_reader, const pnm_header& header, const uint32_t bits_per_sample,
-                         const uint32_t stride, std::span<std::byte> destination_samples)
+                         const uint32_t stride, span<std::byte> destination_samples)
 {
     constexpr size_t sample_per_pixel{3};
 
@@ -239,7 +240,12 @@ void decode_color_bitmap(buffered_stream_reader& stream_reader, const pnm_header
         }
         else
         {
-            throw_hresult(wincodec::error_unsupported_pixel_format);
+            std::byte* line{destination_samples.data()};
+            for (uint32_t row{header.height}; row; --row)
+            {
+                stream_reader.read_bytes(line, header.width * size_t{3});
+                line += stride;
+            }
         }
         break;
 
@@ -249,13 +255,18 @@ void decode_color_bitmap(buffered_stream_reader& stream_reader, const pnm_header
             header_width_in_bytes % stride == 0)
         {
             stream_reader.read_bytes(destination_samples.data(), destination_samples.size());
-            convert_to_little_endian_and_optional_shift(
-                {reinterpret_cast<uint16_t*>(destination_samples.data()), destination_samples.size() / sizeof uint16_t}, 0);
         }
         else
         {
-            throw_hresult(wincodec::error_unsupported_pixel_format);
+            std::byte* line{destination_samples.data()};
+            for (uint32_t row{header.height}; row; --row)
+            {
+                stream_reader.read_bytes(line, header.width * sizeof uint16_t * 3);
+                line += stride;
+            }
         }
+        convert_to_little_endian_and_optional_shift(
+            {reinterpret_cast<uint16_t*>(destination_samples.data()), destination_samples.size() / sizeof uint16_t}, 0);
     }
     break;
 
@@ -319,8 +330,8 @@ netpbm_bitmap_frame_decode::netpbm_bitmap_frame_decode(_In_ IStream* source_stre
 // IWICBitmapSource
 HRESULT __stdcall netpbm_bitmap_frame_decode::GetSize(uint32_t* width, uint32_t* height)
 {
-    TRACE("{} netpbm_bitmap_frame_decode::GetSize, width address={}, height address={}\n", fmt_ptr(this),
-          fmt_ptr(width), fmt_ptr(height));
+    TRACE("{} netpbm_bitmap_frame_decode::GetSize, width address={}, height address={}\n", fmt_ptr(this), fmt_ptr(width),
+          fmt_ptr(height));
     return bitmap_source_->GetSize(width, height);
 }
 

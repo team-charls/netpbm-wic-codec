@@ -339,6 +339,42 @@ public:
         compare("jpegls-conformance-test-8bit-256-256.ppm", buffer);
     }
 
+    TEST_METHOD(decode_8_bit_color_odd_width) // NOLINT
+    {
+        std::vector<char> source;
+        std::string str1 = "P6\n";
+        source.insert(source.end(), str1.begin(), str1.end());
+        str1 = "1 2\n";
+        source.insert(source.end(), str1.begin(), str1.end());
+        str1 = "255\n";
+        source.insert(source.end(), str1.begin(), str1.end());
+        source.push_back(1);
+        source.push_back(2);
+        source.push_back(3);
+        source.push_back(4);
+        source.push_back(5);
+        source.push_back(6);
+
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(source.data(), source.size())};
+
+        uint32_t width;
+        uint32_t height;
+
+        check_hresult(bitmap_frame_decoder->GetSize(&width, &height));
+        constexpr uint32_t stride{4};
+        vector<std::byte> buffer(static_cast<size_t>(height) * stride);
+
+        const auto result{copy_pixels(bitmap_frame_decoder.get(), stride, buffer)};
+        Assert::AreEqual(error_ok, result);
+
+        Assert::AreEqual(1, static_cast<int>(buffer[0]));
+        Assert::AreEqual(2, static_cast<int>(buffer[1]));
+        Assert::AreEqual(3, static_cast<int>(buffer[2]));
+        Assert::AreEqual(4, static_cast<int>(buffer[4]));
+        Assert::AreEqual(5, static_cast<int>(buffer[5]));
+        Assert::AreEqual(6, static_cast<int>(buffer[6]));
+    }
+
     TEST_METHOD(decode_16_bit_color) // NOLINT
     {
         const com_ptr bitmap_frame_decoder{create_frame_decoder(L"16bit_2x1.ppm")};
@@ -354,6 +390,54 @@ public:
         Assert::AreEqual(error_ok, result);
 
         compare("16bit_2x1.ppm", buffer);
+    }
+
+    TEST_METHOD(decode_16_bit_color_odd_width) // NOLINT
+    {
+        std::vector<char> source;
+        std::string str1 = "P6\n";
+        source.insert(source.end(), str1.begin(), str1.end());
+        str1 = "1 2\n";
+        source.insert(source.end(), str1.begin(), str1.end());
+        str1 = "65535\n";
+        source.insert(source.end(), str1.begin(), str1.end());
+        source.push_back(10);
+        source.push_back(1);
+        source.push_back(20);
+        source.push_back(2);
+        source.push_back(30);
+        source.push_back(3);
+        source.push_back(40);
+        source.push_back(4);
+        source.push_back(50);
+        source.push_back(5);
+        source.push_back(60);
+        source.push_back(6);
+
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(source.data(), source.size())};
+
+        uint32_t width;
+        uint32_t height;
+
+        check_hresult(bitmap_frame_decoder->GetSize(&width, &height));
+        constexpr uint32_t stride{8};
+        vector<std::byte> buffer(static_cast<size_t>(height) * stride);
+
+        const auto result{copy_pixels(bitmap_frame_decoder.get(), stride, buffer)};
+        Assert::AreEqual(error_ok, result);
+
+        Assert::AreEqual(1, static_cast<int>(buffer[0]));
+        Assert::AreEqual(10, static_cast<int>(buffer[1]));
+        Assert::AreEqual(2, static_cast<int>(buffer[2]));
+        Assert::AreEqual(20, static_cast<int>(buffer[3]));
+        Assert::AreEqual(3, static_cast<int>(buffer[4]));
+        Assert::AreEqual(30, static_cast<int>(buffer[5]));
+        Assert::AreEqual(4, static_cast<int>(buffer[8]));
+        Assert::AreEqual(40, static_cast<int>(buffer[9]));
+        Assert::AreEqual(5, static_cast<int>(buffer[10]));
+        Assert::AreEqual(50, static_cast<int>(buffer[11]));
+        Assert::AreEqual(6, static_cast<int>(buffer[12]));
+        Assert::AreEqual(60, static_cast<int>(buffer[13]));
     }
 
 private:
@@ -407,6 +491,19 @@ private:
     {
         com_ptr<IStream> stream;
         check_hresult(SHCreateStreamOnFileEx(filename, STGM_READ | STGM_SHARE_DENY_WRITE, 0, false, nullptr, stream.put()));
+
+        const com_ptr wic_bitmap_decoder{factory_.create_decoder()};
+        check_hresult(wic_bitmap_decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand));
+
+        com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode;
+        check_hresult(wic_bitmap_decoder->GetFrame(0, bitmap_frame_decode.put()));
+
+        return bitmap_frame_decode;
+    }
+
+    [[nodiscard]] com_ptr<IWICBitmapFrameDecode> create_frame_decoder(void* buffer, size_t size) const
+    {
+        const com_ptr stream{create_memory_stream({static_cast<char*>(buffer), size})};
 
         const com_ptr wic_bitmap_decoder{factory_.create_decoder()};
         check_hresult(wic_bitmap_decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand));
@@ -477,6 +574,14 @@ private:
                 break;
             }
         }
+    }
+
+    static com_ptr<IStream> create_memory_stream(span<char> source)
+    {
+        com_ptr<IStream> stream;
+        stream.attach(SHCreateMemStream(reinterpret_cast<BYTE*>(source.data()), static_cast<UINT>(source.size())));
+
+        return stream;
     }
 
     codec_factory factory_;
