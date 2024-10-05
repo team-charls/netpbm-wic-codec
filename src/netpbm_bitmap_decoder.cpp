@@ -1,5 +1,5 @@
-// Copyright (c) Victor Derks.
-// SPDX-License-Identifier: MIT
+// Copyright (c) Team CharLS.
+// SPDX-License-Identifier: BSD-3-Clause
 
 module;
 
@@ -8,7 +8,7 @@ module;
 module netpbm_bitmap_decoder;
 
 import std;
-import <win.h>;
+import <win.hpp>;
 import winrt;
 
 import class_factory;
@@ -18,8 +18,8 @@ import guids;
 import netpbm_bitmap_frame_decode;
 import util;
 
-using std::uint32_t;
 using std::scoped_lock;
+using std::uint32_t;
 using winrt::check_hresult;
 using winrt::com_ptr;
 using winrt::to_hresult;
@@ -138,7 +138,7 @@ struct netpbm_bitmap_decoder : winrt::implements<netpbm_bitmap_decoder, IWICBitm
 
     HRESULT __stdcall GetColorContexts([[maybe_unused]] const uint32_t count,
                                        [[maybe_unused]] IWICColorContext** color_contexts,
-                                       [[maybe_unused]] uint32_t* actual_count) noexcept override
+                                       uint32_t* actual_count) noexcept override
     try
     {
         TRACE("{} netpbm_bitmap_decoder::GetColorContexts (always 0), count={}, color_contexts address={}, actual_count "

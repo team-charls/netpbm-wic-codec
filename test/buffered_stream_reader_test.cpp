@@ -1,11 +1,11 @@
-// Copyright (c) Victor Derks.
-// SPDX-License-Identifier: MIT
+// Copyright (c) Team CharLS.
+// SPDX-License-Identifier: BSD-3-Clause
 
 #include "intellisense.hpp"
-#include "util.hpp"
+#include "cpp_unit_test.hpp"
 
 import std;
-import "win.h";
+import "win.hpp";
 import test.winrt;
 
 import buffered_stream_reader;
@@ -51,13 +51,13 @@ public:
         source.insert(source.end(), str1.begin(), str1.end());
         buffered_stream_reader reader(create_memory_stream(source).get());
 
-        auto value = reader.read_int();
+        const auto value = reader.read_int();
 
         Assert::AreEqual(256U, value);
     }
 
 private:
-    com_ptr<IStream> create_memory_stream(span<char> source)
+    static com_ptr<IStream> create_memory_stream(span<char> source)
     {
         com_ptr<IStream> stream;
         stream.attach(SHCreateMemStream(reinterpret_cast<BYTE*>(source.data()), static_cast<UINT>(source.size())));

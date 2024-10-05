@@ -1,10 +1,10 @@
-// Copyright (c) Victor Derks.
-// SPDX-License-Identifier: MIT
+// Copyright (c) Team CharLS.
+// SPDX-License-Identifier: BSD-3-Clause
 
 #include "cpp_unit_test.hpp"
 
 import std;
-import <win.h>;
+import <win.hpp>;
 import test.winrt;
 
 import pnm_header;

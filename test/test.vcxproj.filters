@@ -39,7 +39,7 @@
     <ClCompile Include="test_util.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="factory.ixx">
+    <ClCompile Include="codec_factory.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="test_winrt.ixx">
@@ -50,7 +50,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="util.hpp">
+    <ClInclude Include="macros.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cpp_unit_test.hpp">

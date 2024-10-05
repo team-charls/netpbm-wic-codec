@@ -1,10 +1,11 @@
-// Copyright (c) Victor Derks.
-// SPDX-License-Identifier: MIT
+// Copyright (c) Team CharLS.
+// SPDX-License-Identifier: BSD-3-Clause
 
 #pragma once
 
-// Include explicit headers as workaround that IntelliSense in VS 2022 17.12 fails to parse #import <win.h>
-#ifdef __INTELLISENSE__
+// Include explicit headers as workaround that IntelliSense (VS 2022 17.12)
+// and ReSharper (2024.2.5) fail to parse #import <win.hpp>
+#if defined(__INTELLISENSE__) || defined(__RESHARPER__)
 #define _AMD64_
 #include <combaseapi.h>
 #include <libloaderapi.h>

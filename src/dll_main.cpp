@@ -1,11 +1,11 @@
-// Copyright (c) Victor Derks.
-// SPDX-License-Identifier: MIT
+// Copyright (c) Team CharLS.
+// SPDX-License-Identifier: BSD-3-Clause
 
 #include "macros.hpp"
-#include "version.h"
+#include "version.hpp"
 
 import std;
-import <win.h>;
+import <win.hpp>;
 import winrt;
 
 import netpbm_bitmap_decoder;
@@ -30,7 +30,7 @@ void register_general_decoder_settings(const GUID& class_id, const GUID& wic_cat
 {
     const wstring sub_key = LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(class_id);
     registry::set_value(sub_key, L"ArbitrationPriority", 10);
-    registry::set_value(sub_key, L"Author", L"Victor Derks");
+    registry::set_value(sub_key, L"Author", L"Team CharLS");
     registry::set_value(sub_key, L"ColorManagementVersion", L"1.0.0.0");
     registry::set_value(sub_key, L"ContainerFormat", guid_to_string(id::container_format_netpbm).c_str());
     registry::set_value(sub_key, L"Description", L"Netpbm Codec");
@@ -42,7 +42,7 @@ void register_general_decoder_settings(const GUID& class_id, const GUID& wic_cat
     registry::set_value(sub_key, L"SupportChromaKey", 0U);
     registry::set_value(sub_key, L"SupportLossless", 1U);
     registry::set_value(sub_key, L"SupportMultiframe", 0U);
-    registry::set_value(sub_key, L"Vendor", guid_to_string(id::vendor_victor_derks).c_str());
+    registry::set_value(sub_key, L"Vendor", guid_to_string(id::vendor_team_charls).c_str());
     registry::set_value(sub_key, L"Version", VERSION);
 
     const wstring formats_sub_key{sub_key + LR"(\Formats\)"};
@@ -103,7 +103,7 @@ void register_decoder()
 {
     array formats{&GUID_WICPixelFormat2bppGray, &GUID_WICPixelFormat4bppGray, &GUID_WICPixelFormat8bppGray,
                   &GUID_WICPixelFormat16bppGray, &GUID_WICPixelFormat24bppRGB};
-    register_general_decoder_settings(id::netpbm_decoder, CATID_WICBitmapDecoders, L"Netpbm Decoder", formats);
+    register_general_decoder_settings(id::netpbm_decoder, CATID_WICBitmapDecoders, L"Team CharLS Netpbm Decoder", formats);
 
     const wstring sub_key{LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(id::netpbm_decoder)};
 
@@ -200,7 +200,7 @@ HRESULT __stdcall DllUnregisterServer()
 try
 {
     TRACE("netpbm-wic-codec::DllUnregisterServer\n");
-    // Note: keep the .pgm file registration intact.
+    // Note: keep the file registrations intact.
     return unregister(id::netpbm_decoder, CATID_WICBitmapDecoders);
 }
 catch (...)

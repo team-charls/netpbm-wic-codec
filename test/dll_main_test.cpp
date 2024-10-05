@@ -1,13 +1,14 @@
-// Copyright (c) Victor Derks.
-// SPDX-License-Identifier: MIT
+// Copyright (c) Team CharLS.
+// SPDX-License-Identifier: BSD-3-Clause
 
-#include "util.hpp"
+#include "macros.hpp"
+#include "cpp_unit_test.hpp"
 
 import std;
-import <win.h>;
+import <win.hpp>;
 import test.winrt;
 import test.errors;
-import factory;
+import codec_factory;
 
 using namespace winrt;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -60,7 +61,7 @@ public:
 
     TEST_METHOD(marked_for_self_registration) // NOLINT
     {
-        const wchar_t dll_name[]{L"netpbm-wic-codec.dll"};
+        constexpr wchar_t dll_name[]{L"netpbm-wic-codec.dll"};
         DWORD not_used;
         const DWORD size{GetFileVersionInfoSizeEx(FILE_VER_GET_NEUTRAL, dll_name, &not_used)};
         Assert::IsTrue(size != 0);
@@ -76,5 +77,5 @@ public:
     }
 
 private:
-    factory factory_;
+    codec_factory factory_;
 };

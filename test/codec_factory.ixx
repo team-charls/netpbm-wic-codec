@@ -1,27 +1,30 @@
-// Copyright (c) Victor Derks.
-// SPDX-License-Identifier: MIT
+// Copyright (c) Team CharLS.
+// SPDX-License-Identifier: BSD-3-Clause
 
 module;
 
 #include "intellisense.hpp"
 
-export module factory;
+export module codec_factory;
 
-import <win.h>;
+import <win.hpp>;
 import test.winrt;
 
 export constexpr GUID net_pbm_decoder_class_id{0x6891bbe, 0xcc02, 0x4bb2, {0x9c, 0xf0, 0x30, 0x3f, 0xc4, 0xe6, 0x68, 0xc3}};
 
-export class factory final
+/// <summary>
+/// Helper class that provides methods to create COM objects without registry registration.
+/// </summary>
+export class codec_factory final
 {
 public:
-    factory() noexcept(false) : library_{LoadLibrary(L"netpbm-wic-codec.dll")}
+    codec_factory() noexcept(false) : library_{LoadLibrary(L"netpbm-wic-codec.dll")}
     {
         if (!library_)
             winrt::throw_last_error();
     }
 
-    ~factory()
+    ~codec_factory()
     {
         if (library_)
         {
@@ -29,10 +32,10 @@ public:
         }
     }
 
-    factory(const factory&) = delete;
-    factory(factory&&) = delete;
-    factory& operator=(const factory&) = delete;
-    factory& operator=(factory&&) = delete;
+    codec_factory(const codec_factory&) = delete;
+    codec_factory(codec_factory&&) = delete;
+    codec_factory& operator=(const codec_factory&) = delete;
+    codec_factory& operator=(codec_factory&&) = delete;
 
     [[nodiscard]] winrt::com_ptr<IWICBitmapDecoder> create_decoder() const
     {

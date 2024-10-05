@@ -1,9 +1,9 @@
-// Copyright (c) Victor Derks.
-// SPDX-License-Identifier: MIT
+// Copyright (c) Team CharLS.
+// SPDX-License-Identifier: BSD-3-Clause
 
 export module class_factory;
 
-import <win.h>;
+import <win.hpp>;
 import winrt;
 
 import errors;

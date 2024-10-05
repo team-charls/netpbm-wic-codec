@@ -1,5 +1,5 @@
-// Copyright (c) Victor Derks.
-// SPDX-License-Identifier: MIT
+// Copyright (c) Team CharLS.
+// SPDX-License-Identifier: BSD-3-Clause
 
 module;
 
@@ -8,7 +8,7 @@ module;
 export module pnm_header;
 
 import std;
-import <win.h>;
+import <win.hpp>;
 import winrt;
 
 import buffered_stream_reader;
@@ -55,7 +55,7 @@ export struct pnm_header
         char magic[2];
         ULONG bytesRead;
 
-        streamReader.read_bytes((BYTE*)&magic, sizeof(magic), &bytesRead);
+        streamReader.read_bytes(&magic, sizeof(magic), &bytesRead);
         if (bytesRead != sizeof(magic))
             throw_hresult(wincodec::error_bad_header);
 

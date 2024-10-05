@@ -105,7 +105,6 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <AdditionalModuleDependencies>$(IntDir)../netpbm-wic-codec/pnm_header.ixx.ifc</AdditionalModuleDependencies>
       <AdditionalBMIDirectories>$(IntDir)../netpbm-wic-codec/</AdditionalBMIDirectories>
@@ -114,7 +113,6 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <AdditionalModuleDependencies>$(IntDir)../netpbm-wic-codec/pnm_header.ixx.ifc</AdditionalModuleDependencies>
       <AdditionalBMIDirectories>$(IntDir)../netpbm-wic-codec/</AdditionalBMIDirectories>
@@ -122,7 +120,6 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <AdditionalModuleDependencies>$(IntDir)../netpbm-wic-codec/pnm_header.ixx.ifc</AdditionalModuleDependencies>
     </ClCompile>
@@ -176,13 +173,13 @@
     <ClCompile Include="portable_anymap_file.ixx" />
     <ClCompile Include="test_stream.ixx" />
     <ClCompile Include="test_util.ixx" />
-    <ClCompile Include="factory.ixx" />
+    <ClCompile Include="codec_factory.ixx" />
     <ClCompile Include="test_winrt.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cpp_unit_test.hpp" />
     <ClInclude Include="intellisense.hpp" />
-    <ClInclude Include="util.hpp" />
+    <ClInclude Include="macros.hpp" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="data-files\2bit_4x1.pgm">
