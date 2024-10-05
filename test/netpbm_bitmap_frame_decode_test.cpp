@@ -1,15 +1,16 @@
-// Copyright (c) Victor Derks.
-// SPDX-License-Identifier: MIT
+// Copyright (c) Team CharLS.
+// SPDX-License-Identifier: BSD-3-Clause
 
-#include "util.hpp"
+#include "macros.hpp"
+#include "cpp_unit_test.hpp"
 
 import std;
-import <win.h>;
+import <win.hpp>;
 import test.winrt;
 
 import test.errors;
 import portable_anymap_file;
-import factory;
+import codec_factory;
 
 using std::array;
 using std::span;
@@ -478,5 +479,5 @@ private:
         }
     }
 
-    factory factory_;
+    codec_factory factory_;
 };

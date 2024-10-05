@@ -11,9 +11,6 @@ Most of these rules\warning are based on the C++ Core Guidelines.
 - C26429: Use a not_null to indicate that "null" is not a valid value  
 **Rationale**: Prefast attributes (\_In_, etc.) are better than gsl::not_null.
 
-- C26435: Function '' should specify exactly one of 'virtual', 'override', or 'final' (c.128).
-**Rationale**: False warning in Visual Studio 2022 Version 17.5.0 Preview 1.0.
-
 - C26446: Prefer to use gsl::at() instead of unchecked subscript operator.  
 **Rationale**: gsl:at() cannot be used as gsl project is by design not included. MSVC STL in debug mode already checks access.
 
@@ -25,9 +22,6 @@ Most of these rules\warning are based on the C++ Core Guidelines.
 
 - C26472: Don't use static_cast for arithmetic conversions  
 **Rationale**: can only be solved with gsl::narrow_cast
-
-- C26478: Don't use std::move on constant variables. (es.56).
-**Rationale**: false warnings (VS 2022 17.7.0 Preview 3.0)
 
 - C26481: Do not pass an array as a single pointer.  
 **Rationale**: gsl::span is not available.
@@ -45,8 +39,5 @@ Most of these rules\warning are based on the C++ Core Guidelines.
 **Rationale**: many false warnings due to output parameters. Other analyzers are better
 as they check if the variable is used before initialized.
 
-- C26821: For '', consider using gsl::span instead of std::span to guarantee runtime bounds safety (gsl.view)
+- C26821: For '', consider using gsl::span instead of std::span to guarantee runtime bounds safety (gsl.view)  
 **Rationale**: preference is to use types from the std namespace.
-
-- C28290: The annotation for function '{ctor}' contains more Externals than the actual number of parameters.
-**Rationale**: false warnings (VS 2022 17.4.0)

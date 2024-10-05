@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="version.h">
+    <ClInclude Include="version.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="macros.hpp">

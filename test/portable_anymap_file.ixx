@@ -1,5 +1,5 @@
-// Copyright (c) Victor Derks.
-// SPDX-License-Identifier: MIT
+// Copyright (c) Team CharLS.
+// SPDX-License-Identifier: BSD-3-Clause
 
 export module portable_anymap_file;
 
@@ -18,7 +18,7 @@ constexpr int32_t log_2(const int32_t n) noexcept
     {
         ++x;
     }
-    return x; 
+    return x;
 }
 
 } // namespace

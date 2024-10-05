@@ -1,9 +1,9 @@
-// Copyright (c) Victor Derks.
-// SPDX-License-Identifier: MIT
+// Copyright (c) Team CharLS.
+// SPDX-License-Identifier: BSD-3-Clause
 
 export module guids;
 
-import <win.h>;
+import <win.hpp>;
 
 export namespace id {
 
@@ -13,7 +13,7 @@ constexpr GUID netpbm_decoder{0x6891bbe, 0xcc02, 0x4bb2, {0x9c, 0xf0, 0x30, 0x3f
 // {70ab66f5-cd48-43a1-aa29-10131b7f4ff1}
 constexpr GUID container_format_netpbm{0x70ab66f5, 0xcd48, 0x43a1, {0xaa, 0x29, 0x10, 0x13, 0x1b, 0x7f, 0x4f, 0xf1}};
 
-// {87a8e9f4-8aac-4667-bcfd-56535c80a269}
-constexpr GUID vendor_victor_derks{0x87a8e9f4, 0x8aac, 0x4667, {0xbc, 0xfd, 0x56, 0x53, 0x5c, 0x80, 0xa2, 0x69}};
+// {8adbe21c-a720-424e-b238-45ad1052b98c}
+constexpr GUID vendor_team_charls{0x8adbe21c, 0xa720, 0x424e, {0xb2, 0x38, 0x45, 0xad, 0x10, 0x52, 0xb9, 0x8c}};
 
 }

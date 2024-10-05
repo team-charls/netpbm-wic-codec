@@ -1,9 +1,9 @@
-// Copyright (c) Victor Derks
-// SPDX-License-Identifier: MIT
+// Copyright (c) Team CharLS.
+// SPDX-License-Identifier: BSD-3-Clause
 
 #pragma code_page(65001)
 
-#include "version.h"
+#include "version.hpp"
 
 #include <winres.h>
 
@@ -13,10 +13,10 @@ VS_VERSION_INFO VERSIONINFO
  FILEVERSION VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH, 0
  PRODUCTVERSION VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH, 0
  FILEFLAGSMASK 0x3fL
-#ifdef _DEBUG
- FILEFLAGS 0x1L
-#else
+#ifdef NDEBUG
  FILEFLAGS 0x0L
+#else
+ FILEFLAGS 0x1L
 #endif
  FILEOS 0x40004L
  FILETYPE 0x2L
@@ -26,11 +26,11 @@ BEGIN
     BEGIN
         BLOCK "000004b0"
         BEGIN
-            VALUE "CompanyName", "Victor Derks"
+            VALUE "CompanyName", "Team CharLS"
             VALUE "FileDescription", L"Netpbm WIC codec"
             VALUE "FileVersion", VERSION
             VALUE "InternalName", L"netpbm-wic-codec.dll"
-            VALUE "LegalCopyright", L"Copyright (c) Victor Derks"
+            VALUE "LegalCopyright", L"Copyright (c) Team CharLS"
             VALUE "OriginalFilename", L"netpbm-wic-codec.dll"
             VALUE "ProductName", L"Netpbm WIC codec"
             VALUE "ProductVersion", VERSION

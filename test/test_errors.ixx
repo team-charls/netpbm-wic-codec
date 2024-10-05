@@ -1,5 +1,5 @@
-// Copyright (c) Victor Derks.
-// SPDX-License-Identifier: MIT
+// Copyright (c) Team CharLS.
+// SPDX-License-Identifier: BSD-3-Clause
 
 module;
 
@@ -7,7 +7,7 @@ module;
 
 export module test.errors;
 
-import <win.h>;
+import <win.hpp>;
 
 export {
 

@@ -1,8 +1,9 @@
-// Copyright (c) Victor Derks.
-// SPDX-License-Identifier: MIT
+// Copyright (c) Team CharLS.
+// SPDX-License-Identifier: BSD-3-Clause
 
 module;
 
+// ReSharper disable once CppInconsistentNaming
 #define _CRT_MEMCPY_S_INLINE inline
 
 // ReSharper disable once CppUnusedIncludeDirective

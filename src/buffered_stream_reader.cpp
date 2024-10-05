@@ -1,5 +1,5 @@
-// Copyright (c) Victor Derks.
-// SPDX-License-Identifier: MIT
+// Copyright (c) Team CharLS.
+// SPDX-License-Identifier: BSD-3-Clause
 
 module;
 
@@ -8,7 +8,7 @@ module;
 
 module buffered_stream_reader;
 
-import <win.h>;
+import <win.hpp>;
 
 import errors;
 import util;
