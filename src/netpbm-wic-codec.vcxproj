@@ -228,4 +228,9 @@
     <Error Condition="!Exists('..\packages\Microsoft.Windows.CppWinRT.2.0.240405.15\build\native\Microsoft.Windows.CppWinRT.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Windows.CppWinRT.2.0.240405.15\build\native\Microsoft.Windows.CppWinRT.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.Windows.CppWinRT.2.0.240405.15\build\native\Microsoft.Windows.CppWinRT.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Windows.CppWinRT.2.0.240405.15\build\native\Microsoft.Windows.CppWinRT.targets'))" />
   </Target>
+  <Target Name="SignWindowsDlls" AfterTargets="Build" Condition="'$(SignOutput)'=='true'">
+    <!-- Use TargetFrameworkVersion=v4.5 to sign with SHA256 -->
+    <Message Text="Signing netpbm-wic-codec.dll" />
+    <SignFile CertificateThumbprint="$(_CertificateThumbprint)" TimestampUrl="$(_TimestampUrl)" SigningTarget="$(OutputPath)netpbm-wic-codec.dll" TargetFrameworkVersion="v4.5" />
+  </Target>
 </Project>

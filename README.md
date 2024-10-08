@@ -49,7 +49,7 @@ Go to the [releases](https://github.com/team-charls/netpbm-wic-codec/releases) p
 Assets at the bottom to show the files available in the release.
 Please use the appropriate installer that matches your machine's architecture.
 
-### Applications that can use the Netpbm WIC codec
+## Applications that can use the Netpbm WIC codec
 
 The following application have been validated to work with the Netpbm WIC codec:
 
@@ -123,3 +123,16 @@ regsvr32 netpbm-wic-codec.dll
 ```shell
 regsvr32 -u netpbm-wic-codec.dll
 ```
+
+### Building and code signing
+
+A command file is available to build and sign the WIC DLL and the setup application.  
+Instructions:
+
+* Open a Visual Studio Developer Command Prompt
+* Go the root of the cloned repository
+* Ensure a code signing certificate is available
+* Execute the command `create-signed-builds.cmd certificate-thumb-print time-stamp-url`  
+ Note: the certificate thumbprint and time stamp URL arguments are depending on the used code signing certificate.
+
+ The WIC DLL and the installer will be signed for the release builds of x86, x64 and ARM64.
