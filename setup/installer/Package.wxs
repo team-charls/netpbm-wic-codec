@@ -1,0 +1,27 @@
+<!--
+  Copyright (c) Team CharLS.
+  SPDX-License-Identifier: BSD-3-Clause
+-->
+
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+
+  <!-- Use a different upgrade code for x86 to allow x86 and x64 versions to be installed side by side -->
+  <?if $(sys.BUILDARCHSHORT) = "X86" ?>
+    <?define UpgradeCode = "9de723f9-3e9a-446a-bb07-cf48b4b06878" ?>
+  <?else?>
+    <?define UpgradeCode = "9de723f9-3e9a-446a-bb07-cf48b4b06879" ?>
+  <?endif?>
+
+  <Package
+    Name="Netpbm WIC Codec"
+    Manufacturer="Team CharLS"
+    Version="$(FourPartsVersion)"
+    UpgradeCode="$(UpgradeCode)">
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <Feature Id="Main">
+      <ComponentGroupRef Id="CodecComponents" />
+    </Feature>
+  </Package>
+</Wix>

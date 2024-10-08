@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <!-- Build to a folder outside the source folders, making it easier to clean. -->
-    <OutDir>$(MSBuildThisFileDirectory)build\bin\$(Platform)\$(Configuration)\</OutDir>
-    <OutDir Condition="'$(Platform)'=='Win32'">$(MSBuildThisFileDirectory)build\bin\x86\$(Configuration)\</OutDir>
-    <IntDir>$(MSBuildThisFileDirectory)build\intermediate\$(Platform)\$(Configuration)\$(MSBuildProjectName)\</IntDir>
-    <IntDir Condition="'$(Platform)'=='Win32'">$(MSBuildThisFileDirectory)build\intermediate\x86\$(Configuration)\$(MSBuildProjectName)\</IntDir>
+    <!-- C++ projects: build to a folder outside the source folders, making it easier to clean. -->
+    <OutDir>$(MSBuildThisFileDirectory)build\binaries\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Platform)'=='Win32'">$(MSBuildThisFileDirectory)build\binaries\x86\$(Configuration)\</OutDir>
+    <IntDir>$(MSBuildThisFileDirectory)build\intermediates\$(Platform)\$(Configuration)\$(MSBuildProjectName)\</IntDir>
+    <IntDir Condition="'$(Platform)'=='Win32'">$(MSBuildThisFileDirectory)build\intermediates\x86\$(Configuration)\$(MSBuildProjectName)\</IntDir>
+
+    <!-- WixProj: build to a folder outside the source folders, making it easier to clean. -->
+    <OutputPath>$(MSBuildThisFileDirectory)build\binaries\$(Configuration)\</OutputPath>
+    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)build\intermediates\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
 
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
 
@@ -22,6 +26,15 @@
     <!-- Allow executing more build operations in parallel. -->
     <BuildPassReferences>true</BuildPassReferences>
     <AllowParallelCompileInReferencedProjects>true</AllowParallelCompileInReferencedProjects>
+
+    <Version>0.2.0</Version>
+
+    <!-- Define properties for WIX projects -->
+    <DefineConstants>FourPartsVersion=$(Version).0;</DefineConstants>
+    <Pedantic>true</Pedantic>
+
+    <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio><!-- Enable faster builds for SDK style projects in Visual Studio 2022 17.5 and newer. -->
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
 
   <ItemDefinitionGroup>

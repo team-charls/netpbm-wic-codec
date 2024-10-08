@@ -6,8 +6,8 @@ This Windows Imaging Component (WIC) codec makes it possible to decode .pgm and 
 It makes it possible to view Netpbm encoded images in Windows PhotoViewer, Windows Explorer (including thumbnails)
 and import these images in Microsoft Office documents.
 
-It is a C++ 23 implementation based on the <https://github.com/chausner/PnmWicImageCodec> project.
-It leverages the C++/WinRT framework to implement the classic COM components required for a WIC codec.
+It is a C++ 23 implementation originally based on the [PNM WIC Image Codec project](https://github.com/chausner/PnmWicImageCodec).
+It leverages the C++/WinRT framework to implement the classic COM components required for a WIC codec and uses Wix v5 for the installer.
 
 ## Introduction
 
@@ -36,22 +36,18 @@ The Windows Imaging Component (WIC) is a built-in codec framework of Windows tha
 to create independent native image codecs that can be used by a large set of applications.
 WIC is implemented using COM technology. Image codecs for many popular formats are already pre-installed on Windows.
 
-### Status
+## Installing
 
-This project is the development phase:
+### Requirements
 
-- Visual Studio 2022 17.11 or newer is needed to build the project.
-- No installer with pre-built binaries is available, manually building and registering is required.
-- Only .pgm P5 gray scale and P6 .ppm images can be decoded.
-- All image files are considered single frame (the Netpbm standard also allows multi-frame)
-- Only a decoder is available.
+- Windows 11 or Windows 10 (version 22H2).
+- x86, x64 or ARM64 processor
 
-### Supported Operation Systems
+### Via GitHub with EXE
 
-The Netpbm WIC codec supports the following Windows operating systems:
-
-- Windows 11 and 10
-- Windows Server 2022
+Go to the [releases](https://github.com/team-charls/netpbm-wic-codec/releases) page and click on
+Assets at the bottom to show the files available in the release.
+Please use the appropriate installer that matches your machine's architecture.
 
 ### Applications that can use the Netpbm WIC codec
 
@@ -63,7 +59,8 @@ The following application have been validated to work with the Netpbm WIC codec:
  is provided to restore this functionality. The standard Windows Registry Editor can be used to add import this .reg file.
 - WIC Explorer (sample application from Microsoft). An updated version of this application can be found at <https://github.com/vbaderks/WICExplorer>
 - ZackViewer <https://github.com/peirick/ZackViewer>. This viewer can also be used to convert from one image encoding format to another.
-- Microsoft Office applications like Word, Excel, PowerPoint. These applications can, when the NetPbm codec is installed, import .pgm images in their documents.
+- Microsoft Office applications like Word, Excel, PowerPoint. These applications can, when the NetPbm codec is installed, import .pgm images in their documents. The 32 bit version of Office
+requires that the x86 version of the codec is installed.
 
 #### Windows 11\10 Microsoft Photos Application not supported
 
@@ -101,13 +98,13 @@ The following table lists the formats that can be decoded:
 
 Note *: monochrome images with 10 or 12 bits per sample will be upscaled to 16 bits per sample.
 
-## Build Instructions
+## Manual Build Instructions
 
 1. Clone this repro
-1. Use Visual Studio and open the netpbm-wic-codec.sln. Batch build all projects.
+1. Use Visual Studio 2022 17.11 or newer and open the netpbm-wic-codec.sln. Batch build all projects.
 1. Or use a Developer Command Prompt and run use MSBuild in the root of the cloned repository.
 
-## Installation
+### Installation
 
 1. Open a command prompt with elevated rights
 1. Navigate to folder with the netpbm-wic-codec.dll
@@ -117,7 +114,7 @@ Note *: monochrome images with 10 or 12 bits per sample will be upscaled to 16 b
 regsvr32 netpbm-wic-codec.dll
 ```
 
-## Uninstall
+### Uninstall
 
 1. Open a command prompt with elevated rights
 1. Navigate to folder with the netpbm-wic-codec.dll

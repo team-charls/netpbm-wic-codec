@@ -1,0 +1,49 @@
+<!--
+  Copyright (c) Team CharLS.
+  SPDX-License-Identifier: BSD-3-Clause
+-->
+
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Fragment>
+    <ComponentGroup Id="CodecComponents" Directory="INSTALLFOLDER">
+
+      <?define GUID_WICPixelFormat2bppGray = "{6fddc324-4e03-4bfe-b185-3d77768dc906}" ?>
+      <?define GUID_WICPixelFormat4bppGray = "{6fddc324-4e03-4bfe-b185-3d77768dc907}" ?>
+      <?define GUID_WICPixelFormat8bppGray = "{6fddc324-4e03-4bfe-b185-3d77768dc908}" ?>
+      <?define GUID_WICPixelFormat16bppGray = "{6fddc324-4e03-4bfe-b185-3d77768dc90b}" ?>
+      <?define GUID_WICPixelFormat24bppRGB = "{6fddc324-4e03-4bfe-b185-3d77768dc90d}" ?>
+      <?define GUID_WICPixelFormat48bppRGB = "{6fddc324-4e03-4bfe-b185-3d77768dc915}" ?>
+
+      <?define CATID_WICBitmapDecoders = "{7ed96837-96f0-4812-b211-f13c24117ed3}" ?>
+
+      <?define CLSID_ThumbnailProvider = "{e357fccd-a995-4576-b01f-234630154e96}" ?>
+      <?define CLSID_PhotoThumbnailProvider = "{c7657c4a-9f68-40fa-a4df-96bc08eb3551}" ?>
+
+      <?define GUID_ContainerFormatNetpbm = "{70ab66f5-cd48-43a1-aa29-10131b7f4ff1}" ?>
+      <?define CLSID_NetpbmDecoder = "{06891bbe-cc02-4bb2-9cf0-303fc4e668c3}" ?>
+      <?define GUID_VendorTeamCharLS = "{8adbe21c-a720-424e-b238-45ad1052b98c}" ?>
+
+      <?define DecoderFriendlyName = "Netpbm Decoder" ?>
+
+      <Component>
+        <File Id="F_netpbm_wic_codec.dll" Source="netpbm-wic-codec.dll" KeyPath="yes" />
+
+        <?define var.ComServerFileId = "F_netpbm_wic_codec.dll" ?>
+        <?include wic_registration.wxi ?>
+        <?undef var.ComServerFileId?>
+
+        <?define var.FileExtension = ".pgm" ?>
+        <?define var.ContentType = "image/x-portable-graymap" ?>
+        <?include wic_file_type_registration.wxi ?>
+        <?undef var.FileExtension?>
+        <?undef var.ContentType?>
+
+        <?define var.FileExtension = ".ppm" ?>
+        <?define var.ContentType = "image/x-portable-pixmap" ?>
+        <?include wic_file_type_registration.wxi ?>
+        <?undef var.FileExtension?>
+        <?undef var.ContentType?>
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>
