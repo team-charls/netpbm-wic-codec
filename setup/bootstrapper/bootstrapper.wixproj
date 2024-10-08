@@ -17,4 +17,14 @@
   <ItemGroup>
     <ProjectReference Include="..\installer\installer.wixproj" />
   </ItemGroup>
+
+  <Target Name="SignBundleEngine">
+    <Message Importance="high" Text="SignBundleEngine: @(SignBundleEngine)" />
+    <Exec Command='signtool.exe sign /fd SHA256 /td SHA256 /v /sha1 $(_CertificateThumbprint) /tr $(_TimestampUrl) "%(SignBundleEngine.FullPath)" ' />
+  </Target>
+
+  <Target Name="SignBundle">
+    <Message Importance="high" Text="SignBundle: @(SignBundle)" />
+    <Exec Command='signtool.exe sign /fd SHA256 /td SHA256 /v /sha1 $(_CertificateThumbprint) /tr $(_TimestampUrl) "%(SignBundle.FullPath)" ' />
+  </Target>
 </Project>
