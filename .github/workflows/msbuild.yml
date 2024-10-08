@@ -35,5 +35,5 @@ jobs:
       run: msbuild /v:m /m /p:Configuration=${{matrix.buildConfiguration}} /p:Platform=${{matrix.buildPlatform}} ${{env.SOLUTION_FILE_PATH}} /p:NETPBM_WIC_CODEC_ALL_WARNINGS=true
 
     - name: Test
-      working-directory: .\build\bin\${{matrix.buildPlatform}}\${{matrix.buildConfiguration}}\
+      working-directory: .\build\binaries\${{matrix.buildPlatform}}\${{matrix.buildConfiguration}}\
       run: vstest.console.exe /Platform:${{matrix.buildPlatform}} test.dll

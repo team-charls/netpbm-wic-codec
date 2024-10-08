@@ -1,0 +1,20 @@
+﻿<!--
+  Copyright (c) Team CharLS.
+  SPDX-License-Identifier: BSD-3-Clause
+-->
+
+<Project Sdk="WixToolset.Sdk">
+  <PropertyGroup>
+    <OutputType>Bundle</OutputType>
+    <OutputName>NetpbmWicCodecSetup-$(Version)-$(Platform)</OutputName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Bal.wixext" />
+    <PackageReference Include="WixToolset.Util.wixext" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\installer\installer.wixproj" />
+  </ItemGroup>
+</Project>

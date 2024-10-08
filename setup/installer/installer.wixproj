@@ -1,0 +1,15 @@
+﻿<!--
+  Copyright (c) Team CharLS.
+  SPDX-License-Identifier: BSD-3-Clause
+-->
+
+<Project Sdk="WixToolset.Sdk">
+  <ItemGroup>
+    <Content Include="wic_file_type_registration.wxi" />
+    <Content Include="wic_registration.wxi" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\netpbm-wic-codec.vcxproj" />
+  </ItemGroup>
+</Project>
