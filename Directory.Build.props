@@ -36,9 +36,9 @@
     <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio><!-- Enable faster builds for SDK style projects in Visual Studio 2022 17.5 and newer. -->
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 
-    <_CertificateThumbprint>$(CertificateThumbprint)</_CertificateThumbprint>
+    <_CertificateThumbprint Condition="'$(_CertificateThumbprint)' != ''">$(CertificateThumbprint)</_CertificateThumbprint>
     <_CertificateThumbprint Condition="'$(_CertificateThumbprint)' == ''">b834c6c1d7e0ae8e76cadcf9e2e7a273133a5df6</_CertificateThumbprint>
-    <_TimestampUrl>$(TimestampUrl)</_TimestampUrl>
+    <_TimestampUrl Condition="'$(_TimestampUrl)' != ''"> $(TimestampUrl)</_TimestampUrl>
     <_TimestampUrl Condition="'$(_TimestampUrl)' == ''">http://time.certum.pl/</_TimestampUrl>
   </PropertyGroup>
 
@@ -114,11 +114,15 @@
 
         * WINRT *
         WINRT_LEAN_AND_MEAN: Disables rarely-used features (in order to reduce compile times)
+        WINRT_NO_SOURCE_LOCATION (prevents full namespace names in the binary).
 
         * Secure C Runtime *
         __STDC_WANT_SECURE_LIB__=1;
+
+        * Microsoft STL *
+        _USE_DETAILED_FUNCTION_NAME_IN_SOURCE_LOCATION=0: Keep function name info short to reduce binary size.
       -->
-      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;NOSERVICE;NOMCX;NOIME;NOMINMAX;WINRT_LEAN_AND_MEAN;__STDC_WANT_SECURE_LIB__=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;NOSERVICE;NOMCX;NOIME;NOMINMAX;WINRT_LEAN_AND_MEAN;WINRT_NO_SOURCE_LOCATION;__STDC_WANT_SECURE_LIB__=1;_USE_DETAILED_FUNCTION_NAME_IN_SOURCE_LOCATION=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
 
@@ -133,6 +137,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
       <MinimumRequiredVersion>10</MinimumRequiredVersion>
+      <EnableUAC>false</EnableUAC>
 
       <!-- Indicate DLL is compatible with Hardware supported Shadow stack (requires Zen3+ or Intel 11th Gen CPU)  -->
       <CETCompat Condition="'$(Platform)'!='ARM64'">true</CETCompat>
@@ -148,11 +153,19 @@
     </Link>
   </ItemDefinitionGroup>
 
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <LinkIncremental>true</LinkIncremental>
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <LinkIncremental>false</LinkIncremental>
+    <UseDebugLibraries>false</UseDebugLibraries>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <EnableCppCoreCheck>true</EnableCppCoreCheck>
     <EnableMicrosoftCodeAnalysis>true</EnableMicrosoftCodeAnalysis>
     <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
 
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
@@ -160,6 +173,20 @@
       <!-- For release builds, enable the MS static analyzer build into the C++ compiler. -->
       <EnablePREfast>true</EnablePREfast>
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
+      <AdditionalOptions>%(AdditionalOptions) /Brepro</AdditionalOptions>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+
+      <!-- Store only the filename of the PDB file into the .exe/.dll for deterministic builds and use /Brepo. -->
+      <AdditionalOptions>/PDBALTPATH:%_PDB% /Brepro %(AdditionalOptions)</AdditionalOptions>
+
+    </Link>
   </ItemDefinitionGroup>
 </Project>

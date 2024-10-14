@@ -22,7 +22,6 @@ using std::scoped_lock;
 using std::uint32_t;
 using winrt::check_hresult;
 using winrt::com_ptr;
-using winrt::to_hresult;
 
 namespace {
 
