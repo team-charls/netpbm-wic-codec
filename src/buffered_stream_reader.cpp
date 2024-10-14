@@ -10,7 +10,7 @@ module buffered_stream_reader;
 
 import <win.hpp>;
 
-import errors;
+import hresults;
 import util;
 
 using std::uint32_t;
@@ -39,7 +39,7 @@ uint32_t buffered_stream_reader::read_int()
     read_string(str, sizeof(str));
     uint32_t value;
     if (const auto [ptr, ec] = std::from_chars(str, std::end(str), value); ec != std::errc())
-        winrt::throw_hresult(WINCODEC_ERR_BADSTREAMDATA);
+        winrt::throw_hresult(wincodec::error_bad_header);
 
     return value;
 }
@@ -63,10 +63,10 @@ char buffered_stream_reader::read_char()
             RefillBuffer();
 
             if (buffer_size_ < sizeof(char))
-                winrt::throw_hresult(WINCODEC_ERR_BADSTREAMDATA);
+                winrt::throw_hresult(wincodec::error_bad_header);
         }
         else
-            winrt::throw_hresult(WINCODEC_ERR_BADSTREAMDATA);
+            winrt::throw_hresult(wincodec::error_bad_header);
     }
 
     const char result = buffer_[position_];

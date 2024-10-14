@@ -10,7 +10,7 @@ export module registry;
 import std;
 import <win.hpp>;
 
-import errors;
+import hresults;
 import winrt;
 
 using winrt::check_win32;
@@ -70,7 +70,7 @@ export HRESULT delete_tree(_Null_terminated_ const wchar_t* sub_key) noexcept
         return HRESULT_FROM_WIN32(result);
     }
 
-    return error_ok;
+    return success_ok;
 }
 
 } // namespace registry

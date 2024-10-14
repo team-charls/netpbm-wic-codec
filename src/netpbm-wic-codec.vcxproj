@@ -194,13 +194,16 @@
     <ClCompile Include="buffered_stream_reader.ixx" />
     <ClCompile Include="class_factory.ixx" />
     <ClCompile Include="dll_main.cpp" />
-    <ClCompile Include="errors.ixx" />
+    <ClCompile Include="hresults.ixx" />
     <ClCompile Include="guids.ixx" />
     <ClCompile Include="netpbm_bitmap_decoder.cpp" />
     <ClCompile Include="netpbm_bitmap_frame_decode.cpp" />
     <ClCompile Include="pnm_header.ixx" />
     <ClCompile Include="netpbm_bitmap_decoder.ixx" />
     <ClCompile Include="netpbm_bitmap_frame_decode.ixx" />
+    <ClCompile Include="property_store.cpp" />
+    <ClCompile Include="property_store.ixx" />
+    <ClCompile Include="property_variant.ixx" />
     <ClCompile Include="registry.ixx" />
     <ClCompile Include="util.ixx" />
     <ClCompile Include="winrt.ixx" />

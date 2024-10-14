@@ -6,12 +6,12 @@
 #include "cpp_unit_test.hpp"
 
 import <win.hpp>;
-import test.winrt;
 
-import test.errors;
+import test.winrt;
+import test.hresults;
 import test.stream;
 import test.util;
-import codec_factory;
+import com_factory;
 
 using namespace winrt;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -29,7 +29,7 @@ public:
         GUID container_format;
         const auto result{codec_factory_.create_decoder()->GetContainerFormat(&container_format)};
 
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
         Assert::IsTrue(container_format_netpbm == container_format);
     }
 
@@ -48,7 +48,7 @@ public:
         com_ptr<IWICBitmapDecoderInfo> decoder_info;
         const auto result{decoder->GetDecoderInfo(decoder_info.put())};
 
-        Assert::IsTrue(result == error_ok || result == wincodec::error_component_not_found);
+        Assert::IsTrue(result == success_ok || result == wincodec::error_component_not_found);
         if (succeeded(result))
         {
             Assert::IsNotNull(decoder_info.get());
@@ -97,7 +97,7 @@ public:
         uint32_t actual_count;
         const auto result{codec_factory_.create_decoder()->GetColorContexts(1, color_contexts.put(), &actual_count)};
 
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
         Assert::AreEqual(0U, actual_count);
     }
 
@@ -114,7 +114,7 @@ public:
         uint32_t frame_count;
         const auto result{codec_factory_.create_decoder()->GetFrameCount(&frame_count)};
 
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
         Assert::AreEqual(1U, frame_count);
     }
 
@@ -134,7 +134,7 @@ public:
         DWORD capability;
         const auto result{codec_factory_.create_decoder()->QueryCapability(stream.get(), &capability)};
 
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
         Assert::AreEqual(0UL, capability);
     }
 
@@ -165,7 +165,7 @@ public:
         DWORD capability;
         const auto result{codec_factory_.create_decoder()->QueryCapability(stream.get(), &capability)};
 
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
         Assert::AreEqual(static_cast<DWORD>(WICBitmapDecoderCapabilityCanDecodeAllImages), capability);
     }
 
@@ -205,7 +205,7 @@ public:
         stream.attach(SHCreateMemStream(nullptr, 0));
 
         const auto result{codec_factory_.create_decoder()->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
     }
 
     TEST_METHOD(Initialize_cache_on_load) // NOLINT
@@ -214,7 +214,7 @@ public:
         stream.attach(SHCreateMemStream(nullptr, 0));
 
         const auto result{codec_factory_.create_decoder()->Initialize(stream.get(), WICDecodeMetadataCacheOnLoad)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
     }
 
     TEST_METHOD(Initialize_twice) // NOLINT
@@ -224,10 +224,10 @@ public:
 
         const com_ptr decoder{codec_factory_.create_decoder()};
         auto result{decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
 
         result = decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnLoad);
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
     }
 
     TEST_METHOD(Initialize_bad_cache_option) // NOLINT
@@ -238,7 +238,7 @@ public:
         const auto result{codec_factory_.create_decoder()->Initialize(stream.get(), static_cast<WICDecodeOptions>(4))};
 
         // Cache options is not used by decoder and by design not validated.
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
     }
 
     TEST_METHOD(Initialize_null_stream) // NOLINT
@@ -255,16 +255,16 @@ public:
 
         com_ptr<IWICBitmapDecoder> decoder = codec_factory_.create_decoder();
         auto result{decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
 
         uint32_t frame_count;
         result = decoder->GetFrameCount(&frame_count);
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
         Assert::AreEqual(1U, frame_count);
 
         com_ptr<IWICBitmapFrameDecode> bitmap_frame_decode;
         result = decoder->GetFrame(0, bitmap_frame_decode.put());
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
         Assert::IsTrue(bitmap_frame_decode.get() != nullptr);
     }
 
@@ -276,7 +276,7 @@ public:
 
         com_ptr<IWICBitmapDecoder> decoder = codec_factory_.create_decoder();
         auto result{decoder->Initialize(stream.get(), WICDecodeMetadataCacheOnDemand)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
 
         SUPPRESS_WARNING_6387_INVALID_ARGUMENT_NEXT_LINE
         result = decoder->GetFrame(0, nullptr);
@@ -301,5 +301,5 @@ public:
     }
 
 private:
-    codec_factory codec_factory_;
+    com_factory codec_factory_;
 };

@@ -27,7 +27,7 @@
     <BuildPassReferences>true</BuildPassReferences>
     <AllowParallelCompileInReferencedProjects>true</AllowParallelCompileInReferencedProjects>
 
-    <Version>0.2.0</Version>
+    <Version>0.3.0</Version>
 
     <!-- Define properties for WIX projects -->
     <DefineConstants>FourPartsVersion=$(Version).0;</DefineConstants>

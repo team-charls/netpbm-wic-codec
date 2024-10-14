@@ -49,6 +49,10 @@ Go to the [releases](https://github.com/team-charls/netpbm-wic-codec/releases) p
 Assets at the bottom to show the files available in the release.
 Please use the appropriate installer that matches your machine's architecture.
 
+> [!NOTE]
+> Microsoft Defender SmartScreen may show a warning about an unrecognised app when running the installer. Click on "More Info" + "Run anyway" to continue the installation.  
+The installer and the DLL are signed, but Defender SmartScreen requires an EV code signing certificate, which is only available to commercial organisations.
+
 ## Applications that can use the Netpbm WIC codec
 
 The following application have been validated to work with the Netpbm WIC codec:

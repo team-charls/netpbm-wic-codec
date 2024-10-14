@@ -4,8 +4,12 @@
 -->
 
 <Include xmlns="http://wixtoolset.org/schemas/v4/wxs">
-    <Class Id="$(CLSID_NetpbmDecoder)" Context="InprocServer32" Server="$(ComServerFileId)" ThreadingModel="both" />
-    <RegistryKey Root="HKCR" Key="CLSID\$(CLSID_NetpbmDecoder)">
+  <!-- Register COM objects -->
+  <Class Id="$(CLSID_NetpbmDecoder)" Context="InprocServer32" Server="$(ComServerFileId)" ThreadingModel="both" />
+  <Class Id="$(CLSID_PropertyStore)" Context="InprocServer32" Server="$(ComServerFileId)" ThreadingModel="both" />
+
+  <!-- Register WIC configuration -->
+  <RegistryKey Root="HKCR" Key="CLSID\$(CLSID_NetpbmDecoder)">
         <RegistryValue Type="integer" Name="ArbitrationPriority" Value="10" />
         <RegistryValue Type="string" Name="Author" Value="Team CharLS" />
         <RegistryValue Type="string" Name="ColorManagementVersion" Value="1.0.0.0" />

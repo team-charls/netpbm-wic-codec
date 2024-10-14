@@ -6,7 +6,7 @@ export module class_factory;
 import <win.hpp>;
 import winrt;
 
-import errors;
+import hresults;
 import util;
 
 export template<typename Class>
@@ -27,6 +27,6 @@ struct class_factory : winrt::implements<class_factory<Class>, IClassFactory>
 
     HRESULT __stdcall LockServer(BOOL) noexcept override
     {
-        return error_ok;
+        return success_ok;
     }
 };

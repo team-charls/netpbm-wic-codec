@@ -18,7 +18,7 @@
     <ClCompile Include="netpbm_bitmap_decoder_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_errors.ixx">
+    <ClCompile Include="test_results.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="dll_main_test.cpp">
@@ -39,13 +39,19 @@
     <ClCompile Include="test_util.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="codec_factory.ixx">
+    <ClCompile Include="com_factory.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="test_winrt.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="buffered_stream_reader_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="property_store_test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="property_variant_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
