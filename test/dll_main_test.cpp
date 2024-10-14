@@ -6,9 +6,10 @@
 
 import std;
 import <win.hpp>;
+
+import com_factory;
 import test.winrt;
-import test.errors;
-import codec_factory;
+import test.hresults;
 
 using namespace winrt;
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -24,10 +25,10 @@ public:
         const auto class_factory{factory_.get_class_factory(net_pbm_decoder_class_id)};
 
         auto result{class_factory->LockServer(true)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
 
         result = class_factory->LockServer(false);
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
     }
 
     TEST_METHOD(class_factory_unknown_id) // NOLINT
@@ -77,5 +78,5 @@ public:
     }
 
 private:
-    codec_factory factory_;
+    com_factory factory_;
 };

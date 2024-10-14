@@ -12,7 +12,7 @@ import <win.hpp>;
 import winrt;
 
 import buffered_stream_reader;
-import errors;
+import hresults;
 import util;
 
 using winrt::throw_hresult;
@@ -89,7 +89,7 @@ export struct pnm_header
         height = streamReader.read_int();
 
         if (width < 1 || height < 1)
-            return WINCODEC_ERR_BADHEADER;
+            return wincodec::error_bad_header;
 
         int maxColorValue;
 
@@ -105,6 +105,6 @@ export struct pnm_header
 
         MaxColorValue = static_cast<USHORT>(maxColorValue);
 
-        return error_ok;
+        return success_ok;
     }
 };

@@ -9,10 +9,11 @@ import <win.hpp>;
 import winrt;
 
 import netpbm_bitmap_decoder;
-import errors;
+import hresults;
 import guids;
 import registry;
 import util;
+import property_store;
 
 using std::array;
 using std::format;
@@ -115,6 +116,40 @@ void register_decoder()
     register_decoder_file_extension(L"ppmfile", L".ppm", L"image/x-portable-pixmap");
 }
 
+void register_property_store_file_extension(const wchar_t* file_extension)
+{
+    registry::set_value(LR"(SOFTWARE\Microsoft\Windows\CurrentVersion\PropertySystem\PropertyHandlers\)"s + file_extension,
+                        L"", guid_to_string(id::property_store_class).c_str());
+
+    const auto sub_key = LR"(SOFTWARE\Classes\SystemFileAssociations\)"s + file_extension;
+    registry::set_value(sub_key, L"ExtendedTileInfo",
+                        L"prop:System.ItemType;*System.DateModified;*System.Image.Dimensions");
+    registry::set_value(
+        sub_key, L"FullDetails",
+        L"prop:System.PropGroup.Image;System.Image.Dimensions;System.Image.HorizontalSize;System.Image.VerticalSize;System."
+        L"Image.BitDepth;System.PropGroup.FileSystem;System.ItemNameDisplay;System.ItemType;System.ItemFolderPathDisplay;"
+        L"System.DateCreated;System.DateModified;System.Size;System.FileAttributes;System.OfflineAvailability;System."
+        L"OfflineStatus;System.SharedWith;System.FileOwner;System.ComputerName");
+    registry::set_value(sub_key, L"InfoTip",
+                        L"prop:System.ItemType;*System.DateModified;*System.Image.Dimensions;*System.Size");
+    registry::set_value(sub_key, L"PreviewDetails",
+                        L"prop:*System.DateModified;*System.Image.Dimensions;*System.Size;*System.OfflineAvailability;"
+                        "*System.OfflineStatus;*System.DateCreated;*System.SharedWith");
+}
+
+void register_property_store()
+{
+    const wstring sub_key{LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(id::property_store_class)};
+
+    // COM co-create registration.
+    const wstring inproc_server_sub_key{sub_key + LR"(\InprocServer32\)"};
+    registry::set_value(inproc_server_sub_key, L"", get_module_path().c_str());
+    registry::set_value(inproc_server_sub_key, L"ThreadingModel", L"Both");
+
+    register_property_store_file_extension(L".pgm");
+    register_property_store_file_extension(L".ppm");
+}
+
 [[nodiscard]] HRESULT unregister(const GUID& class_id, const GUID& wic_category_id)
 {
     const wstring sub_key{LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(class_id)};
@@ -161,11 +196,20 @@ _Check_return_ HRESULT __stdcall DllGetClassObject(_In_ GUID const& class_id, _I
                                                    _Outptr_ void** result)
 try
 {
-    if (class_id != id::netpbm_decoder)
-        return error_class_not_available;
+    if (class_id == id::netpbm_decoder)
+    {
+        create_netpbm_bitmap_decoder_factory(interface_id, result);
+        return success_ok;
+    }
 
-    create_netpbm_bitmap_decoder_factory(interface_id, result);
-    return error_ok;
+    if (class_id == id::property_store_class)
+    {
+        create_property_store_class_factory(interface_id, result);
+        return success_ok;
+    }
+
+    TRACE("netpbm-wic-codec::DllGetClassObject error class not available\n");
+    return error_class_not_available;
 }
 catch (...)
 {
@@ -185,10 +229,11 @@ try
 {
     TRACE("netpbm-wic-codec::DllRegisterServer\n");
     register_decoder();
+    register_property_store();
 
     SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, nullptr, nullptr);
 
-    return error_ok;
+    return success_ok;
 }
 catch (...)
 {

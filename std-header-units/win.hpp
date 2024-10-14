@@ -9,3 +9,5 @@
 #include <mfapi.h>
 #include <ShlObj.h>
 #include <olectl.h>
+#include <propkey.h>
+#include <propvarutil.h>

@@ -11,7 +11,7 @@ import std;
 import <win.hpp>;
 import winrt;
 
-import errors;
+import hresults;
 
 namespace {
 

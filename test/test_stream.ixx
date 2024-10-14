@@ -8,9 +8,9 @@ module;
 export module test.stream;
 
 import <win.hpp>;
-import test.winrt;
 
-import test.errors;
+import test.winrt;
+import test.hresults;
 
 export struct test_stream : winrt::implements<test_stream, IStream>
 {
@@ -25,7 +25,7 @@ export struct test_stream : winrt::implements<test_stream, IStream>
         if (pcbRead)
             *pcbRead = 0;
 
-        return fail_on_read_ ? error_fail : error_ok;
+        return fail_on_read_ ? error_fail : success_ok;
     }
 
     HRESULT __stdcall Write(_In_reads_bytes_(cb) const void* /*pv*/, [[maybe_unused]] _In_ ULONG cb,
@@ -40,7 +40,7 @@ export struct test_stream : winrt::implements<test_stream, IStream>
         if (libNewPosition)
             libNewPosition->QuadPart = 0L;
 
-        return fail_on_seek_counter_ <= 0 ? error_fail : error_ok;
+        return fail_on_seek_counter_ <= 0 ? error_fail : success_ok;
     }
 
     HRESULT __stdcall SetSize(ULARGE_INTEGER /*libNewSize*/) noexcept override

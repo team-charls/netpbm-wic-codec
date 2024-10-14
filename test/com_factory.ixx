@@ -5,7 +5,7 @@ module;
 
 #include "intellisense.hpp"
 
-export module codec_factory;
+export module com_factory;
 
 import <win.hpp>;
 import test.winrt;
@@ -15,16 +15,16 @@ export constexpr GUID net_pbm_decoder_class_id{0x6891bbe, 0xcc02, 0x4bb2, {0x9c,
 /// <summary>
 /// Helper class that provides methods to create COM objects without registry registration.
 /// </summary>
-export class codec_factory final
+export class com_factory final
 {
 public:
-    codec_factory() noexcept(false) : library_{LoadLibrary(L"netpbm-wic-codec.dll")}
+    com_factory() noexcept(false) : library_{LoadLibrary(L"netpbm-wic-codec.dll")}
     {
         if (!library_)
             winrt::throw_last_error();
     }
 
-    ~codec_factory()
+    ~com_factory()
     {
         if (library_)
         {
@@ -32,10 +32,10 @@ public:
         }
     }
 
-    codec_factory(const codec_factory&) = delete;
-    codec_factory(codec_factory&&) = delete;
-    codec_factory& operator=(const codec_factory&) = delete;
-    codec_factory& operator=(codec_factory&&) = delete;
+    com_factory(const com_factory&) = delete;
+    com_factory(com_factory&&) = delete;
+    com_factory& operator=(const com_factory&) = delete;
+    com_factory& operator=(com_factory&&) = delete;
 
     [[nodiscard]] winrt::com_ptr<IWICBitmapDecoder> create_decoder() const
     {
@@ -43,6 +43,17 @@ public:
         winrt::check_hresult(get_class_factory(net_pbm_decoder_class_id)->CreateInstance(nullptr, IID_PPV_ARGS(decoder.put())));
 
         return decoder;
+    }
+
+    [[nodiscard]] winrt::com_ptr<IPropertyStore> create_property_store() const
+    {
+        constexpr GUID property_store_class_id{0xab993d53, 0xee9c, 0x496b, 0x8c, 0x8b, 0x30, 0x35, 0x6e, 0x3c, 0x24, 0xc0};
+
+        winrt::com_ptr<IPropertyStore> property_store;
+        winrt::check_hresult(
+            get_class_factory(property_store_class_id)->CreateInstance(nullptr, IID_PPV_ARGS(property_store.put())));
+
+        return property_store;
     }
 
     [[nodiscard]] winrt::com_ptr<IClassFactory> get_class_factory(GUID const& class_id) const

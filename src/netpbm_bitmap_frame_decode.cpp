@@ -11,7 +11,7 @@ import std;
 import <win.hpp>;
 import winrt;
 
-import errors;
+import hresults;
 import buffered_stream_reader;
 import pnm_header;
 import util;
@@ -380,7 +380,7 @@ try
           "actual_count address={}\n",
           fmt_ptr(this), count, fmt_ptr(color_contexts), fmt_ptr(actual_count));
     *check_out_pointer(actual_count) = 0;
-    return error_ok;
+    return success_ok;
 }
 catch (...)
 {

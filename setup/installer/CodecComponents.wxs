@@ -21,6 +21,7 @@
 
       <?define GUID_ContainerFormatNetpbm = "{70ab66f5-cd48-43a1-aa29-10131b7f4ff1}" ?>
       <?define CLSID_NetpbmDecoder = "{06891bbe-cc02-4bb2-9cf0-303fc4e668c3}" ?>
+      <?define CLSID_PropertyStore = "{ab993d53-ee9c-496b-8c8b-30356e3c24c0}" ?>
       <?define GUID_VendorTeamCharLS = "{8adbe21c-a720-424e-b238-45ad1052b98c}" ?>
 
       <?define DecoderFriendlyName = "Netpbm Decoder" ?>

@@ -6,11 +6,11 @@
 
 import std;
 import <win.hpp>;
-import test.winrt;
 
-import test.errors;
+import test.winrt;
+import test.hresults;
 import portable_anymap_file;
-import codec_factory;
+import com_factory;
 
 using std::array;
 using std::span;
@@ -104,7 +104,7 @@ public:
         uint32_t height;
 
         const auto result = bitmap_frame_decoder->GetSize(&width, &height);
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
         Assert::AreEqual(512U, width);
         Assert::AreEqual(512U, height);
     }
@@ -135,7 +135,7 @@ public:
 
         GUID pixel_format;
         const auto result{bitmap_frame_decoder->GetPixelFormat(&pixel_format)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
         Assert::IsTrue(GUID_WICPixelFormat8bppGray == pixel_format);
     }
 
@@ -145,7 +145,7 @@ public:
 
         GUID pixel_format;
         const auto result{bitmap_frame_decoder->GetPixelFormat(&pixel_format)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
         Assert::IsTrue(GUID_WICPixelFormat16bppGray == pixel_format);
     }
 
@@ -165,7 +165,7 @@ public:
         double dpi_x;
         double dpi_y;
         const auto result{bitmap_frame_decoder->GetResolution(&dpi_x, &dpi_y)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
         Assert::AreEqual(96., dpi_x);
         Assert::AreEqual(96., dpi_y);
     }
@@ -185,13 +185,13 @@ public:
 
         uint32_t actual_count;
         auto result{bitmap_frame_decoder->GetColorContexts(0, nullptr, &actual_count)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
         Assert::AreEqual(0U, actual_count);
 
         array<IWICColorContext*, 1> color_contexts{};
         result = bitmap_frame_decoder->GetColorContexts(static_cast<UINT>(color_contexts.size()), color_contexts.data(),
                                                         &actual_count);
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
         Assert::AreEqual(0U, actual_count);
     }
 
@@ -216,10 +216,10 @@ public:
 
         auto result{
             bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()), buffer.data())};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
 
         result = bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()), buffer.data());
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
     }
 
     TEST_METHOD(IsIWICBitmapSource) // NOLINT
@@ -281,7 +281,7 @@ public:
         vector<std::byte> buffer(static_cast<size_t>(width) * height);
 
         const auto result{copy_pixels(bitmap_frame_decoder.get(), width, buffer)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
 
         compare("8bit_2x2.pgm", buffer);
     }
@@ -297,7 +297,7 @@ public:
         vector<std::byte> buffer(static_cast<size_t>(width) * height);
 
         const auto result{copy_pixels(bitmap_frame_decoder.get(), width, buffer)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
 
         compare("tulips-gray-8bit-512-512.pgm", buffer);
     }
@@ -334,7 +334,7 @@ public:
         vector<std::byte> buffer(static_cast<size_t>(height) * stride);
 
         const auto result{copy_pixels(bitmap_frame_decoder.get(), stride, buffer)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
 
         compare("jpegls-conformance-test-8bit-256-256.ppm", buffer);
     }
@@ -365,7 +365,7 @@ public:
         vector<std::byte> buffer(static_cast<size_t>(height) * stride);
 
         const auto result{copy_pixels(bitmap_frame_decoder.get(), stride, buffer)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
 
         Assert::AreEqual(1, static_cast<int>(buffer[0]));
         Assert::AreEqual(2, static_cast<int>(buffer[1]));
@@ -387,7 +387,7 @@ public:
         vector<std::uint16_t> buffer(static_cast<size_t>(height) * (stride / 2));
 
         const auto result{copy_pixels(bitmap_frame_decoder.get(), stride, buffer)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
 
         compare("16bit_2x1.ppm", buffer);
     }
@@ -424,7 +424,7 @@ public:
         vector<std::byte> buffer(static_cast<size_t>(height) * stride);
 
         const auto result{copy_pixels(bitmap_frame_decoder.get(), stride, buffer)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
 
         Assert::AreEqual(1, static_cast<int>(buffer[0]));
         Assert::AreEqual(10, static_cast<int>(buffer[1]));
@@ -450,7 +450,7 @@ private:
 
         const uint32_t stride{(width + 15) / 16 * 4};
         const auto result{copy_pixels(bitmap_frame_decoder.get(), stride, buffer)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
 
         const std::vector decoded_buffer{unpack_crumbs(buffer.data(), width, height, stride)};
         compare(filename_expected, decoded_buffer);
@@ -465,7 +465,7 @@ private:
 
         const uint32_t stride{(width + 7) / 8 * 4};
         const auto result{copy_pixels(bitmap_frame_decoder.get(), stride, buffer)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
 
         const std::vector decoded_buffer{unpack_nibbles(buffer.data(), width, height, stride)};
         compare(filename_expected, decoded_buffer);
@@ -482,7 +482,7 @@ private:
         vector<uint16_t> buffer(static_cast<size_t>(width) * height);
 
         const auto result{copy_pixels(bitmap_frame_decoder.get(), width * 2, buffer)};
-        Assert::AreEqual(error_ok, result);
+        Assert::AreEqual(success_ok, result);
 
         compare(filename_expected, buffer);
     }
@@ -584,5 +584,5 @@ private:
         return stream;
     }
 
-    codec_factory factory_;
+    com_factory factory_;
 };

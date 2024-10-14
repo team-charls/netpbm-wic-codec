@@ -13,4 +13,5 @@
 #include <sal.h>
 #include <wincodec.h>
 #include <winreg.h>
+#include <propkey.h>
 #endif

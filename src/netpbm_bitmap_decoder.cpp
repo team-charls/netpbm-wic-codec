@@ -12,7 +12,7 @@ import <win.hpp>;
 import winrt;
 
 import class_factory;
-import errors;
+import hresults;
 import pnm_header;
 import guids;
 import netpbm_bitmap_frame_decode;
@@ -52,7 +52,7 @@ struct netpbm_bitmap_decoder : winrt::implements<netpbm_bitmap_decoder, IWICBitm
         check_hresult(stream->Seek(*reinterpret_cast<LARGE_INTEGER*>(&original_position), STREAM_SEEK_CUR, nullptr));
 
         TRACE("{} netpbm_bitmap_decoder::QueryCapability.2, *capability={}\n", fmt_ptr(this), *capability);
-        return error_ok;
+        return success_ok;
     }
     catch (...)
     {
@@ -70,7 +70,7 @@ struct netpbm_bitmap_decoder : winrt::implements<netpbm_bitmap_decoder, IWICBitm
         source_stream_.copy_from(check_in_pointer(stream));
         bitmap_frame_decode_.attach(nullptr);
 
-        return error_ok;
+        return success_ok;
     }
     catch (...)
     {
@@ -84,7 +84,7 @@ struct netpbm_bitmap_decoder : winrt::implements<netpbm_bitmap_decoder, IWICBitm
               fmt_ptr(container_format));
 
         *check_out_pointer(container_format) = id::container_format_netpbm;
-        return error_ok;
+        return success_ok;
     }
     catch (...)
     {
@@ -101,7 +101,7 @@ struct netpbm_bitmap_decoder : winrt::implements<netpbm_bitmap_decoder, IWICBitm
         check_hresult(imaging_factory()->CreateComponentInfo(id::netpbm_decoder, component_info.put()));
         check_hresult(component_info->QueryInterface(IID_PPV_ARGS(decoder_info)));
 
-        return error_ok;
+        return success_ok;
     }
     catch (...)
     {
@@ -147,7 +147,7 @@ struct netpbm_bitmap_decoder : winrt::implements<netpbm_bitmap_decoder, IWICBitm
 
         // The Netpbm format doesn't support storing color contexts (ICC profiles) in the file format.
         *check_out_pointer(actual_count) = 0;
-        return error_ok;
+        return success_ok;
     }
     catch (...)
     {
@@ -170,7 +170,7 @@ struct netpbm_bitmap_decoder : winrt::implements<netpbm_bitmap_decoder, IWICBitm
 
         // Only 1 frame is supported by this implementation (no real world samples are known that have more)
         *check_out_pointer(count) = 1;
-        return error_ok;
+        return success_ok;
     }
     catch (...)
     {
@@ -194,7 +194,7 @@ struct netpbm_bitmap_decoder : winrt::implements<netpbm_bitmap_decoder, IWICBitm
         }
 
         bitmap_frame_decode_.copy_to(check_out_pointer(bitmap_frame_decode));
-        return error_ok;
+        return success_ok;
     }
     catch (...)
     {

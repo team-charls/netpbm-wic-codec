@@ -5,27 +5,23 @@ module;
 
 #include "intellisense.hpp"
 
-export module errors;
+export module test.hresults;
 
 import <win.hpp>;
 
 export {
 
-constexpr HRESULT error_ok{S_OK};
+constexpr HRESULT success_ok{S_OK};
+constexpr HRESULT success_false{S_FALSE};
 constexpr HRESULT error_fail{E_FAIL};
 constexpr HRESULT error_pointer{E_POINTER};
+constexpr HRESULT error_already_initialized{ERROR_ALREADY_INITIALIZED};
+constexpr HRESULT error_invalid_argument{E_INVALIDARG};
 constexpr HRESULT error_no_aggregation{CLASS_E_NOAGGREGATION};
 constexpr HRESULT error_class_not_available{CLASS_E_CLASSNOTAVAILABLE};
-constexpr HRESULT error_invalid_argument{E_INVALIDARG};
-
-namespace self_registration {
-
-constexpr HRESULT error_class{SELFREG_E_CLASS};
-
-}
+constexpr HRESULT error_access_denied{STG_E_ACCESSDENIED};
 
 namespace wincodec {
-
 constexpr HRESULT error_palette_unavailable{WINCODEC_ERR_PALETTEUNAVAILABLE};
 constexpr HRESULT error_unsupported_operation{WINCODEC_ERR_UNSUPPORTEDOPERATION};
 constexpr HRESULT error_codec_no_thumbnail{WINCODEC_ERR_CODECNOTHUMBNAIL};
@@ -37,9 +33,6 @@ constexpr HRESULT error_codec_too_many_scan_lines{WINCODEC_ERR_CODECTOOMANYSCANL
 constexpr HRESULT error_component_not_found{WINCODEC_ERR_COMPONENTNOTFOUND};
 constexpr HRESULT error_bad_header{WINCODEC_ERR_BADHEADER};
 constexpr HRESULT error_bad_image{WINCODEC_ERR_BADIMAGE};
-constexpr HRESULT error_stream_not_available{WINCODEC_ERR_STREAMNOTAVAILABLE};
-constexpr HRESULT error_stream_read{WINCODEC_ERR_STREAMREAD};
-
 } // namespace wincodec
 
 }
