@@ -30,6 +30,6 @@
 
     <Binary Id="SHChangeNotifyCustomActionDll" SourceFile="shell-change-notify-custom-action.dll" />
     <CustomAction Id="SHChangeNotifyCustomAction" BinaryRef="SHChangeNotifyCustomActionDll"
-                  DllEntry="SHChangeNotifyCustomAction" Execute="deferred" HideTarget="no" Impersonate="no" />
+                  DllEntry="SHChangeNotifyCustomAction" Execute="commit" HideTarget="no" Impersonate="yes" />
   </Package>
 </Wix>
