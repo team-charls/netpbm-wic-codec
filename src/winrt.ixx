@@ -30,6 +30,6 @@ using winrt::implements;
 using winrt::make;
 using winrt::make_self;
 using winrt::throw_hresult;
-using winrt::to_hresult;
+using winrt::hresult_error;
 
 } // namespace winrt

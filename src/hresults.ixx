@@ -20,6 +20,7 @@ constexpr HRESULT error_no_aggregation{CLASS_E_NOAGGREGATION};
 constexpr HRESULT error_class_not_available{CLASS_E_CLASSNOTAVAILABLE};
 constexpr HRESULT error_invalid_argument{E_INVALIDARG};
 constexpr HRESULT error_access_denied{STG_E_ACCESSDENIED};
+constexpr HRESULT error_out_of_memory{E_OUTOFMEMORY};
 
 namespace self_registration {
 

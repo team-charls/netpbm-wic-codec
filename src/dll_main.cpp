@@ -16,7 +16,6 @@ import util;
 import property_store;
 
 using std::array;
-using std::format;
 using std::uint32_t;
 using std::wstring;
 using namespace std::string_literals;
@@ -78,11 +77,11 @@ void register_decoder_file_extension(const wchar_t* file_type_name, const wchar_
     constexpr wchar_t class_id_thumbnail_provider[]{L"{e357fccd-a995-4576-b01f-234630154e96}"};
     constexpr wchar_t class_id_photo_thumbnail_provider[]{L"{c7657c4a-9f68-40fa-a4df-96bc08eb3551}"};
 
-    registry::set_value(format(LR"(SOFTWARE\Classes\{}\ShellEx\{})", file_type_name, class_id_thumbnail_provider), L"",
+    registry::set_value(LR"(SOFTWARE\Classes\)"s + file_type_name + LR"(\ShellEx\)" + class_id_thumbnail_provider, L"",
                         class_id_photo_thumbnail_provider);
-    registry::set_value(
-        format(LR"(SOFTWARE\Classes\SystemFileAssociations\{}\ShellEx\{})", file_extension, class_id_thumbnail_provider),
-        L"", class_id_photo_thumbnail_provider);
+    registry::set_value(LR"(SOFTWARE\Classes\SystemFileAssociations\)"s + file_extension + LR"()\ShellEx\)" +
+                            class_id_thumbnail_provider,
+                        L"", class_id_photo_thumbnail_provider);
 
     // Register with the legacy Windows Photo Viewer (still installed on Windows 11 and 10): just forward to the TIFF
     // registration.
@@ -93,7 +92,7 @@ void register_decoder_file_extension(const wchar_t* file_type_name, const wchar_
 void register_decoder_pattern(const wstring& sub_key, const int index, const std::span<const std::byte> pattern)
 {
     const wstring patterns_sub_key{sub_key + LR"(\Patterns\)" + std::to_wstring(index)};
-    constexpr array mask{0xFF_byte, 0xFF_byte};
+    constexpr array mask{std::byte{0xFF}, std::byte{0xFF}};
     registry::set_value(patterns_sub_key, L"Length", static_cast<uint32_t>(pattern.size()));
     registry::set_value(patterns_sub_key, L"Position", 0U);
     registry::set_value(patterns_sub_key, L"Mask", mask);
@@ -122,8 +121,7 @@ void register_property_store_file_extension(const wchar_t* file_extension)
                         L"", guid_to_string(id::property_store_class).c_str());
 
     const auto sub_key = LR"(SOFTWARE\Classes\SystemFileAssociations\)"s + file_extension;
-    registry::set_value(sub_key, L"ExtendedTileInfo",
-                        L"prop:System.ItemType;*System.DateModified;*System.Image.Dimensions");
+    registry::set_value(sub_key, L"ExtendedTileInfo", L"prop:System.ItemType;*System.DateModified;*System.Image.Dimensions");
     registry::set_value(
         sub_key, L"FullDetails",
         L"prop:System.PropGroup.Image;System.Image.Dimensions;System.Image.HorizontalSize;System.Image.VerticalSize;System."
@@ -213,13 +211,13 @@ try
 }
 catch (...)
 {
-    return winrt::to_hresult();
+    return to_hresult();
 }
 
 // Purpose: Used to determine whether the COM sub-system can unload the DLL from memory.
 extern "C" __control_entrypoint(DllExport) HRESULT __stdcall DllCanUnloadNow()
 {
-    const auto result{winrt::get_module_lock() ? S_FALSE : S_OK};
+    const auto result{winrt::get_module_lock() ? success_false : success_ok};
     TRACE("netpbm-wic-codec::DllCanUnloadNow hr = {} (0 = S_OK -> unload OK)\n", result);
     return result;
 }
@@ -237,7 +235,7 @@ try
 }
 catch (...)
 {
-    TRACE("netpbm-wic-codec::DllRegisterServer failed hr = {}\n", winrt::to_hresult());
+    TRACE("netpbm-wic-codec::DllRegisterServer failed hr = {}\n", to_hresult());
     return self_registration::error_class;
 }
 
@@ -250,7 +248,7 @@ try
 }
 catch (...)
 {
-    const HRESULT hresult{winrt::to_hresult()};
+    const HRESULT hresult{to_hresult()};
     TRACE("netpbm-wic-codec::DllUnregisterServer failed hr = {}\n", hresult);
     return hresult;
 }

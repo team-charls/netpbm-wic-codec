@@ -26,35 +26,6 @@ namespace {
 
 } // namespace
 
-export constexpr std::byte operator"" _byte(const unsigned long long int n)
-{
-    return static_cast<std::byte>(n);
-}
-
-
-export [[nodiscard]] const char* pixel_format_to_string(const GUID& guid) noexcept
-{
-    if (guid == GUID_WICPixelFormat2bppGray)
-        return "GUID_WICPixelFormat2bppGray";
-
-    if (guid == GUID_WICPixelFormat4bppGray)
-        return "GUID_WICPixelFormat4bppGray";
-
-    if (guid == GUID_WICPixelFormat8bppGray)
-        return "GUID_WICPixelFormat8bppGray";
-
-    if (guid == GUID_WICPixelFormat16bppGray)
-        return "GUID_WICPixelFormat16bppGray";
-
-    if (guid == GUID_WICPixelFormat24bppRGB)
-        return "GUID_WICPixelFormat24bppRGB";
-
-    if (guid == GUID_WICPixelFormat48bppRGB)
-        return "GUID_WICPixelFormat48bppRGB";
-
-    return "Unknown";
-}
-
 export [[nodiscard]] std::wstring guid_to_string(const GUID& guid)
 {
     std::wstring guid_text;
@@ -89,19 +60,9 @@ export [[nodiscard]] std::wstring get_module_path()
     return path;
 }
 
-export template<>
-struct std::formatter<winrt::hresult> : std::formatter<int32_t>
-{
-    auto format(const winrt::hresult& result, std::format_context& ctx) const
-    {
-        return std::formatter<int32_t>::format(result.value, ctx);
-    }
-};
-
 // Copied from fmtlib as standard C++20 lacks this helper method and requires fmt_ptr
 export template<typename T>
-[[nodiscard]]
-auto fmt_ptr(T p) noexcept -> const void*
+[[nodiscard]] auto fmt_ptr(T p) noexcept -> const void*
 {
     static_assert(std::is_pointer_v<T>);
     return std::bit_cast<const void*>(p);
@@ -140,4 +101,20 @@ export void check_condition(const bool condition, const winrt::hresult result_to
 {
     if (!condition)
         throw_hresult(result_to_throw);
+}
+
+export __declspec(noinline) HRESULT to_hresult() noexcept
+{
+    try
+    {
+        throw;
+    }
+    catch (winrt::hresult_error const& e)
+    {
+        return e.code();
+    }
+    catch (std::bad_alloc const&)
+    {
+        return error_out_of_memory;
+    }
 }

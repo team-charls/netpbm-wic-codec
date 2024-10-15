@@ -23,7 +23,6 @@ using std::span;
 using std::pair;
 using std::uint32_t;
 using winrt::check_hresult;
-using winrt::to_hresult;
 
 namespace {
 
@@ -81,7 +80,7 @@ struct property_store : winrt::implements<property_store, IInitializeWithStream,
         properties_[2].first = PKEY_Image_BitDepth;
         properties_[2].second = property_variant{compute_bit_depth(header.PnmType, header.MaxColorValue)};
         properties_[3].first = PKEY_Image_Dimensions;
-        properties_[3].second = property_variant{std::format(L"{}x{}", header.width, header.height).c_str()};
+        properties_[3].second = property_variant{(std::to_wstring(header.width) + L"x" + std::to_wstring(header.height)).c_str()};
         properties_[4].first = PKEY_Image_Compression;
         properties_[4].second = property_variant{static_cast<std::uint16_t>(IMAGE_COMPRESSION_UNCOMPRESSED)};
         initialized_ = true;
@@ -97,7 +96,7 @@ struct property_store : winrt::implements<property_store, IInitializeWithStream,
     HRESULT __stdcall IsPropertyWritable(const PROPERTYKEY& /*key*/) noexcept override
     {
         TRACE("{} property_store::IsPropertyWritable\n", fmt_ptr(this));
-        return S_FALSE;
+        return success_false;
     }
 
     // IPropertyStore Interface

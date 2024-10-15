@@ -28,7 +28,7 @@ export void set_value(_Null_terminated_ const wchar_t* sub_key, _Null_terminated
                                static_cast<DWORD>(length * sizeof(wchar_t)))); // NOLINT(bugprone-misplaced-widening-cast)
 }
 
-export void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name,
+export inline void set_value(const std::wstring& sub_key, _Null_terminated_ const wchar_t* value_name,
                       _Null_terminated_ const wchar_t* value)
 {
     set_value(sub_key.c_str(), value_name, value);

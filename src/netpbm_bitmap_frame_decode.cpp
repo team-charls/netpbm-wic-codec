@@ -25,8 +25,6 @@ using std::ranges::transform;
 using winrt::check_hresult;
 using winrt::com_ptr;
 using winrt::throw_hresult;
-using winrt::to_hresult;
-
 
 namespace {
 

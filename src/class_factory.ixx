@@ -22,7 +22,7 @@ struct class_factory : winrt::implements<class_factory<Class>, IClassFactory>
     }
     catch (...)
     {
-        return winrt::to_hresult();
+        return to_hresult();
     }
 
     HRESULT __stdcall LockServer(BOOL) noexcept override
