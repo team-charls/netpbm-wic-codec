@@ -11,10 +11,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\netpbm-wic-codec.vcxproj" />
+    <ProjectReference Include="..\shell-change-notify-custom-action\shell-change-notify-custom-action.vcxproj" />
   </ItemGroup>
 
   <Target Name="SignMsi">
     <Message Importance="high" Text="SignMsi: @(SignMsi)" />
-    <Exec Command='signtool.exe sign /fd SHA256 /td SHA256 /v /sha1 $(_CertificateThumbprint) /tr $(_TimestampUrl) "%(SignMsi.FullPath)" ' />
+    <Exec Command="signtool.exe sign /fd SHA256 /td SHA256 /v /sha1 $(_CertificateThumbprint) /tr $(_TimestampUrl) &quot;%(SignMsi.FullPath)&quot; " />
   </Target>
 </Project>
