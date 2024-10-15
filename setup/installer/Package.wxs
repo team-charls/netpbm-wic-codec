@@ -7,9 +7,9 @@
 
   <!-- Use a different upgrade code for x86 to allow x86 and x64 versions to be installed side by side -->
   <?if $(sys.BUILDARCHSHORT) = "X86" ?>
-    <?define UpgradeCode = "9de723f9-3e9a-446a-bb07-cf48b4b06878" ?>
+  <?define UpgradeCode = "9de723f9-3e9a-446a-bb07-cf48b4b06878" ?>
   <?else?>
-    <?define UpgradeCode = "9de723f9-3e9a-446a-bb07-cf48b4b06879" ?>
+  <?define UpgradeCode = "9de723f9-3e9a-446a-bb07-cf48b4b06879" ?>
   <?endif?>
 
   <Package
@@ -23,5 +23,13 @@
     <Feature Id="Main">
       <ComponentGroupRef Id="CodecComponents" />
     </Feature>
+
+    <InstallExecuteSequence>
+      <Custom Action="SHChangeNotifyCustomAction" Before="InstallFinalize" />
+    </InstallExecuteSequence>
+
+    <Binary Id="SHChangeNotifyCustomActionDll" SourceFile="shell-change-notify-custom-action.dll" />
+    <CustomAction Id="SHChangeNotifyCustomAction" BinaryRef="SHChangeNotifyCustomActionDll"
+                  DllEntry="SHChangeNotifyCustomAction" Execute="deferred" HideTarget="no" Impersonate="no" />
   </Package>
 </Wix>

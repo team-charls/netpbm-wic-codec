@@ -31,7 +31,6 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <ProjectGuid>{F2EA965E-98D3-41C6-90D1-3DE4837D1041}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>unittest</RootNamespace>
     <ProjectSubType>NativeUnitTestProject</ProjectSubType>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
