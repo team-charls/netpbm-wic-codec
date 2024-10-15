@@ -40,9 +40,12 @@
   <ItemDefinitionGroup>
     <Link>
       <ModuleDefinitionFile>shell-change-notify-custom-action.def</ModuleDefinitionFile>
+      <AdditionalDependencies>Msi.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ClCompile>
       <ExceptionHandling>false</ExceptionHandling>
+      <RuntimeLibrary Condition="'$(Configuration)'=='Release'">MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary Condition="'$(Configuration)'=='Debug'">MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
