@@ -78,16 +78,12 @@ char buffered_stream_reader::read_char()
 
 void buffered_stream_reader::skip_line()
 {
-    while (true)
+    while (read_char() != '\n')
     {
-        const char c = read_char();
-
-        if (c == 0x0A)
-            return;
     }
 }
 
-void buffered_stream_reader::read_string(char* str, ULONG maxCount)
+void buffered_stream_reader::read_string(char* str, const ULONG maxCount)
 {
     ASSERT(maxCount > 0);
 
