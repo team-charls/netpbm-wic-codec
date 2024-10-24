@@ -51,7 +51,7 @@
     <ClCompile Include="dll_main_test.cpp" />
     <ClCompile Include="property_store_test.cpp" />
     <ClCompile Include="property_variant_test.cpp" />
-    <ClCompile Include="test_results.ixx" />
+    <ClCompile Include="test_hresults.ixx" />
     <ClCompile Include="netpbm_bitmap_decoder_test.cpp" />
     <ClCompile Include="netpbm_bitmap_frame_decode_test.cpp" />
     <ClCompile Include="pnm_header_test.cpp" />

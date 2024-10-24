@@ -21,6 +21,7 @@ constexpr HRESULT error_class_not_available{CLASS_E_CLASSNOTAVAILABLE};
 constexpr HRESULT error_invalid_argument{E_INVALIDARG};
 constexpr HRESULT error_access_denied{STG_E_ACCESSDENIED};
 constexpr HRESULT error_out_of_memory{E_OUTOFMEMORY};
+constexpr HRESULT error_not_valid_state{E_NOT_VALID_STATE};
 
 namespace self_registration {
 

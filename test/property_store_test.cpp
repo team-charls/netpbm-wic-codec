@@ -23,7 +23,7 @@ public:
         DWORD count;
         const auto result{codec_factory_.create_property_store()->GetCount(&count)};
 
-        Assert::AreEqual(success_ok, result);
+        Assert::AreEqual(error_not_valid_state, result);
         Assert::AreEqual(0UL, count);
     }
 
@@ -190,7 +190,7 @@ public:
 
         PROPERTYKEY property_key;
         const auto result{property_store->GetAt(0, &property_key)};
-        Assert::AreEqual(error_invalid_argument, result);
+        Assert::AreEqual(error_not_valid_state, result);
     }
 
     TEST_METHOD(GetAt_nullptr)

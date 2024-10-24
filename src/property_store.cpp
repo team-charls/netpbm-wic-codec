@@ -18,7 +18,6 @@ import pnm_header;
 import class_factory;
 import property_variant;
 
-using std::scoped_lock;
 using std::span;
 using std::pair;
 using std::uint32_t;
@@ -66,8 +65,6 @@ struct property_store : winrt::implements<property_store, IInitializeWithStream,
         TRACE("{} property_store::Initialize, stream address={}, access_mode={}\n", fmt_ptr(this), fmt_ptr(stream),
               static_cast<int>(access_mode));
 
-        scoped_lock lock{mutex_};
-
         if (initialized_)
             return error_already_initialized;
 
@@ -104,8 +101,11 @@ struct property_store : winrt::implements<property_store, IInitializeWithStream,
     try
     {
         TRACE("{} property_store::GetCount\n", fmt_ptr(this));
-        scoped_lock lock{mutex_};
-        *check_out_pointer(count) = initialized_ ? static_cast<DWORD>(properties_.size()) : 0UL;
+
+        // Implementation recommendation is to set count to zero (when possible) in an error condition.
+        *check_out_pointer(count) = static_cast<DWORD>(initialized_ ? properties_.size() : 0U);
+        check_state();
+
         return success_ok;
     }
     catch (...)
@@ -117,9 +117,9 @@ struct property_store : winrt::implements<property_store, IInitializeWithStream,
     try
     {
         TRACE("{} property_store::GetAt\n", fmt_ptr(this));
-        scoped_lock lock{mutex_};
+        check_state();
 
-        if (index >= properties_.size() || !initialized_)
+        if (index >= properties_.size())
             return error_invalid_argument;
 
         *check_out_pointer(key) = properties_[index].first;
@@ -134,6 +134,8 @@ struct property_store : winrt::implements<property_store, IInitializeWithStream,
     try
     {
         TRACE("{} property_store::GetValue\n", fmt_ptr(this));
+        check_state();
+
         if (const auto* property_value{find(span{properties_}, key)}; property_value)
         {
             property_value->copy(value);
@@ -163,9 +165,14 @@ struct property_store : winrt::implements<property_store, IInitializeWithStream,
     }
 
 private:
-    std::mutex mutex_;
+    void check_state() const
+    {
+        if (!initialized_)
+            winrt::throw_hresult(error_not_valid_state);
+    }
+
     std::array<pair<PROPERTYKEY, property_variant>, 5> properties_; // Use std::array as a small map.
-    bool initialized_{};
+    std::atomic<bool> initialized_{};
 };
 
 } // namespace
