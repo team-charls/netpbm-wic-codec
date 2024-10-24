@@ -20,6 +20,7 @@ constexpr HRESULT error_invalid_argument{E_INVALIDARG};
 constexpr HRESULT error_no_aggregation{CLASS_E_NOAGGREGATION};
 constexpr HRESULT error_class_not_available{CLASS_E_CLASSNOTAVAILABLE};
 constexpr HRESULT error_access_denied{STG_E_ACCESSDENIED};
+constexpr HRESULT error_not_valid_state{E_NOT_VALID_STATE};
 
 namespace wincodec {
 constexpr HRESULT error_palette_unavailable{WINCODEC_ERR_PALETTEUNAVAILABLE};
