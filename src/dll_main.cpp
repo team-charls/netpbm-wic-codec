@@ -9,6 +9,7 @@ import <win.hpp>;
 import winrt;
 
 import netpbm_bitmap_decoder;
+import netpbm_bitmap_encoder;
 import hresults;
 import guids;
 import registry;
@@ -190,13 +191,18 @@ BOOL __stdcall DllMain(const HMODULE module, const DWORD reason_for_call, void* 
     return true;
 }
 
-_Check_return_ HRESULT __stdcall DllGetClassObject(_In_ GUID const& class_id, _In_ GUID const& interface_id,
-                                                   _Outptr_ void** result)
+_Use_decl_annotations_ HRESULT __stdcall DllGetClassObject(GUID const& class_id, GUID const& interface_id, void** result)
 try
 {
     if (class_id == id::netpbm_decoder)
     {
         create_netpbm_bitmap_decoder_factory(interface_id, result);
+        return success_ok;
+    }
+
+    if (class_id == id::netpbm_encoder)
+    {
+        create_netpbm_bitmap_encoder_class_factory(interface_id, result);
         return success_ok;
     }
 
@@ -215,14 +221,14 @@ catch (...)
 }
 
 // Purpose: Used to determine whether the COM sub-system can unload the DLL from memory.
-extern "C" __control_entrypoint(DllExport) HRESULT __stdcall DllCanUnloadNow()
+_Use_decl_annotations_ HRESULT __stdcall DllCanUnloadNow()
 {
     const auto result{winrt::get_module_lock() ? success_false : success_ok};
     TRACE("netpbm-wic-codec::DllCanUnloadNow hr = {} (0 = S_OK -> unload OK)\n", result);
     return result;
 }
 
-HRESULT __stdcall DllRegisterServer()
+_Use_decl_annotations_ HRESULT __stdcall DllRegisterServer()
 try
 {
     TRACE("netpbm-wic-codec::DllRegisterServer\n");
@@ -239,7 +245,7 @@ catch (...)
     return self_registration::error_class;
 }
 
-HRESULT __stdcall DllUnregisterServer()
+_Use_decl_annotations_ HRESULT __stdcall DllUnregisterServer()
 try
 {
     TRACE("netpbm-wic-codec::DllUnregisterServer\n");

@@ -61,6 +61,8 @@
     <ClCompile Include="hresults.ixx" />
     <ClCompile Include="guids.ixx" />
     <ClCompile Include="netpbm_bitmap_decoder.cpp" />
+    <ClCompile Include="netpbm_bitmap_encoder.cpp" />
+    <ClCompile Include="netpbm_bitmap_encoder.ixx" />
     <ClCompile Include="netpbm_bitmap_frame_decode.cpp" />
     <ClCompile Include="pnm_header.ixx" />
     <ClCompile Include="netpbm_bitmap_decoder.ixx" />

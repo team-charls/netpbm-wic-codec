@@ -12,6 +12,8 @@ import test.winrt;
 
 export constexpr GUID net_pbm_decoder_class_id{0x6891bbe, 0xcc02, 0x4bb2, {0x9c, 0xf0, 0x30, 0x3f, 0xc4, 0xe6, 0x68, 0xc3}};
 
+export constexpr GUID net_pbm_encoder_class_id{0xe440cd88, 0x346f, 0x4410, {0x94, 0x61, 0x65, 0x5f, 0xc8, 0x52, 0x94, 0x95}};
+
 /// <summary>
 /// Helper class that provides methods to create COM objects without registry registration.
 /// </summary>
@@ -43,6 +45,15 @@ public:
         winrt::check_hresult(get_class_factory(net_pbm_decoder_class_id)->CreateInstance(nullptr, IID_PPV_ARGS(decoder.put())));
 
         return decoder;
+    }
+
+    [[nodiscard]] winrt::com_ptr<IWICBitmapEncoder> create_encoder() const
+    {
+        winrt::com_ptr<IWICBitmapEncoder> encoder;
+        winrt::check_hresult(
+            get_class_factory(net_pbm_encoder_class_id)->CreateInstance(nullptr, IID_PPV_ARGS(encoder.put())));
+
+        return encoder;
     }
 
     [[nodiscard]] winrt::com_ptr<IPropertyStore> create_property_store() const

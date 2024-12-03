@@ -77,6 +77,12 @@
     <ClCompile Include="property_variant.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="netpbm_bitmap_encoder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="netpbm_bitmap_encoder.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="netpbm-wic-codec.def">

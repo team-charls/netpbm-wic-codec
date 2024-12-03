@@ -5,6 +5,7 @@
 #include "intellisense.hpp"
 #include "cpp_unit_test.hpp"
 
+import std;
 import <win.hpp>;
 
 import test.winrt;
