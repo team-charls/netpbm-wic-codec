@@ -122,7 +122,7 @@ struct netpbm_bitmap_decoder : winrt::implements<netpbm_bitmap_decoder, IWICBitm
               fmt_ptr(this), fmt_ptr(metadata_query_reader));
 
         // Keep the initial design simple: no support for container-level metadata.
-        // Note: Conceptual, comments from the NetPbm file could converted into metadata.
+        // Note: Conceptual, comments from the NetPbm file could be converted into metadata.
         return wincodec::error_unsupported_operation;
     }
 
