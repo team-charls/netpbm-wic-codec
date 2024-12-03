@@ -68,16 +68,19 @@ export struct pnm_header
         {
         case '1': // P1: bitmap, ASCII
             AsciiFormat = true;
+            [[fallthrough]];
         case '4': // P4: bitmap, binary
             PnmType = PnmType::Bitmap;
             break;
         case '2': // P2: graymap, ASCII
             AsciiFormat = true;
+            [[fallthrough]];
         case '5': // P5: graymap, binary
             PnmType = PnmType::Graymap;
             break;
         case '3': // P3: pixmap, ASCII
             AsciiFormat = true;
+            [[fallthrough]];
         case '6': // P6: pixmap, binary
             PnmType = PnmType::Pixmap;
             break;
