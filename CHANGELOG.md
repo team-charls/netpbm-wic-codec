@@ -1,3 +1,8 @@
+<!--
+  SPDX-FileCopyrightText: © 2024 Team CharLS
+  SPDX-License-Identifier: BSD-3-Clause
+-->
+
 # Changelog
 
 All notable changes to this project will be documented in this file.

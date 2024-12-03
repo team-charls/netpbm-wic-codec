@@ -1,4 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SPDX-FileCopyrightText: © 2020 Team CharLS
+  SPDX-License-Identifier: BSD-3-Clause
+-->
+
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <!-- C++ projects: build to a folder outside the source folders, making it easier to clean. -->
