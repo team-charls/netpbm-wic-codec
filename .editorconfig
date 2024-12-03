@@ -1,4 +1,4 @@
-# Copyright (c) Team CharLS.
+# SPDX-FileCopyrightText: © 2020 Team CharLS
 # SPDX-License-Identifier: BSD-3-Clause
 
 root = true
@@ -13,7 +13,7 @@ insert_final_newline = true
 # Spell checker configuration
 spelling_exclusion_path = spelling.dic
 
-[*.{h,cpp,ixx}]
+[*.{hpp,cpp,ixx}]
 end_of_line = crlf
 indent_size = 4
 
