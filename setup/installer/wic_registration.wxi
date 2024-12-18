@@ -5,8 +5,8 @@
 
 <Include xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <!-- Register COM objects -->
-  <Class Id="$(CLSID_NetpbmDecoder)" Context="InprocServer32" Server="$(ComServerFileId)" ThreadingModel="both" />
-  <Class Id="$(CLSID_PropertyStore)" Context="InprocServer32" Server="$(ComServerFileId)" ThreadingModel="both" />
+  <Class Id="$(var.CLSID_NetpbmDecoder)" Context="InprocServer32" Server="$(ComServerFileId)" ThreadingModel="both" />
+  <Class Id="$(var.CLSID_PropertyStore)" Context="InprocServer32" Server="$(ComServerFileId)" ThreadingModel="both" />
 
   <!-- Register WIC configuration -->
   <RegistryKey Root="HKCR" Key="CLSID\$(CLSID_NetpbmDecoder)">

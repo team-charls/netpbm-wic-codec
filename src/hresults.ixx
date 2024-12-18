@@ -15,7 +15,7 @@ constexpr HRESULT success_ok{S_OK};
 constexpr HRESULT success_false{S_FALSE};
 constexpr HRESULT error_fail{E_FAIL};
 constexpr HRESULT error_pointer{E_POINTER};
-constexpr HRESULT error_already_initialized{ERROR_ALREADY_INITIALIZED};
+constexpr HRESULT error_already_initialized{HRESULT_FROM_WIN32(ERROR_ALREADY_INITIALIZED)};
 constexpr HRESULT error_no_aggregation{CLASS_E_NOAGGREGATION};
 constexpr HRESULT error_class_not_available{CLASS_E_CLASSNOTAVAILABLE};
 constexpr HRESULT error_invalid_argument{E_INVALIDARG};
