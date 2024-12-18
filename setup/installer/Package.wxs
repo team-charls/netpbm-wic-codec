@@ -16,7 +16,7 @@
     Name="Netpbm WIC Codec"
     Manufacturer="Team CharLS"
     Version="$(FourPartsVersion)"
-    UpgradeCode="$(UpgradeCode)">
+    UpgradeCode="$(var.UpgradeCode)">
 
     <MediaTemplate EmbedCab="yes" />
 
