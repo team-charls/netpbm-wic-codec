@@ -3,7 +3,6 @@
 
 module;
 
-#include "macros.hpp"
 #include "intellisense.hpp"
 
 module buffered_stream_reader;
@@ -12,6 +11,7 @@ import <win.hpp>;
 
 import hresults;
 import util;
+import "macros.hpp";
 
 using std::uint32_t;
 

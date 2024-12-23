@@ -3,18 +3,19 @@
 
 module;
 
-#include "macros.hpp"
+#include "intellisense.hpp"
 
 module netpbm_bitmap_frame_decode;
 
 import std;
-import <win.hpp>;
 import winrt;
+import <win.hpp>;
 
 import hresults;
 import buffered_stream_reader;
 import pnm_header;
 import util;
+import "macros.hpp";
 
 using std::int32_t;
 using std::span;

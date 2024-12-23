@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: © 2020 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
-#include "macros.hpp"
+#include "intellisense.hpp"
 #include "version.hpp"
 
 import std;
-import <win.hpp>;
 import winrt;
+import <win.hpp>;
 
 import netpbm_bitmap_decoder;
 import netpbm_bitmap_encoder;
@@ -15,6 +15,7 @@ import guids;
 import registry;
 import util;
 import property_store;
+import "macros.hpp";
 
 using std::array;
 using std::uint32_t;

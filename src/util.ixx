@@ -1,17 +1,17 @@
 // SPDX-FileCopyrightText: © 2020 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
-module;
-
-#include "macros.hpp"
-
 export module util;
 
 import std;
-import <win.hpp>;
 import winrt;
+import <win.hpp>;
 
 import hresults;
+import "macros.hpp";
+
+using std::wstring;
+using winrt::hresult;
 
 namespace {
 
@@ -26,9 +26,9 @@ namespace {
 
 } // namespace
 
-export [[nodiscard]] std::wstring guid_to_string(const GUID& guid)
+export [[nodiscard]] wstring guid_to_string(const GUID& guid)
 {
-    std::wstring guid_text;
+    wstring guid_text;
 
     guid_text.resize(39);
     VERIFY(StringFromGUID2(guid, guid_text.data(), static_cast<int>(guid_text.size())) != 0);
@@ -39,9 +39,9 @@ export [[nodiscard]] std::wstring guid_to_string(const GUID& guid)
     return guid_text;
 }
 
-export [[nodiscard]] std::wstring get_module_path()
+export [[nodiscard]] wstring get_module_path()
 {
-    std::wstring path(100, L'?');
+    wstring path(100, L'?');
     size_t path_size;
     size_t actual_size;
 
@@ -68,13 +68,13 @@ export template<typename T>
     return std::bit_cast<const void*>(p);
 }
 
-export void inline check_hresult(const winrt::hresult result, const winrt::hresult result_to_throw)
+export void inline check_hresult(const hresult result, const hresult result_to_throw)
 {
     if (result < 0)
         throw_hresult(result_to_throw);
 }
 
-export [[nodiscard]] constexpr bool failed(const winrt::hresult result) noexcept
+export [[nodiscard]] constexpr bool failed(const hresult result) noexcept
 {
     return result < 0;
 }
@@ -97,7 +97,7 @@ T* check_out_pointer(T* pointer)
     return pointer;
 }
 
-export void check_condition(const bool condition, const winrt::hresult result_to_throw)
+export void check_condition(const bool condition, const hresult result_to_throw)
 {
     if (!condition)
         throw_hresult(result_to_throw);
@@ -117,4 +117,6 @@ export __declspec(noinline) HRESULT to_hresult() noexcept
     {
         return error_out_of_memory;
     }
+
+    // Explicitly don't catch other unexpected exceptions to trigger call to terminate with dump.
 }

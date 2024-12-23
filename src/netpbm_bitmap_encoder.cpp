@@ -3,18 +3,19 @@
 
 module;
 
-#include "macros.hpp"
+#include "intellisense.hpp"
 
 module netpbm_bitmap_encoder;
 
 import std;
-import <win.hpp>;
 import winrt;
+import <win.hpp>;
 
 import class_factory;
 import guids;
 import hresults;
 import util;
+import "macros.hpp";
 
 using std::vector;
 using winrt::check_hresult;

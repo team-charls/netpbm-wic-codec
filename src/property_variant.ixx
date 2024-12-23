@@ -1,15 +1,13 @@
 // SPDX-FileCopyrightText: © 2021 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
-module;
-
-#include "macros.hpp"
-
 export module property_variant;
 
 import std;
-import <win.hpp>;
 import winrt;
+import <win.hpp>;
+
+import "macros.hpp";
 
 export struct property_variant final : PROPVARIANT
 {
