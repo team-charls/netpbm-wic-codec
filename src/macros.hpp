@@ -5,8 +5,6 @@
 
 #include <cassert>
 
-#include "intellisense.hpp"
-
 #define SUPPRESS_WARNING_NEXT_LINE(x) \
     __pragma(warning(suppress \
                      : x)) // NOLINT(misc-macro-parentheses, bugprone-macro-parentheses, cppcoreguidelines-macro-usage)

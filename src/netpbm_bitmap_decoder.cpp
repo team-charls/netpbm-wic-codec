@@ -3,13 +3,13 @@
 
 module;
 
-#include "macros.hpp"
+#include "intellisense.hpp"
 
 module netpbm_bitmap_decoder;
 
 import std;
-import <win.hpp>;
 import winrt;
+import <win.hpp>;
 
 import class_factory;
 import hresults;
@@ -17,6 +17,7 @@ import pnm_header;
 import guids;
 import netpbm_bitmap_frame_decode;
 import util;
+import "macros.hpp";
 
 using std::scoped_lock;
 using std::uint32_t;

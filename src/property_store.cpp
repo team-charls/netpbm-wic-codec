@@ -3,13 +3,13 @@
 
 module;
 
-#include "macros.hpp"
+#include "intellisense.hpp"
 
 module property_store;
 
 import std;
-import <win.hpp>;
 import winrt;
+import <win.hpp>;
 
 import hresults;
 import util;
@@ -17,6 +17,7 @@ import buffered_stream_reader;
 import pnm_header;
 import class_factory;
 import property_variant;
+import "macros.hpp";
 
 using std::array;
 using std::pair;
@@ -29,13 +30,13 @@ namespace {
 
 template<typename Key, typename Value, size_t Extent>
 [[nodiscard]]
-const Value* find(span<const Key, Extent> keys, span<Value, Extent> values, const Key& key)
+const Value* find(span<const Key, Extent> keys, span<Value, Extent> values, const Key& key_to_find)
 {
     ASSERT(keys.size() == values.size());
 
     for (size_t i{}; i < keys.size(); ++i)
     {
-        if (keys[i] == key)
+        if (keys[i] == key_to_find)
         {
             return &values[i];
         }
