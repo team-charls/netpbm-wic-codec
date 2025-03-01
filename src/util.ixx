@@ -17,11 +17,11 @@ namespace {
 
 [[nodiscard]] HMODULE get_current_module() noexcept
 {
-    HMODULE module;
+    HMODULE current_module;
     GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-                       reinterpret_cast<PCWSTR>(get_current_module), &module);
+                       reinterpret_cast<PCWSTR>(get_current_module), &current_module);
 
-    return module;
+    return current_module;
 }
 
 } // namespace
