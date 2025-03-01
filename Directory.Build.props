@@ -52,7 +52,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
 
       <!-- Explicit define that all projects are compiled according the draft C++23 standard -->
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp23</LanguageStandard>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
 
       <!-- To ensure high quality C++ code use warning level 4 and treat warnings as errors to ensure warnings are fixed promptly. -->
