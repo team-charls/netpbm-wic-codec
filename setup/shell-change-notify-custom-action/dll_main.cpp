@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 
 #include <Windows.h>
-#include <msiquery.h>
+#include <MsiQuery.h>
 #include <ShlObj.h>
 
 unsigned int __stdcall SHChangeNotifyCustomAction(const MSIHANDLE install)

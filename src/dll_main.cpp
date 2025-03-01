@@ -167,13 +167,13 @@ void register_property_store()
 // ReSharper disable CppInconsistentNaming
 // ReSharper disable CppParameterNamesMismatch
 
-BOOL __stdcall DllMain(const HMODULE module, const DWORD reason_for_call, void* /*reserved*/) noexcept
+BOOL __stdcall DllMain(const HMODULE dll_module, const DWORD reason_for_call, void* /*reserved*/) noexcept
 {
     switch (reason_for_call)
     {
     case DLL_PROCESS_ATTACH:
         TRACE("netpbm-wic-codec::DllMain DLL_PROCESS_ATTACH \n");
-        VERIFY(DisableThreadLibraryCalls(module));
+        VERIFY(DisableThreadLibraryCalls(dll_module));
         break;
 
     case DLL_THREAD_ATTACH:
