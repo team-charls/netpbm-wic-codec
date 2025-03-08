@@ -52,7 +52,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
 
       <!-- Explicit define that all projects are compiled according the draft C++23 standard -->
-      <LanguageStandard>stdcpp23</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
 
       <!-- To ensure high quality C++ code use warning level 4 and treat warnings as errors to ensure warnings are fixed promptly. -->
@@ -172,7 +172,6 @@
     <EnableCppCoreCheck>true</EnableCppCoreCheck>
     <EnableMicrosoftCodeAnalysis>true</EnableMicrosoftCodeAnalysis>
     <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
 
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
@@ -186,10 +185,15 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+
+      <!-- Enable Optimize Global Data (/Gw). off by default -->
+      <AdditionalOptions>/Gw /Zc:checkGwOdr %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
 
       <!-- Store only the filename of the PDB file into the .exe/.dll for deterministic builds and use /Brepo. -->
       <AdditionalOptions>/PDBALTPATH:%_PDB% /Brepro %(AdditionalOptions)</AdditionalOptions>
