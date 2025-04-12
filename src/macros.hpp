@@ -25,7 +25,7 @@
 // The TRACE macro can be used in debug build to watch the behaviour of the implementation
 // when used by 3rd party applications.
 #ifdef NDEBUG
-    #define TRACE __noop
+    #define TRACE(fmt, ...) __noop
 #else
     // Use std::format directly to get compile time checking of the string arguments.
     #define TRACE(fmt, ...) OutputDebugStringA(std::format(fmt __VA_OPT__(,) __VA_ARGS__).c_str())

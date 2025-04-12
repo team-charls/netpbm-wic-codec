@@ -5,7 +5,7 @@
 
 <Project>
   <ItemGroup>
-    <PackageVersion Include="WixToolset.Bal.wixext" Version="5.0.2" />
-    <PackageVersion Include="WixToolset.Util.wixext" Version="5.0.2" />
+    <PackageVersion Include="WixToolset.Bal.wixext" Version="6.0.0" />
+    <PackageVersion Include="WixToolset.Util.wixext" Version="6.0.0" />
   </ItemGroup>
 </Project>

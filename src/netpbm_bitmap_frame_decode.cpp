@@ -371,7 +371,8 @@ HRESULT __stdcall netpbm_bitmap_frame_decode::GetThumbnail(IWICBitmapSource**) n
     return wincodec::error_codec_no_thumbnail;
 }
 
-HRESULT __stdcall netpbm_bitmap_frame_decode::GetColorContexts(const uint32_t count, IWICColorContext** color_contexts,
+HRESULT __stdcall netpbm_bitmap_frame_decode::GetColorContexts([[maybe_unused]] const uint32_t count,
+                                                               [[maybe_unused]] IWICColorContext** color_contexts,
                                                                uint32_t* actual_count) noexcept
 try
 {
