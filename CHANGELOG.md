@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
-- Updated Microsoft Visual C++ 2015-2022 Redistributable to version 14.42.34433
+- Updated Microsoft Visual C++ 2015-2022 Redistributable to version 14.44.35026
 
 ## [0.3.0 - 2024-10-17]
 
