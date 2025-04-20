@@ -43,7 +43,7 @@
   <ItemDefinitionGroup>
     <Link>
       <AdditionalLibraryDirectories>$(IntDir)../netpbm-wic-codec/</AdditionalLibraryDirectories>
-      <AdditionalDependencies>windowscodecs.lib;Shlwapi.lib;pnm_header.ixx.obj;buffered_stream_reader.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>windowscodecs.lib;Shlwapi.lib;pnm_header.ixx.obj;buffered_stream_reader.obj;property_variant.ixx.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
