@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Added
 
-- Support to display 8 bit RGB_ALPHA .pam files.
+- Added support for displaying 8 bit RGB_ALPHA .pam files.
 
 ### Changed
 
