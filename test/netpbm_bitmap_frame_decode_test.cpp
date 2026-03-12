@@ -570,6 +570,7 @@ private:
         portable_anymap_file anymap_file{filename};
         const auto& expected_pixels{anymap_file.image_data()};
 
+        Assert::AreEqual(expected_pixels.size(), pixels.size());
         for (size_t i{}; i < pixels.size(); ++i)
         {
             if (expected_pixels[i] != pixels[i])
@@ -588,6 +589,7 @@ private:
         const span expected{reinterpret_cast<uint16_t*>(expected_pixels.data()), expected_pixels.size() / sizeof uint16_t};
         convert_to_little_endian_and_shift(expected, 16 - anymap_file.bits_per_sample());
 
+        Assert::AreEqual(expected.size(), pixels.size());
         for (size_t i{}; i < pixels.size(); ++i)
         {
             if (expected[i] != pixels[i])
@@ -603,6 +605,7 @@ private:
         portable_arbitrary_map pam_file{filename};
         const auto& expected_pixels{pam_file.image_data()};
 
+        Assert::AreEqual(expected_pixels.size(), pixels.size());
         for (size_t i{}; i < pixels.size(); ++i)
         {
             if (expected_pixels[i] != pixels[i])

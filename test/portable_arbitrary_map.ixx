@@ -15,7 +15,7 @@ export class portable_arbitrary_map final
 {
 public:
     /// <exception cref="ifstream::failure">Thrown when the input file cannot be read.</exception>
-    explicit portable_arbitrary_map(const char* filename)
+    explicit portable_arbitrary_map(std::string_view filename)
     {
         std::ifstream file;
         file.exceptions(std::ios::eofbit | std::ios::failbit | std::ios::badbit);
@@ -79,7 +79,7 @@ public:
     }
 
     [[nodiscard]]
-    const std::vector<std::byte>& image_data() const noexcept
+    std::span<const std::byte> image_data() const noexcept
     {
         return image_data_;
     }
