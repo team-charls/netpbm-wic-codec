@@ -38,7 +38,12 @@ public:
                 file >> component_count_;
             else if (token == "MAXVAL")
                 file >> max_value_;
-            // Skip unknown tokens and their values
+            else
+            {
+                // Skip unknown tokens and their values (rest of the line).
+                std::string ignored_line;
+                std::getline(file, ignored_line);
+            }
         }
         file.ignore();
 
