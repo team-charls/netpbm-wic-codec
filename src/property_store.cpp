@@ -59,7 +59,7 @@ const Value* find(span<const Key, Extent> keys, span<Value, Extent> values, cons
         return std::bit_width(max_value) * 3;
 
     case PnmType::ArbitraryMap:
-        return std::bit_width(max_value) * 3;
+        return std::bit_width(max_value) * 4;
     }
 
     std::unreachable();

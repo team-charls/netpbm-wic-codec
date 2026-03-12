@@ -167,6 +167,40 @@ public:
         std::ignore = PropVariantClear(&prop_variant);
     }
 
+    TEST_METHOD(GetValue_pam) // NOLINT
+    {
+        auto property_store{codec_factory_.create_property_store()};
+        auto initialize_with_stream{property_store.as<IInitializeWithStream>()};
+
+        std::vector<char> source;
+        const std::string pnm_header{
+            "P7\n"
+            "HEIGHT 100\n"
+            "WIDTH 200\n"
+            "DEPTH 4\n"
+            "MAXVAL 255\n"
+            "ENDHDR\n"
+        };
+        source.insert(source.end(), pnm_header.begin(), pnm_header.end());
+        auto result{initialize_with_stream->Initialize(create_memory_stream(source).get(), STGM_READ)};
+        Assert::AreEqual(success_ok, result);
+
+        PROPVARIANT prop_variant;
+        PropVariantInit(&prop_variant);
+        result = property_store->GetValue(PKEY_Image_BitDepth, &prop_variant);
+        Assert::AreEqual(success_ok, result);
+        Assert::IsTrue(VT_UI4 == prop_variant.vt);
+        Assert::AreEqual(32U, prop_variant.uintVal);
+        std::ignore = PropVariantClear(&prop_variant);
+
+        PropVariantInit(&prop_variant);
+        result = property_store->GetValue(PKEY_Image_HorizontalSize, &prop_variant);
+        Assert::AreEqual(success_ok, result);
+        Assert::IsTrue(VT_UI4 == prop_variant.vt);
+        Assert::AreEqual(200U, prop_variant.uintVal);
+        std::ignore = PropVariantClear(&prop_variant);
+    }
+
     TEST_METHOD(GetAt)
     {
         const auto property_store{codec_factory_.create_property_store()};
