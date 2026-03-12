@@ -173,18 +173,15 @@ public:
         auto initialize_with_stream{property_store.as<IInitializeWithStream>()};
 
         std::vector<char> source;
-        std::string str1 = "P7\n";
-        source.insert(source.end(), str1.begin(), str1.end());
-        str1 = "HEIGHT 100\n";
-        source.insert(source.end(), str1.begin(), str1.end());
-        str1 = "WIDTH 200\n";
-        source.insert(source.end(), str1.begin(), str1.end());
-        str1 = "DEPTH 4\n";
-        source.insert(source.end(), str1.begin(), str1.end());
-        str1 = "MAXVAL 255\n";
-        source.insert(source.end(), str1.begin(), str1.end());
-        str1 = "ENDHDR\n";
-        source.insert(source.end(), str1.begin(), str1.end());
+        const std::string pnm_header{
+            "P7\n"
+            "HEIGHT 100\n"
+            "WIDTH 200\n"
+            "DEPTH 4\n"
+            "MAXVAL 255\n"
+            "ENDHDR\n"
+        };
+        source.insert(source.end(), pnm_header.begin(), pnm_header.end());
         auto result{initialize_with_stream->Initialize(create_memory_stream(source).get(), STGM_READ)};
         Assert::AreEqual(success_ok, result);
 
