@@ -24,8 +24,8 @@ using namespace std::string_literals;
 
 namespace {
 
-constexpr wchar_t mime_types[]{L"image/x-portable-graymap,image/x-portable-pixmap"};
-constexpr wchar_t file_extensions[]{L".pgm,.ppm"};
+constexpr wchar_t mime_types[]{L"image/x-portable-graymap,image/x-portable-pixmap,image/x-portable-arbitrarymap"};
+constexpr wchar_t file_extensions[]{L".pgm,.ppm,.pam"};
 
 void register_general_decoder_settings(const GUID& class_id, const GUID& wic_category_id, const wchar_t* friendly_name,
                                        const std::span<const GUID*> formats)
@@ -104,7 +104,7 @@ void register_decoder_pattern(const wstring& sub_key, const int index, const std
 void register_decoder()
 {
     array formats{&GUID_WICPixelFormat2bppGray, &GUID_WICPixelFormat4bppGray, &GUID_WICPixelFormat8bppGray,
-                  &GUID_WICPixelFormat16bppGray, &GUID_WICPixelFormat24bppRGB};
+                  &GUID_WICPixelFormat16bppGray, &GUID_WICPixelFormat24bppRGB, &GUID_WICPixelFormat32bppRGBA};
     register_general_decoder_settings(id::netpbm_decoder, CATID_WICBitmapDecoders, L"Team CharLS Netpbm Decoder", formats);
 
     const wstring sub_key{LR"(SOFTWARE\Classes\CLSID\)" + guid_to_string(id::netpbm_decoder)};
@@ -112,9 +112,11 @@ void register_decoder()
     // Register the byte pattern that allows WICs to identify files as our image type.
     register_decoder_pattern(sub_key, 0, array{std::byte{0x50}, std::byte{0x35}});
     register_decoder_pattern(sub_key, 1, array{std::byte{0x50}, std::byte{0x36}});
+    register_decoder_pattern(sub_key, 2, array{std::byte{0x50}, std::byte{0x37}});
 
     register_decoder_file_extension(L"pgmfile", L".pgm", L"image/x-portable-graymap");
     register_decoder_file_extension(L"ppmfile", L".ppm", L"image/x-portable-pixmap");
+    register_decoder_file_extension(L"pamfile", L".pam", L"image/x-portable-arbitrarymap");
 }
 
 void register_property_store_file_extension(const wchar_t* file_extension)
@@ -148,6 +150,7 @@ void register_property_store()
 
     register_property_store_file_extension(L".pgm");
     register_property_store_file_extension(L".ppm");
+    register_property_store_file_extension(L".pam");
 }
 
 [[nodiscard]] HRESULT unregister(const GUID& class_id, const GUID& wic_category_id)

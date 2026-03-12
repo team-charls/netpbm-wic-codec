@@ -22,7 +22,8 @@ export enum class PnmType
 {
     Bitmap,
     Graymap,
-    Pixmap
+    Pixmap,
+    ArbitraryMap
 };
 
 export bool is_pnm_file(_In_ IStream* stream)
@@ -32,7 +33,7 @@ export bool is_pnm_file(_In_ IStream* stream)
     unsigned long read;
     check_hresult(stream->Read(magic, sizeof magic, &read), wincodec::error_stream_read);
 
-    return read == sizeof magic && magic[0] == 'P' && (magic[1] == '5' || magic[1] == '6');
+    return read == sizeof magic && magic[0] == 'P' && (magic[1] == '5' || magic[1] == '6' || magic[1] == '7');
 }
 
 export struct pnm_header
@@ -84,6 +85,9 @@ export struct pnm_header
         case '6': // P6: pixmap, binary
             PnmType = PnmType::Pixmap;
             break;
+        case '7': // P7: PAM (Portable Arbitrary Map)
+            return ParsePamHeader(streamReader);
+
         default:
             throw_hresult(wincodec::error_bad_header);
         }
@@ -109,5 +113,47 @@ export struct pnm_header
         MaxColorValue = static_cast<USHORT>(maxColorValue);
 
         return success_ok;
+    }
+
+    HRESULT ParsePamHeader(buffered_stream_reader& streamReader)
+    {
+        char token_buffer[9];
+
+        for (;;)
+        {
+            streamReader.read_string(token_buffer, 9);
+            std::string_view token{token_buffer};
+            if (token == "ENDHDR")
+                return success_ok;
+
+            if (token == "HEIGHT")
+            {
+                height = streamReader.read_int();
+            }
+            else if (token == "WIDTH")
+            {
+                width = streamReader.read_int();
+            }
+            else if (token == "DEPTH")
+            {
+                int depth = streamReader.read_int();
+                if (depth != 4)
+                    winrt::throw_hresult(wincodec::error_bad_header);
+
+                PnmType = PnmType::ArbitraryMap;
+            }
+            else if (token == "MAXVAL")
+            {
+                MaxColorValue = static_cast<USHORT>(streamReader.read_int());
+            }
+            else if (token == "TUPLTYPE")
+            {
+                char tupletype_buffer[17];
+                streamReader.read_string(tupletype_buffer, 16);
+                std::string_view tupletype{tupletype_buffer};
+                if (tupletype != "RGB_ALPHA")
+                    winrt::throw_hresult(wincodec::error_bad_header);
+            }
+        }
     }
 };

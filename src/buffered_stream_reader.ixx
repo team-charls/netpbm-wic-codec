@@ -28,11 +28,11 @@ public:
     }
 
     void read_bytes(void* buf, ULONG count, ULONG* bytesRead);
+    void read_string(char* str, ULONG maxCount);
 
 private:
     char read_char();
     void skip_line();
-    void read_string(char* str, ULONG maxCount);
     void RefillBuffer();
 
     winrt::com_ptr<IStream> stream_;

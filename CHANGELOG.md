@@ -11,6 +11,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [0.4.0 - NOT-RELEASED]
 
+### Added
+
+- Added support for displaying 8 bit RGB_ALPHA .pam files.
+
 ### Changed
 
 - Updated Microsoft Visual C++ 2015-2022 Redistributable to version 14.44.35026

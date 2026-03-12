@@ -57,6 +57,9 @@
     <ClCompile Include="netpbm_bitmap_encoder_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="portable_arbitrary_map.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="macros.hpp">
@@ -116,6 +119,9 @@
       <Filter>Data Files</Filter>
     </CopyFileToFolders>
     <CopyFileToFolders Include="data-files\16bit_2x1.ppm">
+      <Filter>Data Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\8bit_120x120_rgba.pam">
       <Filter>Data Files</Filter>
     </CopyFileToFolders>
   </ItemGroup>

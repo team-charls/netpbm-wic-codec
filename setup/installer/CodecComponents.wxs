@@ -13,6 +13,7 @@
       <?define GUID_WICPixelFormat16bppGray = "{6fddc324-4e03-4bfe-b185-3d77768dc90b}" ?>
       <?define GUID_WICPixelFormat24bppRGB = "{6fddc324-4e03-4bfe-b185-3d77768dc90d}" ?>
       <?define GUID_WICPixelFormat48bppRGB = "{6fddc324-4e03-4bfe-b185-3d77768dc915}" ?>
+      <?define GUID_WICPixelFormat32bppRGBA = "{f5c7ad2d-6a8d-43dd-a7a8-a29935261ae9}" ?>
 
       <?define CATID_WICBitmapDecoders = "{7ed96837-96f0-4812-b211-f13c24117ed3}" ?>
 
@@ -41,6 +42,12 @@
 
         <?define var.FileExtension = ".ppm" ?>
         <?define var.ContentType = "image/x-portable-pixmap" ?>
+        <?include wic_file_type_registration.wxi ?>
+        <?undef var.FileExtension?>
+        <?undef var.ContentType?>
+
+        <?define var.FileExtension = ".pam" ?>
+        <?define var.ContentType = "image/x-portable-arbitrarymap" ?>
         <?include wic_file_type_registration.wxi ?>
         <?undef var.FileExtension?>
         <?undef var.ContentType?>
