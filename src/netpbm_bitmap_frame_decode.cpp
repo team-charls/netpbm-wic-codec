@@ -17,11 +17,11 @@ import pnm_header;
 import util;
 import "macros.hpp";
 
+using std::byteswap;
 using std::int32_t;
 using std::span;
 using std::uint16_t;
 using std::uint32_t;
-using std::byteswap;
 using std::ranges::transform;
 using winrt::check_hresult;
 using winrt::com_ptr;
@@ -69,6 +69,16 @@ namespace {
             break;
         }
         break;
+
+    case PnmType::ArbitraryMap:
+        switch (bits_per_sample)
+        {
+        case 8:
+            return {GUID_WICPixelFormat32bppRGBA, 0};
+        default:
+            break;
+        }
+        break;
     }
 
     throw_hresult(wincodec::error_unsupported_pixel_format);
@@ -81,9 +91,8 @@ constexpr void convert_to_little_endian(span<uint16_t> samples) noexcept
 
 constexpr void convert_to_little_endian_and_shift(span<uint16_t> samples, const uint32_t sample_shift) noexcept
 {
-    transform(samples, samples.begin(), [sample_shift](const uint16_t sample) noexcept -> uint16_t {
-        return byteswap(sample) << sample_shift;
-    });
+    transform(samples, samples.begin(),
+              [sample_shift](const uint16_t sample) noexcept -> uint16_t { return byteswap(sample) << sample_shift; });
 }
 
 constexpr void convert_to_little_endian_and_optional_shift(const span<uint16_t> samples,
@@ -275,6 +284,35 @@ void decode_color_bitmap(buffered_stream_reader& stream_reader, const pnm_header
     }
 }
 
+void decode_pam_bitmap(buffered_stream_reader& stream_reader, const pnm_header& header, const uint32_t bits_per_sample,
+                       const uint32_t stride, span<std::byte> destination_samples)
+{
+    constexpr size_t sample_per_pixel{4};
+
+    switch (bits_per_sample)
+    {
+    case 8:
+        if (const auto header_width_in_bytes{header.width * sample_per_pixel}; header_width_in_bytes % stride == 0)
+        {
+            stream_reader.read_bytes(destination_samples.data(), destination_samples.size());
+        }
+        else
+        {
+            std::byte* line{destination_samples.data()};
+            for (uint32_t row{header.height}; row; --row)
+            {
+                stream_reader.read_bytes(line, header.width * size_t{4});
+                line += stride;
+            }
+        }
+        break;
+
+    default:
+        ASSERT(false);
+        break;
+    }
+}
+
 [[nodiscard]] com_ptr<IWICBitmap> create_bitmap(_In_ IStream* source_stream, _In_ IWICImagingFactory* factory)
 {
     buffered_stream_reader stream_reader{source_stream};
@@ -308,6 +346,10 @@ void decode_color_bitmap(buffered_stream_reader& stream_reader, const pnm_header
 
     case PnmType::Pixmap:
         decode_color_bitmap(stream_reader, header, bits_per_sample, stride, {data_buffer, data_buffer_size});
+        break;
+
+    case PnmType::ArbitraryMap:
+        decode_pam_bitmap(stream_reader, header, bits_per_sample, stride, {data_buffer, data_buffer_size});
         break;
 
     default:

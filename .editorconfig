@@ -28,3 +28,6 @@ indent_size = 2
 [*.md]
 trim_trailing_whitespace = false # Ending with 2 spaces is used for layout in Markdown
 indent_size = 2
+
+[*.{wxs,wxi}]
+indent_size = 2

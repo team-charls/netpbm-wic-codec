@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: © 2020 Team CharLS
 // SPDX-License-Identifier: BSD-3-Clause
 
-#include "macros.hpp"
 #include "cpp_unit_test.hpp"
+#include "macros.hpp"
 
 import std;
 import <win.hpp>;
@@ -10,6 +10,7 @@ import <win.hpp>;
 import test.winrt;
 import test.hresults;
 import portable_anymap_file;
+import portable_arbitrary_map;
 import com_factory;
 
 using std::array;
@@ -32,7 +33,7 @@ namespace {
 }
 
 [[nodiscard]] vector<std::byte> unpack_crumbs(const std::byte* crumbs_pixels, const size_t width, const size_t height,
-                                                   const size_t stride)
+                                              const size_t stride)
 {
     vector<std::byte> destination(static_cast<size_t>(width) * height);
 
@@ -214,8 +215,7 @@ public:
         check_hresult(bitmap_frame_decoder->GetSize(&width, &height));
         std::vector<BYTE> buffer(static_cast<size_t>(width) * height);
 
-        auto result{
-            bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()), buffer.data())};
+        auto result{bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()), buffer.data())};
         Assert::AreEqual(success_ok, result);
 
         result = bitmap_frame_decoder->CopyPixels(nullptr, width, static_cast<uint32_t>(buffer.size()), buffer.data());
@@ -440,8 +440,26 @@ public:
         Assert::AreEqual(60, static_cast<int>(buffer[13]));
     }
 
+    TEST_METHOD(decode_8_bit_pam) // NOLINT
+    {
+        const com_ptr bitmap_frame_decoder{create_frame_decoder(L"8bit_120x120_rgba.pam")};
+
+        uint32_t width;
+        uint32_t height;
+
+        check_hresult(bitmap_frame_decoder->GetSize(&width, &height));
+        const uint32_t stride{width * 4};
+        vector<std::byte> buffer(static_cast<size_t>(height) * stride);
+
+        const auto result{copy_pixels(bitmap_frame_decoder.get(), stride, buffer)};
+        Assert::AreEqual(success_ok, result);
+
+        compare_pam("8bit_120x120_rgba.pam", buffer);
+    }
+
 private:
-    void decode_2_bit_monochrome(_Null_terminated_ const wchar_t* filename_actual, const char* filename_expected) const
+    void decode_2_bit_monochrome(_Null_terminated_ const wchar_t* filename_actual,
+                                 _Null_terminated_ const char* filename_expected) const
     {
         const com_ptr bitmap_frame_decoder{create_frame_decoder(filename_actual)};
 
@@ -456,11 +474,12 @@ private:
         compare(filename_expected, decoded_buffer);
     }
 
-    void decode_4_bit_monochrome(_Null_terminated_ const wchar_t* filename_actual, const char* filename_expected) const
+    void decode_4_bit_monochrome(_Null_terminated_ const wchar_t* filename_actual,
+                                 _Null_terminated_ const char* filename_expected) const
     {
         const com_ptr bitmap_frame_decoder{create_frame_decoder(filename_actual)};
 
-        const auto [width, height] {get_size(*bitmap_frame_decoder)};
+        const auto [width, height]{get_size(*bitmap_frame_decoder)};
         vector<std::byte> buffer(static_cast<size_t>(width) * height);
 
         const uint32_t stride{(width + 7) / 8 * 4};
@@ -471,7 +490,8 @@ private:
         compare(filename_expected, decoded_buffer);
     }
 
-    void decode_2_byte_samples_monochrome(const wchar_t* filename_actual, const char* filename_expected) const
+    void decode_2_byte_samples_monochrome(_Null_terminated_ const wchar_t* filename_actual,
+                                          _Null_terminated_ const char* filename_expected) const
     {
         const com_ptr bitmap_frame_decoder{create_frame_decoder(filename_actual)};
 
@@ -523,13 +543,15 @@ private:
         return imaging_factory;
     }
 
-    [[nodiscard]] static HRESULT copy_pixels(IWICBitmapFrameDecode* decoder, const uint32_t stride, const span<std::byte> buffer)
+    [[nodiscard]] static HRESULT copy_pixels(IWICBitmapFrameDecode * decoder, const uint32_t stride,
+                                             const span<std::byte> buffer)
     {
         void* data = buffer.data();
         return decoder->CopyPixels(nullptr, stride, static_cast<uint32_t>(buffer.size()), static_cast<BYTE*>(data));
     }
 
-    [[nodiscard]] static HRESULT copy_pixels(IWICBitmapFrameDecode* decoder, const uint32_t stride, const span<uint16_t> buffer)
+    [[nodiscard]] static HRESULT copy_pixels(IWICBitmapFrameDecode * decoder, const uint32_t stride,
+                                             const span<uint16_t> buffer)
     {
         void* data = buffer.data();
         return decoder->CopyPixels(nullptr, stride, static_cast<uint32_t>(buffer.size()) * sizeof(uint16_t),
@@ -543,7 +565,7 @@ private:
         });
     }
 
-    static void compare(const char* filename, const vector<std::byte>& pixels)
+    static void compare(_Null_terminated_ const char* filename, const span<const std::byte> pixels)
     {
         portable_anymap_file anymap_file{filename};
         const auto& expected_pixels{anymap_file.image_data()};
@@ -558,7 +580,7 @@ private:
         }
     }
 
-    static void compare(const char* filename, const vector<uint16_t>& pixels)
+    static void compare(_Null_terminated_ const char* filename, const span<const uint16_t> pixels)
     {
         portable_anymap_file anymap_file{filename};
         auto& expected_pixels{anymap_file.image_data()};
@@ -576,10 +598,26 @@ private:
         }
     }
 
-    static com_ptr<IStream> create_memory_stream(span<char> source)
+    static void compare_pam(_Null_terminated_ const char* filename, const span<const std::byte> pixels)
+    {
+        portable_arbitrary_map pam_file{filename};
+        const auto& expected_pixels{pam_file.image_data()};
+
+        for (size_t i{}; i < pixels.size(); ++i)
+        {
+            if (expected_pixels[i] != pixels[i])
+            {
+                Assert::IsTrue(false);
+                break;
+            }
+        }
+    }
+
+    [[nodiscard]]
+    static com_ptr<IStream> create_memory_stream(span<const char> source)
     {
         com_ptr<IStream> stream;
-        stream.attach(SHCreateMemStream(reinterpret_cast<BYTE*>(source.data()), static_cast<UINT>(source.size())));
+        stream.attach(SHCreateMemStream(reinterpret_cast<const BYTE*>(source.data()), static_cast<UINT>(source.size())));
 
         return stream;
     }

@@ -50,6 +50,7 @@
     <ClCompile Include="buffered_stream_reader_test.cpp" />
     <ClCompile Include="dll_main_test.cpp" />
     <ClCompile Include="netpbm_bitmap_encoder_test.cpp" />
+    <ClCompile Include="portable_arbitrary_map.ixx" />
     <ClCompile Include="property_store_test.cpp" />
     <ClCompile Include="property_variant_test.cpp" />
     <ClCompile Include="test_hresults.ixx" />
@@ -114,6 +115,9 @@
       <FileType>Document</FileType>
     </CopyFileToFolders>
     <CopyFileToFolders Include="data-files\16bit_2x1.ppm">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="data-files\8bit_120x120_rgba.pam">
       <FileType>Document</FileType>
     </CopyFileToFolders>
   </ItemGroup>

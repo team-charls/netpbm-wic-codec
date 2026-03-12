@@ -8,6 +8,7 @@ import <win.hpp>;
 import test.winrt;
 
 import pnm_header;
+import buffered_stream_reader;
 import test.util;
 
 using std::array;
@@ -79,6 +80,33 @@ public:
         const com_ptr stream{create_memory_stream(initial_values)};
 
         const bool result{is_pnm_file(stream.get())};
-        Assert::IsFalse(result);
+        Assert::IsTrue(result);
+    }
+
+    TEST_METHOD(parse_pam) // NOLINT
+    {
+        std::vector<char> source;
+        std::string str1 = "P7\n";
+        source.insert(source.end(), str1.begin(), str1.end());
+        str1 = "HEIGHT 100\n";
+        source.insert(source.end(), str1.begin(), str1.end());
+        str1 = "WIDTH 200\n";
+        source.insert(source.end(), str1.begin(), str1.end());
+        str1 = "DEPTH 4\n";
+        source.insert(source.end(), str1.begin(), str1.end());
+        str1 = "MAXVAL 255\n";
+        source.insert(source.end(), str1.begin(), str1.end());
+        str1 = "ENDHDR\n";
+        source.insert(source.end(), str1.begin(), str1.end());
+
+        const com_ptr stream{create_memory_stream(source.data(), source.size())};
+
+        buffered_stream_reader reader{stream.get()};
+        pnm_header header{reader};
+
+        Assert::AreEqual(100U, header.height);
+        Assert::AreEqual(200U, header.width);
+        Assert::AreEqual(static_cast<USHORT>(255U), header.MaxColorValue);
+        Assert::IsTrue(PnmType::ArbitraryMap == header.PnmType);
     }
 };

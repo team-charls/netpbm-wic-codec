@@ -13,7 +13,7 @@ It makes it possible to view Netpbm encoded images in Windows PhotoViewer, Windo
 and import these images in Microsoft Office documents.
 
 It is a C++ 23 implementation originally based on the [PNM WIC Image Codec project](https://github.com/chausner/PnmWicImageCodec).
-It leverages the C++/WinRT framework to implement the classic COM components required for a WIC codec and uses Wix v5 for the installer.
+It leverages the C++/WinRT framework to implement the classic COM components required for a WIC codec and uses Wix for the installer.
 
 ## Introduction
 
@@ -105,13 +105,14 @@ The following table lists the formats that can be decoded:
 |P5   |              1|      10,12,16*|GUID_WICPixelFormat16bppGray|
 |P6   |              3|              8|GUID_WICPixelFormat24bppRGB |
 |P6   |              3|             16|GUID_WICPixelFormat48bppRGB |
+|P7   |              4|              8|GUID_WICPixelFormat32bppRGBA|
 
 Note *: monochrome images with 10 or 12 bits per sample will be upscaled to 16 bits per sample.
 
 ## Manual Build Instructions
 
 1. Clone this repro
-1. Use Visual Studio 2022 17.11 or newer and open the netpbm-wic-codec.sln. Batch build all projects.
+1. Use Visual Studio 2022 17.14 or newer and open the netpbm-wic-codec.sln. Batch build all projects.
 1. Or use a Developer Command Prompt and run use MSBuild in the root of the cloned repository.
 
 ### Installation
