@@ -167,6 +167,43 @@ public:
         std::ignore = PropVariantClear(&prop_variant);
     }
 
+    TEST_METHOD(GetValue_pam) // NOLINT
+    {
+        auto property_store{codec_factory_.create_property_store()};
+        auto initialize_with_stream{property_store.as<IInitializeWithStream>()};
+
+        std::vector<char> source;
+        std::string str1 = "P7\n";
+        source.insert(source.end(), str1.begin(), str1.end());
+        str1 = "HEIGHT 100\n";
+        source.insert(source.end(), str1.begin(), str1.end());
+        str1 = "WIDTH 200\n";
+        source.insert(source.end(), str1.begin(), str1.end());
+        str1 = "DEPTH 4\n";
+        source.insert(source.end(), str1.begin(), str1.end());
+        str1 = "MAXVAL 255\n";
+        source.insert(source.end(), str1.begin(), str1.end());
+        str1 = "ENDHDR\n";
+        source.insert(source.end(), str1.begin(), str1.end());
+        auto result{initialize_with_stream->Initialize(create_memory_stream(source).get(), STGM_READ)};
+        Assert::AreEqual(success_ok, result);
+
+        PROPVARIANT prop_variant;
+        PropVariantInit(&prop_variant);
+        result = property_store->GetValue(PKEY_Image_BitDepth, &prop_variant);
+        Assert::AreEqual(success_ok, result);
+        Assert::IsTrue(VT_UI4 == prop_variant.vt);
+        Assert::AreEqual(32U, prop_variant.uintVal);
+        std::ignore = PropVariantClear(&prop_variant);
+
+        PropVariantInit(&prop_variant);
+        result = property_store->GetValue(PKEY_Image_HorizontalSize, &prop_variant);
+        Assert::AreEqual(success_ok, result);
+        Assert::IsTrue(VT_UI4 == prop_variant.vt);
+        Assert::AreEqual(200U, prop_variant.uintVal);
+        std::ignore = PropVariantClear(&prop_variant);
+    }
+
     TEST_METHOD(GetAt)
     {
         const auto property_store{codec_factory_.create_property_store()};
