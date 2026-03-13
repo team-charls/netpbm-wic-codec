@@ -3,7 +3,11 @@
 
 name: Build and test
 
-on: [push]
+on:
+  pull_request:
+  push:
+    branches:
+      - main
 
 env:
   # Path to the solution file relative to the root of the project.
@@ -11,11 +15,31 @@ env:
 
 jobs:
   build:
-    runs-on: windows-2022
+    name: ${{ matrix.platform }}-${{ matrix.configuration }}
+    runs-on: ${{ matrix.runner }}
+
     strategy:
+      fail-fast: false
       matrix:
-        buildPlatform: [x64, x86]
-        buildConfiguration: [Release, Debug]
+        include:
+          - platform: x86
+            configuration: Debug
+            runner: windows-latest
+          - platform: x86
+            configuration: Release
+            runner: windows-latest
+          - platform: x64
+            configuration: Debug
+            runner: windows-latest
+          - platform: x64
+            configuration: Release
+            runner: windows-latest
+          - platform: ARM64
+            configuration: Debug
+            runner: windows-11-arm
+          - platform: ARM64
+            configuration: Release
+            runner: windows-11-arm
 
     steps:
     - uses: actions/checkout@v6
@@ -32,8 +56,8 @@ jobs:
 
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild /v:m /m /p:Configuration=${{matrix.buildConfiguration}} /p:Platform=${{matrix.buildPlatform}} ${{env.SOLUTION_FILE_PATH}} /p:NETPBM_WIC_CODEC_ALL_WARNINGS=true
+      run: msbuild /v:m /m /p:Configuration=${{matrix.configuration}} /p:Platform=${{matrix.platform}} ${{env.SOLUTION_FILE_PATH}} /p:NETPBM_WIC_CODEC_ALL_WARNINGS=true
 
     - name: Test
-      working-directory: .\build\binaries\${{matrix.buildPlatform}}\${{matrix.buildConfiguration}}\
-      run: vstest.console.exe /Platform:${{matrix.buildPlatform}} test.dll
+      working-directory: .\build\binaries\${{matrix.platform}}\${{matrix.configuration}}\
+      run: vstest.console.exe /Platform:${{matrix.platform}} test.dll

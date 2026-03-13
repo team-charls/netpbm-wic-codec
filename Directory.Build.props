@@ -37,7 +37,6 @@
     <DefineConstants>FourPartsVersion=$(Version).0;</DefineConstants>
     <Pedantic>true</Pedantic>
 
-    <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio><!-- Enable faster builds for SDK style projects in Visual Studio 2022 17.5 and newer. -->
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 
     <_CertificateThumbprint Condition="'$(_CertificateThumbprint)' != ''">$(CertificateThumbprint)</_CertificateThumbprint>
