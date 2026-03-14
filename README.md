@@ -56,8 +56,8 @@ Assets at the bottom to show the files available in the release.
 Please use the appropriate installer that matches your machine's architecture.
 
 > [!NOTE]
-> Microsoft Defender SmartScreen may show a warning about an unrecognised app when running the installer. Click on "More Info" + "Run anyway" to continue the installation.  
-The installer and the DLL are signed, but Defender SmartScreen requires an EV code signing certificate, which is only available to commercial organisations.
+> Microsoft Defender SmartScreen may show a warning about an unrecognized app when running the installer. Click on "More Info" + "Run anyway" to continue the installation.  
+Both the installer and the DLL are signed with a certificate. Defender SmartScreen requires however an EV (Extended Validation) code signing certificate, which is only available to commercial organizations.
 
 ## Applications that can use the Netpbm WIC codec
 
@@ -72,7 +72,7 @@ The following application have been validated to work with the Netpbm WIC codec:
 - Microsoft Office applications like Word, Excel, PowerPoint. These applications can, when the NetPbm codec is installed, import .pgm images in their documents. The 32 bit version of Office
 requires that the x86 version of the codec is installed.
 
-#### Windows 11\10 Microsoft Photos Application not supported
+### Windows 11\10 Microsoft Photos Application not supported
 
 The standard Windows 11\10 Microsoft Photos application cannot be used at this moment as it is limited to the
 WIC codecs that are pre-installed on Windows or are provided by Microsoft in the Microsoft Store.
@@ -82,11 +82,11 @@ Microsoft currently does not make it possible to create WIC codecs that can be u
 
 The following table provides the codec identification information:
 
-|Property           |             |
-|-------------------|-------------|
-|Formal Name        |Netpbm Format|
-|File Name Extension|.pgm, .ppm   |
-|MIME type          | image/x-pgm |
+|Property            |                                                                                 |
+|--------------------|---------------------------------------------------------------------------------|
+|Formal Name         |Netpbm Format                                                                    |
+|File Name Extensions|.pgm, .ppm, .pam                                                                 |
+|MIME types          |image/x-portable-graymap, image/x-portable-pixmap, image/x-portable-arbitrarymap |
 
 The following table lists the GUIDs used to identify the native Netpbm codec components:
 
@@ -140,10 +140,10 @@ regsvr32 -u netpbm-wic-codec.dll
 A command file is available to build and sign the WIC DLL and the setup application.  
 Instructions:
 
-* Open a Visual Studio Developer Command Prompt
-* Go the root of the cloned repository
-* Ensure a code signing certificate is available
-* Execute the command `create-signed-builds.cmd certificate-thumb-print time-stamp-url`  
+- Open a Visual Studio Developer Command Prompt
+- Go the root of the cloned repository
+- Ensure a code signing certificate is available
+- Execute the command `create-signed-builds.cmd certificate-thumb-print time-stamp-url`  
  Note: the certificate thumbprint and time stamp URL arguments are depending on the used code signing certificate.
 
  The WIC DLL and the installer will be signed for the release builds of x86, x64 and ARM64.
