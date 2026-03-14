@@ -20,14 +20,14 @@ indent_size = 4
 # MSBuild files
 [*.{props,vcxproj}]
 indent_size = 2
- # Follow formatting of Visual Studio, which does not insert a final newline in XML files
+# Follow formatting of Visual Studio, which does not insert a final newline in XML files
 insert_final_newline = false
 
 [*.yml]
 indent_size = 2
 
 [*.md]
- # Ending with 2 spaces is used for layout in Markdown
+# Ending with 2 spaces is used for layout in Markdown
 trim_trailing_whitespace = false
 indent_size = 2
 
