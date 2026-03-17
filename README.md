@@ -7,6 +7,7 @@
 
 [![Build and test](https://github.com/vbaderks/netpbm-wic-codec/actions/workflows/msbuild.yml/badge.svg)](https://github.com/vbaderks/netpbm-wic-codec/actions/workflows/msbuild.yml)
 [![REUSE status](https://api.reuse.software/badge/github.com/team-charls/netpbm-wic-codec)](https://api.reuse.software/info/github.com/team-charls/netpbm-wic-codec)
+[![winget package](https://img.shields.io/winget/v/TeamCharLS.NetpbmWicCodec)](https://winstall.app/apps/TeamCharLS.NetpbmWicCodec)
 
 This Windows Imaging Component (WIC) codec makes it possible to decode .pgm and .ppm files with Windows applications that can leverage WIC codecs.
 It makes it possible to view Netpbm encoded images in Windows PhotoViewer, Windows Explorer (including thumbnails)
@@ -48,6 +49,12 @@ WIC is implemented using COM technology. Image codecs for many popular formats a
 
 - Windows 11 or Windows 10 (version 22H2).
 - x86, x64 or ARM64 processor
+
+### Via Winget
+
+```cmd
+winget install TeamCharLS.NetpbmWicCodec
+```
 
 ### Via GitHub with EXE
 
