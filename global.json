@@ -1,5 +1,5 @@
 {
-    "msbuild-sdks": {
-        "WixToolset.Sdk": "6.0.2"
-    }
+  "msbuild-sdks": {
+    "WixToolset.Sdk": "7.0.0"
+  }
 }
