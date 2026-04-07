@@ -92,7 +92,7 @@
         C5039 = 'function': pointer or reference to potentially throwing function passed to extern C function under -EHc. [Just informational]
         C5045 = Compiler will insert Spectre mitigation for memory load if /Qspectre switch specified [Just informational]
         C5204 = '': class has virtual functions, but its trivial destructor is not virtual; instances of objects derived from this class may not be destructed correctly [needed for Winrt]
-        C5246 = the initialization of a sub object should be wrapped in braces [Not needed for brace elision]
+        C5246 = the initialization of a subobject should be wrapped in braces [Not needed for brace elision]
       -->
       <DisableSpecificWarnings Condition="'$(NETPBM_WIC_CODEC_ALL_WARNINGS)'!=''">4061;4265;4365;4514;4571;4623;4625;4626;4668;4686;4710;4711;4738;4774;4820;4946;5026;5027;5039;5045;5106;5204;5246;%(DisableSpecificWarnings)</DisableSpecificWarnings>
 
