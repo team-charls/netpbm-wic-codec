@@ -18,6 +18,7 @@
     <File Path="REUSE.toml" />
     <File Path="SECURITY.md" />
   </Folder>
+  <Project Path="build-winrt-modules/build-winrt-modules.vcxproj" Id="d38f75a5-0917-4578-8e2a-8df7d4481f1c" />
   <Project Path="setup/bootstrapper/bootstrapper.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0" />
   <Project Path="setup/installer/installer.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0" />
   <Project Path="setup/shell-change-notify-custom-action/shell-change-notify-custom-action.vcxproj" Id="7409d02b-a48b-4e54-b633-3c81bb3512ab" />

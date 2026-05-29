@@ -5,7 +5,7 @@
 
 import std;
 import <win.hpp>;
-import test.winrt;
+import winrt_base;
 
 import pnm_header;
 import buffered_stream_reader;

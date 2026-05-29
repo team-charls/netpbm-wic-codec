@@ -1,6 +1,7 @@
 ﻿adbe
 Anymap
 arbitrarymap
+asmx
 bcfd
 Bootstrapper
 Brepo
@@ -16,6 +17,7 @@ CODECNOTHUMBNAIL
 CODECTOOMANYSCANLINES
 COMDAT
 cppcoreguidelines
+cppm
 derks
 Dsonar
 fccd
@@ -49,6 +51,7 @@ Qspectre
 redist
 regsvr
 RGBA
+Shlwapi
 signtool
 slnx
 SPECFIC
@@ -61,6 +64,7 @@ UNSUPPORTEDPIXELFORMAT
 VCRUNTIME
 vstest
 wincodec
+windowscodecs
 winget
 WINRT
 wixext

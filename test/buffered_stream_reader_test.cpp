@@ -6,7 +6,7 @@
 
 import std;
 import "win.hpp";
-import test.winrt;
+import winrt_base;
 
 import buffered_stream_reader;
 

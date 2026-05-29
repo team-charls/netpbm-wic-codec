@@ -8,7 +8,7 @@
 import std;
 import <win.hpp>;
 
-import test.winrt;
+import winrt_base;
 import test.hresults;
 import test.stream;
 import test.util;

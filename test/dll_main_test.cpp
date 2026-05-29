@@ -8,7 +8,7 @@ import std;
 import <win.hpp>;
 
 import com_factory;
-import test.winrt;
+import winrt_base;
 import test.hresults;
 
 using namespace winrt;

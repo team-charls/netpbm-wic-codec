@@ -28,7 +28,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <VCProjectVersion>17.0</VCProjectVersion>
+    <VCProjectVersion>18.0</VCProjectVersion>
     <ProjectGuid>{F2EA965E-98D3-41C6-90D1-3DE4837D1041}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <ProjectSubType>NativeUnitTestProject</ProjectSubType>
@@ -61,7 +61,6 @@
     <ClCompile Include="test_stream.ixx" />
     <ClCompile Include="test_util.ixx" />
     <ClCompile Include="com_factory.ixx" />
-    <ClCompile Include="test_winrt.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cpp_unit_test.hpp" />
@@ -122,6 +121,10 @@
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\build-winrt-modules\build-winrt-modules.vcxproj">
+      <Project>{d38f75a5-0917-4578-8e2a-8df7d4481f1c}</Project>
+      <CppWinRTConsumeModule>true</CppWinRTConsumeModule>
+    </ProjectReference>
     <ProjectReference Include="..\src\netpbm-wic-codec.vcxproj">
       <Project>{c50cd24b-6a16-4a25-98e8-3d958449c411}</Project>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>

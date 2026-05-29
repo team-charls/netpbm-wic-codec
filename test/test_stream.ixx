@@ -9,7 +9,7 @@ export module test.stream;
 
 import <win.hpp>;
 
-import test.winrt;
+import winrt_base;
 import test.hresults;
 
 export struct test_stream : winrt::implements<test_stream, IStream>

@@ -13,7 +13,7 @@ import com_factory;
 import guids;
 import portable_anymap_file;
 import util;
-import winrt;
+import winrt_base;
 
 using std::ifstream;
 using std::vector;

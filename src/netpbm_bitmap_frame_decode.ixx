@@ -9,7 +9,7 @@ export module netpbm_bitmap_frame_decode;
 
 import std;
 import <win.hpp>;
-import winrt;
+import winrt_base;
 
 using std::uint32_t;
 

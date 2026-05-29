@@ -27,7 +27,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <VCProjectVersion>17.0</VCProjectVersion>
+    <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{7409d02b-a48b-4e54-b633-3c81bb3512ab}</ProjectGuid>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
