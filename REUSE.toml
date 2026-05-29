@@ -17,7 +17,7 @@ path = [
     "**/packages.config",
     "spelling.dic",
     "default.ruleset",
-    "netpbm-wic-codec.sln",
+    "netpbm-wic-codec.slnx",
     "global.json",
     "netpbm-wic-codec.sln.DotSettings"
 ]

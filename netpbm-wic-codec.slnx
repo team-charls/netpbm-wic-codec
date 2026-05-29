@@ -1,0 +1,27 @@
+<Solution>
+  <Configurations>
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="CHANGELOG.md" />
+    <File Path="cpp.hint" />
+    <File Path="default.ruleset" />
+    <File Path="default.ruleset.md" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="LICENSE.md" />
+    <File Path="README.md" />
+    <File Path="REUSE.toml" />
+    <File Path="SECURITY.md" />
+  </Folder>
+  <Project Path="setup/bootstrapper/bootstrapper.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0" />
+  <Project Path="setup/installer/installer.wixproj" Type="b7dd6f7e-def8-4e67-b5b7-07ef123db6f0" />
+  <Project Path="setup/shell-change-notify-custom-action/shell-change-notify-custom-action.vcxproj" Id="7409d02b-a48b-4e54-b633-3c81bb3512ab" />
+  <Project Path="src/netpbm-wic-codec.vcxproj" Id="c50cd24b-6a16-4a25-98e8-3d958449c411" />
+  <Project Path="std-header-units/std-header-units.vcxproj" Id="db8d6fc8-6f7b-446f-892a-0ba6c779e5f2" />
+  <Project Path="test/test.vcxproj" Id="f2ea965e-98d3-41c6-90d1-3de4837d1041" />
+</Solution>
