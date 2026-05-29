@@ -14,6 +14,7 @@ charls
 CLSID
 CODECNOTHUMBNAIL
 CODECTOOMANYSCANLINES
+COMDAT
 cppcoreguidelines
 derks
 Dsonar
@@ -40,6 +41,7 @@ NOMINMAX
 norestart
 NOSERVICE
 PALETTEUNAVAILABLE
+PDBALTPATH
 pgmfile
 pixmap
 ppmfile
@@ -51,7 +53,10 @@ signtool
 slnx
 SPECFIC
 SPECSTRINGS
+STDC
 stdcpplatest
+subobject
+UCRT
 UNSUPPORTEDPIXELFORMAT
 VCRUNTIME
 vstest
