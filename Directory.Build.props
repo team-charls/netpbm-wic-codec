@@ -116,7 +116,7 @@
 
         * WINRT *
         WINRT_LEAN_AND_MEAN: Disables rarely-used features (in order to reduce compile times)
-        WINRT_ENABLE_LEGACY_COM: Enable legacy COM support (e.g. IUnknown) .
+        WINRT_ENABLE_LEGACY_COM: Enable legacy COM support (e.g. IUnknown).
         WINRT_NO_SOURCE_LOCATION (prevents full namespace names in the binary).
 
         * Secure C Runtime *

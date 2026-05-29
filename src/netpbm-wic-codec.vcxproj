@@ -82,6 +82,7 @@
   <ItemGroup>
     <ProjectReference Include="..\build-winrt-modules\build-winrt-modules.vcxproj">
       <Project>{d38f75a5-0917-4578-8e2a-8df7d4481f1c}</Project>
+      <CppWinRTConsumeModule>true</CppWinRTConsumeModule>      
     </ProjectReference>
     <ProjectReference Include="..\std-header-units\std-header-units.vcxproj">
       <Project>{db8d6fc8-6f7b-446f-892a-0ba6c779e5f2}</Project>
