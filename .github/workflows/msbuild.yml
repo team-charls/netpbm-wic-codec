@@ -24,22 +24,22 @@ jobs:
         include:
           - platform: x86
             configuration: Debug
-            runner: windows-latest
+            runner: windows-2025-vs2026
           - platform: x86
             configuration: Release
-            runner: windows-latest
+            runner: windows-2025-vs2026
           - platform: x64
             configuration: Debug
-            runner: windows-latest
+            runner: windows-2025-vs2026
           - platform: x64
             configuration: Release
-            runner: windows-latest
-          - platform: ARM64
-            configuration: Debug
-            runner: windows-11-arm
-          - platform: ARM64
-            configuration: Release
-            runner: windows-11-arm
+            runner: windows-2025-vs2026
+          # - platform: ARM64
+          #   configuration: Debug
+          #   runner: windows-11-arm
+          # - platform: ARM64
+          #   configuration: Release
+          #   runner: windows-11-arm
 
     steps:
     - uses: actions/checkout@v6
