@@ -119,7 +119,7 @@ Note *: monochrome images with 10 or 12 bits per sample will be upscaled to 16 b
 ## Manual Build Instructions
 
 1. Clone this repro
-1. Use Visual Studio 2022 17.14 or newer and open the netpbm-wic-codec.sln. Batch build all projects.
+1. Use Visual Studio 2026 18.6 or newer and open the netpbm-wic-codec.slnx. Batch build all projects.
 1. Or use a Developer Command Prompt and run use MSBuild in the root of the cloned repository.
 
 ### Installation
