@@ -116,6 +116,7 @@
 
         * WINRT *
         WINRT_LEAN_AND_MEAN: Disables rarely-used features (in order to reduce compile times)
+        WINRT_ENABLE_LEGACY_COM: Enable legacy COM support (e.g. IUnknown).
         WINRT_NO_SOURCE_LOCATION (prevents full namespace names in the binary).
 
         * Secure C Runtime *
@@ -125,7 +126,7 @@
         * Microsoft STL *
         _USE_DETAILED_FUNCTION_NAME_IN_SOURCE_LOCATION=0: Keep function name info short to reduce binary size.
       -->
-      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;NOSERVICE;NOMCX;NOIME;NOMINMAX;_CRT_MEMCPY_S_INLINE=inline;WINRT_LEAN_AND_MEAN;WINRT_NO_SOURCE_LOCATION;__STDC_WANT_SECURE_LIB__=1;__SPECSTRINGS_STRICT_LEVEL=2;_USE_DETAILED_FUNCTION_NAME_IN_SOURCE_LOCATION=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;NOSERVICE;NOMCX;NOIME;NOMINMAX;_CRT_MEMCPY_S_INLINE=inline;WINRT_LEAN_AND_MEAN;WINRT_ENABLE_LEGACY_COM;WINRT_NO_SOURCE_LOCATION;__STDC_WANT_SECURE_LIB__=1;__SPECSTRINGS_STRICT_LEVEL=2;_USE_DETAILED_FUNCTION_NAME_IN_SOURCE_LOCATION=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
 

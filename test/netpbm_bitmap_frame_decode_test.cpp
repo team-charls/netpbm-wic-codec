@@ -7,7 +7,7 @@
 import std;
 import <win.hpp>;
 
-import test.winrt;
+import winrt_base;
 import test.hresults;
 import portable_anymap_file;
 import portable_arbitrary_map;

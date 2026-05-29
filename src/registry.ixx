@@ -4,7 +4,7 @@
 export module registry;
 
 import std;
-import winrt;
+import winrt_base;
 import <win.hpp>;
 
 import hresults;

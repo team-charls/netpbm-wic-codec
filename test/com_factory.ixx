@@ -8,7 +8,7 @@ module;
 export module com_factory;
 
 import <win.hpp>;
-import test.winrt;
+import winrt_base;
 
 export constexpr GUID net_pbm_decoder_class_id{0x6891bbe, 0xcc02, 0x4bb2, {0x9c, 0xf0, 0x30, 0x3f, 0xc4, 0xe6, 0x68, 0xc3}};
 

@@ -42,9 +42,6 @@
     <ClCompile Include="com_factory.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_winrt.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="buffered_stream_reader_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

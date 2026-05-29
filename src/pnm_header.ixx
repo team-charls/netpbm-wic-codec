@@ -9,7 +9,7 @@ export module pnm_header;
 
 import std;
 import <win.hpp>;
-import winrt;
+import winrt_base;
 
 import buffered_stream_reader;
 import hresults;

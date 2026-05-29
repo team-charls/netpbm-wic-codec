@@ -4,7 +4,7 @@
 export module class_factory;
 
 import <win.hpp>;
-import winrt;
+import winrt_base;
 
 import hresults;
 import util;

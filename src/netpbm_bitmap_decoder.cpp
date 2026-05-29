@@ -8,7 +8,7 @@ module;
 module netpbm_bitmap_decoder;
 
 import std;
-import winrt;
+import winrt_base;
 import <win.hpp>;
 
 import class_factory;

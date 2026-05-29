@@ -9,7 +9,7 @@ export module buffered_stream_reader;
 
 import <win.hpp>;
 import std;
-import winrt;
+import winrt_base;
 
 export class buffered_stream_reader final
 {

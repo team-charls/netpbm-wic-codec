@@ -5,7 +5,7 @@
 #include "version.hpp"
 
 import std;
-import winrt;
+import winrt_base;
 import <win.hpp>;
 
 import netpbm_bitmap_decoder;
