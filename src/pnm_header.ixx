@@ -15,16 +15,10 @@ import buffered_stream_reader;
 import hresults;
 import util;
 
-using winrt::throw_hresult;
 using std::uint32_t;
+using winrt::throw_hresult;
 
-export enum class PnmType
-{
-    Bitmap,
-    Graymap,
-    Pixmap,
-    ArbitraryMap
-};
+export enum class PnmType { Bitmap, Graymap, Pixmap, ArbitraryMap };
 
 export bool is_pnm_file(_In_ IStream* stream)
 {
@@ -122,7 +116,7 @@ export struct pnm_header
         for (;;)
         {
             streamReader.read_string(token_buffer, 9);
-            std::string_view token{token_buffer};
+            const std::string_view token{token_buffer};
             if (token == "ENDHDR")
                 return success_ok;
 
@@ -136,8 +130,7 @@ export struct pnm_header
             }
             else if (token == "DEPTH")
             {
-                int depth = streamReader.read_int();
-                if (depth != 4)
+                if (const int depth = streamReader.read_int(); depth != 4)
                     winrt::throw_hresult(wincodec::error_bad_header);
 
                 PnmType = PnmType::ArbitraryMap;
@@ -148,10 +141,9 @@ export struct pnm_header
             }
             else if (token == "TUPLTYPE")
             {
-                char tupletype_buffer[17];
-                streamReader.read_string(tupletype_buffer, 16);
-                std::string_view tupletype{tupletype_buffer};
-                if (tupletype != "RGB_ALPHA")
+                char tuple_type_buffer[17];
+                streamReader.read_string(tuple_type_buffer, 16);
+                if (const std::string_view tuple_type{tuple_type_buffer}; tuple_type != "RGB_ALPHA")
                     winrt::throw_hresult(wincodec::error_bad_header);
             }
         }
