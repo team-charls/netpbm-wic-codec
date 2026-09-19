@@ -42,13 +42,13 @@ jobs:
           #   runner: windows-11-arm
 
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
     - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v3
+      uses: microsoft/setup-msbuild@30375c66a4eea26614e0d39710365f22f8b0af57 # v3.0.0
 
     - name: Setup VSTest path
-      uses: darenm/Setup-VSTest@v1
+      uses: darenm/Setup-VSTest@3a16d909a1f3bbc65b52f8270d475d905e7d3e44 # v1.3
 
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}
