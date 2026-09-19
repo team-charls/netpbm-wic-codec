@@ -33,7 +33,7 @@
     <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
     <CppWinRTBuildModule>true</CppWinRTBuildModule>
     <CppWinRTModuleInclude>Nothing</CppWinRTModuleInclude>
-    <EnableNativePackageReferenceSupport>true</EnableNativePackageReferenceSupport>    
+    <EnableNativePackageReferenceSupport>true</EnableNativePackageReferenceSupport>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup>
